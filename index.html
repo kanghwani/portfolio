@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김강환 — Unity Client Developer</title>
+<meta name="description" content="김강환 · Unity 클라이언트 개발자 포트폴리오 — 완성하는 개발자">
+<meta property="og:title" content="김강환 — Unity Client Developer">
+<meta property="og:description" content="화려한 것보다 완성된 것을 만드는 Unity 클라이언트 개발자">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
+<style>html,body{margin:0;background:#0A0C10}</style>
+</head>
+<body>
+<style>
+  .kh{
+    --bg:#0A0C10; --bg2:#0F131A; --panel:#12161E; --panel2:#161B24;
+    --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
+    --tx:#D5DAE1; --mut:#828B98; --faint:#565C66;
+    --cyan:#71C7DB; --amber:#E6AB55; --green:#9CCB7C; --red:#E06C75; --violet:#C79BE6;
+    --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,"D2Coding",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI",sans-serif;
+    color:var(--tx); font-family:var(--mono);
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+    margin:0 auto; max-width:880px; padding:0 22px 96px; font-size:14.5px;
+    background:
+      radial-gradient(80% 46% at 78% -4%, rgba(113,199,219,.09), transparent 62%),
+      radial-gradient(70% 42% at 10% 2%, rgba(230,171,85,.07), transparent 60%),
+      var(--bg);
+  }
+  .kh *{box-sizing:border-box}
+  .kh a{color:var(--cyan);text-decoration:none}
+  .kh a:hover{text-decoration:underline}
+  .kh a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:2px}
+  .kh em{font-style:normal;color:var(--amber)}
+  .cm{color:var(--faint)}                 /* comment */
+  .kw{color:var(--violet)}                 /* keyword */
+  .str{color:var(--amber)}                 /* string */
+  .fn{color:var(--cyan)}                   /* function */
+  .sans{font-family:var(--sans)}
+
+  /* window chrome */
+  .term-top{display:flex;align-items:center;gap:14px;padding:13px 4px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  .dots{display:flex;gap:7px}
+  .dots i{width:11px;height:11px;border-radius:50%;display:block}
+  .dots .r{background:#E06C75}.dots .y{background:#E5A44B}.dots .g{background:#98C379}
+  .term-top .ttl{color:var(--mut);font-size:12.5px}
+  .term-top .lk{margin-left:auto;display:flex;gap:16px;font-size:12.5px}
+
+  /* prompt lines */
+  .pr{color:var(--green)} .pth{color:var(--cyan)} .pct{color:var(--mut)}
+  .line{margin:0;color:var(--tx);white-space:pre-wrap}
+  .line .cmd{color:var(--tx)}
+  .out{margin:5px 0 0;color:var(--mut)}
+  .out.arrow{padding-left:16px;position:relative}
+  .out.arrow::before{content:"↳";position:absolute;left:0;color:var(--faint)}
+
+  /* hero */
+  .hero{padding:58px 0 22px}
+  .hero .eyebrow{display:flex;align-items:center;gap:9px;color:var(--mut);font-size:12.5px;letter-spacing:.13em;margin-bottom:24px}
+  .hero .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 7px rgba(152,195,121,.5)}
+  .hero .thesis{font-size:clamp(30px,5.2vw,50px);line-height:1.12;color:var(--tx);margin:0;letter-spacing:-.02em;font-weight:640;text-wrap:balance;max-width:16ch}
+  .hero .sub{font-family:var(--sans);font-size:16.5px;color:var(--mut);max-width:60ch;margin:22px 0 0;line-height:1.7}
+  .hero .sub b{color:var(--tx);font-weight:500}
+  .hrule{height:1px;background:linear-gradient(90deg,var(--cyan),var(--amber) 55%,transparent);margin:30px 0 0;opacity:.55;max-width:340px}
+
+  /* mini side card (non-game) */
+  .side-h{color:var(--faint);font-size:12.5px;margin:26px 0 12px}
+  .mini{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);padding:17px 19px;transition:border-color .2s}
+  .mini:hover{border-color:var(--line2)}
+  .mini .mtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .mini .fname{color:var(--mut);font-size:12px}
+  .mini h4{margin:0;font-size:16px;font-weight:600;color:var(--tx)}
+  .mini .stx.done{font-size:10.5px;padding:2px 8px;border-radius:11px;color:var(--green);background:rgba(152,195,121,.1);display:inline-flex;align-items:center;gap:5px}
+  .mini .stx.done::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--green)}
+  .mini p{font-family:var(--sans);margin:9px 0 0;color:var(--mut);font-size:13.5px;line-height:1.6}
+  .mini p b{color:var(--tx);font-weight:500}
+  .mini .row2{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:11px}
+  .mini .mtags{display:flex;gap:6px;flex-wrap:wrap}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:26px 0 0}
+  .stat{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent);padding:15px 17px;display:flex;flex-direction:column;gap:3px;transition:border-color .2s,transform .2s}
+  .stat:hover{border-color:var(--line2);transform:translateY(-2px)}
+  .stat b{color:var(--amber);font-size:27px;font-weight:640;font-variant-numeric:tabular-nums;line-height:1.05;letter-spacing:-.01em}
+  .stat span{color:var(--mut);font-size:12px;letter-spacing:.01em}
+
+  /* section */
+  .sec{margin-top:60px}
+  .chead{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:13px;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:26px;letter-spacing:.01em}
+  .chead b{color:var(--green);font-weight:400}
+  .chead .cm{margin-left:auto}
+
+  /* project = file panel */
+  .file{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:18px;background:var(--panel);box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 8px 26px -18px rgba(0,0,0,.9);transition:transform .22s cubic-bezier(.2,.7,.3,1),border-color .22s,box-shadow .22s}
+  .file:hover{transform:translateY(-3px);border-color:var(--line2);box-shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 18px 40px -22px rgba(0,0,0,.95)}
+  .file.feat{border-color:rgba(113,199,219,.22);background:linear-gradient(158deg,#16202a,#11151c 70%)}
+  .file.feat:hover{border-color:rgba(113,199,219,.4)}
+  .fbar{display:flex;align-items:center;gap:10px;padding:12px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--line)}
+  .fbar .fdots{display:flex;gap:6px}
+  .fbar .fdots i{width:9px;height:9px;border-radius:50%;display:block;background:rgba(255,255,255,.1)}
+  .fbar .fname{color:var(--mut);font-size:12.5px;letter-spacing:.02em}
+  .fbar .stx{margin-left:auto;font-size:11px;padding:4px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.04em}
+  .fbar .stx::before{content:"";width:6px;height:6px;border-radius:50%}
+  .stx.dev{color:var(--amber);background:rgba(230,171,85,.12)} .stx.dev::before{background:var(--amber);box-shadow:0 0 7px var(--amber)}
+  .stx.done{color:var(--green);background:rgba(156,203,124,.12)} .stx.done::before{background:var(--green)}
+  .fbody{padding:24px 24px 26px}
+  .fbody h3{margin:0;font-size:22px;font-weight:640;letter-spacing:-.015em;color:#EDF0F4}
+  .file.feat .fbody h3{font-size:27px}
+  .fbody h3 .gn{color:var(--faint);font-size:13px;font-weight:400;letter-spacing:0}
+  .fbody .meta{color:var(--mut);font-size:12.5px;margin-top:8px;letter-spacing:.01em}
+  .fbody .role{font-family:var(--sans);margin:15px 0 0;color:var(--tx);font-size:15px;line-height:1.65}
+  .fbody .desc{font-family:var(--sans);margin:12px 0 0;color:var(--mut);font-size:14.5px;line-height:1.65;max-width:66ch}
+  .fbody .cmlabel{color:var(--faint);font-size:12px;margin:18px 0 8px}
+  .fbody ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+  .fbody li{font-family:var(--sans);position:relative;padding-left:20px;color:var(--mut);font-size:14px;line-height:1.6}
+  .fbody li::before{content:"+";position:absolute;left:2px;color:var(--green);font-family:var(--mono)}
+  .file.feat li::before{content:"›";color:var(--cyan)}
+  .fbody li b{color:var(--tx);font-weight:500}
+
+  /* case block = code comment */
+  .case{margin:20px 0 0;border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.28);overflow:hidden}
+  .case .cbar{padding:10px 16px;color:var(--green);font-size:11.5px;border-bottom:1px solid var(--line);background:rgba(156,203,124,.05);letter-spacing:.02em}
+  .case dl{margin:0;padding:15px 16px;display:grid;grid-template-columns:72px 1fr;gap:10px 16px}
+  .case dt{color:var(--violet);font-size:12px;letter-spacing:.02em}
+  .case dd{margin:0;font-family:var(--sans);color:var(--mut);font-size:13.5px;line-height:1.6}
+  .case dd b{color:var(--tx);font-weight:500}
+
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .tag{font-size:11.5px;color:var(--mut);border:1px solid var(--line);border-radius:7px;padding:4px 10px;background:rgba(255,255,255,.02);transition:border-color .2s,color .2s}
+  .tag:hover{border-color:var(--line2);color:var(--tx)}
+  .tag::before{content:"#";color:var(--faint)}
+  .vbtn{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-size:13px;color:#10130f;background:var(--amber);padding:9px 15px;border-radius:7px;font-weight:600;transition:transform .15s,box-shadow .2s}
+  .vbtn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(229,164,75,.22);text-decoration:none}
+  .vbtn .yt{font-size:11px;opacity:.72}
+  .plink{display:inline-block;margin-top:16px;font-size:12.5px}
+
+  /* skills = json */
+  .json{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;box-shadow:0 8px 26px -18px rgba(0,0,0,.9)}
+  .json .fbar2{padding:12px 18px;border-bottom:1px solid var(--line);color:var(--mut);font-size:12.5px;background:rgba(255,255,255,.02)}
+  .json pre{margin:0;padding:20px 20px;font-size:13.5px;line-height:2;color:var(--tx);white-space:pre;overflow-x:auto}
+  .json .k{color:var(--cyan)} .json .v{color:var(--amber)} .json .p{color:var(--faint)}
+
+  /* journey = git log */
+  .glog{display:grid;gap:1px;border:1px solid var(--line);border-radius:14px;padding:8px;background:var(--panel)}
+  .grow{display:grid;grid-template-columns:70px 22px 1fr;gap:14px;align-items:baseline;padding:11px 14px;border-radius:9px;transition:background .16s}
+  .grow:hover{background:rgba(255,255,255,.03)}
+  .grow .hash{color:var(--amber);font-size:12px;letter-spacing:.02em}
+  .grow .node{color:var(--faint);text-align:center;font-size:13px}
+  .grow.head .node{color:var(--green);text-shadow:0 0 8px rgba(156,203,124,.6)}
+  .grow .msg{font-family:var(--sans);font-size:14.5px}
+  .grow .msg b{font-weight:600}
+  .grow .msg span{color:var(--mut);font-size:13px}
+  .grow.head .msg b{color:var(--green)}
+  .grow .tagref{color:var(--cyan);font-size:12px}
+  .thesis2{font-family:var(--sans);margin-top:22px;font-size:16px;color:var(--tx);line-height:1.7;border-left:2px solid var(--amber);padding-left:16px;text-wrap:balance}
+  .thesis2 b{color:var(--amber);font-weight:600}
+
+  /* footer */
+  .foot{margin-top:56px;border-top:1px solid var(--line);padding-top:30px}
+  .foot .p{color:var(--tx);margin-bottom:14px}
+  .foot .p .pr{color:var(--green)}
+  .foot .links{display:grid;gap:8px;font-size:13.5px}
+  .foot .links a{display:inline-flex;gap:10px;align-items:center;width:fit-content}
+  .foot .links a::before{content:"→";color:var(--faint)}
+  .foot .end{color:var(--faint);font-size:12.5px;margin-top:20px}
+
+  @media (max-width:560px){
+    .grow{grid-template-columns:64px 18px 1fr;gap:9px}
+    .case dl{grid-template-columns:56px 1fr}
+    .term-top .lk{gap:11px}
+  }
+  @media (prefers-reduced-motion:reduce){.cur{animation:none}}
+</style>
+
+<div class="kh">
+  <div class="term-top">
+    <span class="dots"><i class="r"></i><i class="y"></i><i class="g"></i></span>
+    <span class="ttl">kanghwan — portfolio — zsh</span>
+    <span class="lk">
+      <a href="https://github.com/kanghwani">github</a>
+      <a href="mailto:zzangh91@naver.com">mail</a>
+    </span>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow"><span class="dot"></span>김강환 · UNITY 클라이언트 개발자 · 주니어</div>
+    <h1 class="thesis">화려한 것보다,<br><em>완성된 것</em>을 만듭니다.</h1>
+    <p class="sub">Unity로 전투·인벤토리·타격감·시스템을 구현하는 주니어 클라이언트 개발자.
+      <b>ScriptableObject·SOLID 기반 확장 설계</b>가 강점이고, 아이디어를 데이터로 검증하는 습관을 가졌습니다.</p>
+    <div class="hrule"></div>
+    <div class="stats">
+      <div class="stat"><b>1</b><span>완성·발표한 게임</span></div>
+      <div class="stat"><b>1</b><span>리드 중인 팀 프로젝트</span></div>
+      <div class="stat"><b>38</b><span>게임 블로그 발행</span></div>
+      <div class="stat"><b>2</b><span>직접 만든 LLM 시스템</span></div>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="chead"><b>//</b> projects/ <span class="cm">— 게임 프로젝트</span></div>
+
+    <article class="file feat">
+      <div class="fbar"><span class="fdots"><i></i><i></i><i></i></span><span class="fname">cityflow.unity</span><span class="stx dev">개발 중</span></div>
+      <div class="fbody">
+        <h3>도시흐름 <span class="gn">CityFlow</span></h3>
+        <div class="meta">교통 흐름 방치형 · 5인 팀 · 기획 공모전 선정작 · 간판 프로젝트</div>
+        <p class="role">제가 제안한 기획이 공모전에 선정되어 5인 팀을 이끌며, 프로덕션·스코프 관리와 코어 게임플레이·시뮬레이션 엔진 구현을 맡고 있습니다.</p>
+        <div class="cmlabel">// 내 역할</div>
+        <ul>
+          <li>“기획자가 곧 팀장은 아니다” — 의사결정을 <b>다수결 + 플레이테스트 데이터</b>로 정하는 운영 규칙 합의</li>
+          <li>강사 피드백으로 코어가 흔들렸을 때, <b>하루 만에 그레이박스 프로토타입으로 검증</b>하고 방향 재정립</li>
+          <li>빌드별(1차/2차/최종) 업무분담표로 팀원 산출물·완료 기준 명확화, dev-log로 전 과정 문서화</li>
+        </ul>
+        <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">시뮬엔진</span><span class="tag">방치형</span><span class="tag">팀리드</span></div>
+      </div>
+    </article>
+
+    <article class="file">
+      <div class="fbar"><span class="fdots"><i></i><i></i><i></i></span><span class="fname">molten-arena.unity</span><span class="stx done">완성 · 발표</span></div>
+      <div class="fbody">
+        <h3>Molten Arena <span class="gn">3인칭 웨이브 생존 · 로그라이트</span></h3>
+        <div class="meta">부트캠프 1차 팀 프로젝트 · 2인 · 1개월 · 클라이언트 구현</div>
+        <p class="desc">Unity URP 기반 TPS를 데이터 설계부터 타격감까지 폭넓게 구현하고, 부트캠프 1개월 팀플을 <b>완주·발표</b>했습니다.</p>
+        <div class="cmlabel">// 내가 만든 것</div>
+        <ul>
+          <li>ScriptableObject로 무기·아이템 데이터층 설계 + 런타임 상태 분리 → 새 무기 추가 시 <b>코드 0줄로 확장</b>(OCP)</li>
+          <li>타격감 시스템(히트스톱·VfxPool 풀링) · 이벤트 구독 인벤토리 · 통합 핫바 · 로그라이트 레벨업</li>
+          <li>난이도 밸런싱 — 1판 클리어 <b>~3분 → ~6분</b>으로 조정해 압박감 강화</li>
+        </ul>
+        <div class="case">
+          <div class="cbar">/* 문제 → 해결 · 대표 사례 */</div>
+          <dl>
+            <dt>problem</dt><dd>일시정지(timeScale=0)에도 카메라가 계속 회전하고 커서가 안 풀림</dd>
+            <dt>constraint</dt><dd>회전 로직이 <b>동료 코드</b>에 있어 직접 수정 시 통합 충돌 위험</dd>
+            <dt>solution</dt><dd><b>CameraPauseGate</b>를 별도 추가 — timeScale==0 감지해 회전 정지·커서 해제. 동료 코드 무수정</dd>
+            <dt>verify</dt><dd>일시정지·레벨업·결과화면 전부 카메라 고정·커서 해제 확인, <b>콘솔 에러 0</b></dd>
+          </dl>
+        </div>
+        <div class="tags"><span class="tag">Unity URP</span><span class="tag">ScriptableObject</span><span class="tag">NavMesh</span><span class="tag">Cinemachine</span><span class="tag">Plastic SCM</span></div>
+        <div><a class="vbtn" href="https://youtu.be/rlZltzKGEIY">▶ 플레이 영상 보기 <span class="yt">youtu.be/rlZltzKGEIY</span></a></div>
+      </div>
+    </article>
+
+    <div class="side-h"><span class="cm">//</span> 그 외 — 개발 외 사이드</div>
+    <div class="mini">
+      <div class="mtop">
+        <span class="fname">llm-systems.py</span>
+        <h4>LLM Systems</h4>
+        <span class="stx done">운영 중</span>
+      </div>
+      <p>LLM을 파이프라인으로 엮어 반복을 자동화한 사이드 프로젝트 — AI 세컨드 브레인(위키 컴파일러) + 게임 블로그 자동화(<b>38편 발행</b>). 게임 도메인에 AI 활용을 얹는 실험.</p>
+      <div class="row2">
+        <div class="mtags"><span class="tag">Python</span><span class="tag">파이프라인</span><span class="tag">게임×LLM</span></div>
+        <a class="plink" style="margin:0" href="https://github.com/kanghwani/llm-systems">↗ github.com/kanghwani/llm-systems</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="chead"><b>//</b> skills.json</div>
+    <div class="json">
+      <div class="fbar2">skills.json</div>
+      <pre>{
+  <span class="k">"engine"</span>       : <span class="v">"Unity URP (3D)"</span>,
+  <span class="k">"language"</span>     : <span class="v">"C#"</span>,
+  <span class="k">"client_domain"</span>: <span class="v">"Gameplay · UI/HUD · Inventory · 타격감 · Tools"</span>,
+  <span class="k">"design"</span>       : <span class="v">"ScriptableObject · SOLID(SRP/OCP/DIP) · 이벤트 구독"</span>,
+  <span class="k">"collab"</span>       : <span class="v">"Git · Plastic SCM · 복사본 작업 · dev-log 문서화"</span>,
+  <span class="k">"edge"</span>         : <span class="v">"게임 × LLM 워크플로 · 시장 데이터로 기획 검증"</span>,
+  <span class="k">"education"</span>    : <span class="v">"방송통신대 컴공(2027.02) · 개발 부트캠프(2026.08)"</span>
+}</pre>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="chead"><b>//</b> 여러 길을 돌아, 게임으로</div>
+    <div class="glog">
+      <div class="grow head"><span class="hash">지금 →</span><span class="node">●</span><span class="msg"><b>게임 개발</b> <span>— 아이디어를 진짜로 만들어 내놓는 일</span></span></div>
+      <div class="grow"><span class="hash">이전</span><span class="node">│</span><span class="msg"><b>가게 운영</b> <span>— 시작한 일은 끝까지 완성한다</span></span></div>
+      <div class="grow"><span class="hash">사업</span><span class="node">│</span><span class="msg"><b>구매대행</b> <span>— 아이디어를 실제 수익으로 (성공도, 실패도)</span></span></div>
+      <div class="grow"><span class="hash">2년</span><span class="node">│</span><span class="msg"><b>호주 워킹홀리데이</b> <span>— 영어와 글로벌 감각</span></span></div>
+      <div class="grow"><span class="hash">시작</span><span class="node">│</span><span class="msg"><b>여기어때 마케팅</b> <span>— 작은 팀이 빠르게 움직이는 법</span></span></div>
+    </div>
+    <p class="thesis2">모든 커밋의 공통점은 하나였습니다 — <b>아이디어를 검증하고, 실행하고, 끝까지 완성하는 것.</b> 게임은 또 다른 정거장이 아니라 목적지입니다.</p>
+  </section>
+
+  <footer class="foot">
+    <p class="p" style="font-size:20px;font-weight:600;color:var(--tx);font-family:var(--sans)">함께 만들 준비가 되어 있습니다.</p>
+    <div class="links">
+      <a href="mailto:zzangh91@naver.com">zzangh91@naver.com</a>
+      <a href="https://github.com/kanghwani">github.com/kanghwani</a>
+      <a href="https://youtu.be/rlZltzKGEIY">플레이 영상 (Molten Arena)</a>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>
