@@ -6,7 +6,7 @@
 <title>김강환 — Unity Client Developer</title>
 <meta name="description" content="김강환 · Unity 클라이언트 개발자 포트폴리오 — 완성하는 개발자">
 <meta property="og:title" content="김강환 — Unity Client Developer">
-<meta property="og:description" content="화려한 것보다 완성된 것을 만드는 Unity 클라이언트 개발자">
+<meta property="og:description" content="게임을 이해하고, 끝까지 완성하는 Unity 클라이언트 개발자">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
 <style>html,body{margin:0;background:#0A0C10}</style>
 </head>
@@ -177,6 +177,7 @@
     <span class="ttl">kanghwan — portfolio — zsh</span>
     <span class="lk">
       <a href="https://github.com/kanghwani">github</a>
+      <a href="https://blog.naver.com/zzangh91">blog</a>
       <a href="mailto:zzangh91@naver.com">mail</a>
     </span>
   </div>
@@ -185,7 +186,8 @@
     <div class="eyebrow"><span class="dot"></span>김강환 · UNITY 클라이언트 개발자 · 주니어</div>
     <h1 class="thesis">화려한 것보다,<br><em>완성된 것</em>을 만듭니다.</h1>
     <p class="sub">Unity로 전투·인벤토리·타격감·시스템을 구현하는 주니어 클라이언트 개발자.
-      <b>ScriptableObject·SOLID 기반 확장 설계</b>가 강점이고, 아이디어를 데이터로 검증하는 습관을 가졌습니다.</p>
+      <a href="https://blog.naver.com/zzangh91">게임 분석 38편</a>을 쓰며 "왜 재미있는가"를 언어로 뜯어보고, 기획은 데이터로 검증하고,
+      시작한 프로젝트는 <b>끝까지 완성해 내놓습니다</b>.</p>
     <div class="hrule"></div>
     <div class="stats">
       <div class="stat"><b>1</b><span>완성·발표한 게임</span></div>
@@ -207,9 +209,17 @@
         <div class="cmlabel">// 내 역할</div>
         <ul>
           <li>“기획자가 곧 팀장은 아니다” — 의사결정을 <b>다수결 + 플레이테스트 데이터</b>로 정하는 운영 규칙 합의</li>
-          <li>강사 피드백으로 코어가 흔들렸을 때, <b>하루 만에 그레이박스 프로토타입으로 검증</b>하고 방향 재정립</li>
           <li>빌드별(1차/2차/최종) 업무분담표로 팀원 산출물·완료 기준 명확화, dev-log로 전 과정 문서화</li>
         </ul>
+        <div class="case">
+          <div class="cbar">/* 문제 → 해결 · 대표 사례 */</div>
+          <dl>
+            <dt>problem</dt><dd>강사 피드백으로 <b>코어 재미에 대한 확신이 흔들림</b> — 팀 방향과 사기가 동시에 위기</dd>
+            <dt>constraint</dt><dd>공모전 일정상 긴 재기획에 쓸 시간이 없음</dd>
+            <dt>solution</dt><dd>하루 만에 <b>그레이박스 프로토타입</b>을 만들어 코어 루프를 실제 플레이로 검증</dd>
+            <dt>verify</dt><dd>플레이테스트 결과로 방향 재정립, 팀 합의 하에 개발 재개 — 말이 아니라 <b>플레이로 설득</b></dd>
+          </dl>
+        </div>
         <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">시뮬엔진</span><span class="tag">방치형</span><span class="tag">팀리드</span></div>
       </div>
     </article>
@@ -240,14 +250,26 @@
       </div>
     </article>
 
-    <div class="side-h"><span class="cm">//</span> 그 외 — 개발 외 사이드</div>
+    <div class="side-h"><span class="cm">//</span> 그 외 — 게임을 이해하는 훈련</div>
     <div class="mini">
+      <div class="mtop">
+        <span class="fname">gaming-blog.md</span>
+        <h4>개발자의 눈으로 보는 게임</h4>
+        <span class="stx done">운영 중 · 38편</span>
+      </div>
+      <p>화제작을 개발자 렌즈로 분석하는 게임 블로그. 시스템·BM·장르 문법을 뜯어보며 <b>"왜 재미있는가"를 언어화</b>하는 훈련 — 게임을 이해하는 개발자의 증거이자, 만들 게임의 시장 감각을 기르는 루틴.</p>
+      <div class="row2">
+        <div class="mtags"><span class="tag">게임분석</span><span class="tag">장르문법</span><span class="tag">주2~3회</span></div>
+        <a class="plink" style="margin:0" href="https://blog.naver.com/zzangh91">↗ blog.naver.com/zzangh91</a>
+      </div>
+    </div>
+    <div class="mini" style="margin-top:12px">
       <div class="mtop">
         <span class="fname">llm-systems.py</span>
         <h4>LLM Systems</h4>
         <span class="stx done">운영 중</span>
       </div>
-      <p>LLM을 파이프라인으로 엮어 반복을 자동화한 사이드 프로젝트 — AI 세컨드 브레인(위키 컴파일러) + 게임 블로그 자동화(<b>38편 발행</b>). 게임 도메인에 AI 활용을 얹는 실험.</p>
+      <p>LLM을 파이프라인으로 엮어 반복을 자동화한 사이드 프로젝트 — AI 세컨드 브레인(위키 컴파일러) + 위 블로그의 발행 파이프라인 자동화. 게임 도메인에 AI 활용을 얹는 실험.</p>
       <div class="row2">
         <div class="mtags"><span class="tag">Python</span><span class="tag">파이프라인</span><span class="tag">게임×LLM</span></div>
         <a class="plink" style="margin:0" href="https://github.com/kanghwani/llm-systems">↗ github.com/kanghwani/llm-systems</a>
@@ -265,7 +287,7 @@
   <span class="k">"client_domain"</span>: <span class="v">"Gameplay · UI/HUD · Inventory · 타격감 · Tools"</span>,
   <span class="k">"design"</span>       : <span class="v">"ScriptableObject · SOLID(SRP/OCP/DIP) · 이벤트 구독"</span>,
   <span class="k">"collab"</span>       : <span class="v">"Git · Plastic SCM · 복사본 작업 · dev-log 문서화"</span>,
-  <span class="k">"edge"</span>         : <span class="v">"게임 × LLM 워크플로 · 시장 데이터로 기획 검증"</span>,
+  <span class="k">"edge"</span>         : <span class="v">"게임 분석 블로그 38편 · 시장 데이터로 기획 검증 · 게임 × LLM"</span>,
   <span class="k">"education"</span>    : <span class="v">"방송통신대 컴공(2027.02) · 개발 부트캠프(2026.08)"</span>
 }</pre>
     </div>
@@ -288,6 +310,7 @@
     <div class="links">
       <a href="mailto:zzangh91@naver.com">zzangh91@naver.com</a>
       <a href="https://github.com/kanghwani">github.com/kanghwani</a>
+      <a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91 — 개발자의 눈으로 보는 게임</a>
       <a href="https://youtu.be/rlZltzKGEIY">플레이 영상 (Molten Arena)</a>
     </div>
   </footer>
