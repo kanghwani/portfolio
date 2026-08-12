@@ -141,7 +141,7 @@
 
   /* journey = git log */
   .glog{display:grid;gap:1px;border:1px solid var(--line);border-radius:14px;padding:8px;background:var(--panel)}
-  .grow{display:grid;grid-template-columns:70px 22px 1fr;gap:14px;align-items:baseline;padding:11px 14px;border-radius:9px;transition:background .16s}
+  .grow{display:grid;grid-template-columns:88px 22px 1fr;gap:14px;align-items:baseline;padding:11px 14px;border-radius:9px;transition:background .16s}
   .grow:hover{background:rgba(255,255,255,.03)}
   .grow .hash{color:var(--amber);font-size:12px;letter-spacing:.02em}
   .grow .node{color:var(--faint);text-align:center;font-size:13px}
@@ -164,7 +164,7 @@
   .foot .end{color:var(--faint);font-size:12.5px;margin-top:20px}
 
   @media (max-width:560px){
-    .grow{grid-template-columns:64px 18px 1fr;gap:9px}
+    .grow{grid-template-columns:78px 18px 1fr;gap:9px}
     .case dl{grid-template-columns:56px 1fr}
     .term-top .lk{gap:11px}
   }
@@ -185,14 +185,15 @@
   <header class="hero">
     <div class="eyebrow"><span class="dot"></span>김강환 · UNITY 클라이언트 개발자 · 주니어</div>
     <h1 class="thesis">화려한 것보다,<br><em>완성된 것</em>을 만듭니다.</h1>
-    <p class="sub">Unity로 전투·인벤토리·타격감·시스템을 구현하는 주니어 클라이언트 개발자.
-      <a href="https://blog.naver.com/zzangh91">게임 분석 38편</a>을 쓰며 "왜 재미있는가"를 언어로 뜯어보고, 기획은 데이터로 검증하고,
+    <p class="sub">Unity로 전투·인벤토리·타격감·<b>시뮬레이션 엔진</b>을 구현하는 주니어 클라이언트 개발자.
+      교과서 알고리즘이 게임에 맞지 않을 때 <b>게임에 맞는 알고리즘을 직접 설계</b>하고,
+      <a href="https://blog.naver.com/zzangh91">게임 분석 69편</a>을 쓰며 "왜 재미있는가"를 언어로 뜯어보고,
       시작한 프로젝트는 <b>끝까지 완성해 내놓습니다</b>.</p>
     <div class="hrule"></div>
     <div class="stats">
       <div class="stat"><b>1</b><span>완성·발표한 게임</span></div>
       <div class="stat"><b>1</b><span>리드 중인 팀 프로젝트</span></div>
-      <div class="stat"><b>38</b><span>게임 블로그 발행</span></div>
+      <div class="stat"><b>69</b><span>게임 블로그 발행</span></div>
       <div class="stat"><b>2</b><span>직접 만든 LLM 시스템</span></div>
     </div>
   </header>
@@ -203,24 +204,26 @@
     <article class="file feat">
       <div class="fbar"><span class="fdots"><i></i><i></i><i></i></span><span class="fname">cityflow.unity</span><span class="stx dev">개발 중</span></div>
       <div class="fbody">
-        <h3>도시흐름 <span class="gn">CityFlow</span></h3>
-        <div class="meta">교통 흐름 방치형 · 5인 팀 · 기획 공모전 선정작 · 간판 프로젝트</div>
-        <p class="role">제가 제안한 기획이 공모전에 선정되어 5인 팀을 이끌며, 프로덕션·스코프 관리와 코어 게임플레이·시뮬레이션 엔진 구현을 맡고 있습니다.</p>
-        <div class="cmlabel">// 내 역할</div>
+        <h3>도시흐름 <span class="gn">IDLE CITY · 교통 흐름 방치형</span></h3>
+        <div class="meta">5인 팀 · 기획 공모전 선정작 · 리드 + 시뮬레이션 엔진 담당 · 간판 프로젝트</div>
+        <p class="role">제가 제안한 기획이 공모전에 선정되어 5인 팀을 이끌며, 도시가 스스로 움직이는 부분 — <b>길찾기 · 회사와 사람 · 도로 도구 · 주행 연출</b>을 맡고 있습니다.</p>
+        <div class="cmlabel">// 내가 만든 것</div>
         <ul>
-          <li>“기획자가 곧 팀장은 아니다” — 의사결정을 <b>다수결 + 플레이테스트 데이터</b>로 정하는 운영 규칙 합의</li>
-          <li>빌드별(1차/2차/최종) 업무분담표로 팀원 산출물·완료 기준 명확화, dev-log로 전 과정 문서화</li>
+          <li><b>HILT 라우팅</b> — 게임 규칙에 맞는 경로 <b>배분</b> 알고리즘을 직접 설계 (아래 사례)</li>
+          <li><b>출퇴근 시간표</b> — 회사 3종(사무실·물류창고·공장)의 정원과 출퇴근 시간을 다르게 두고 <b>일부러 겹치게</b> 배치해 러시아워를 만듦. 자정을 넘는 교대(20시 출근 → 05시 퇴근) 판정 포함</li>
+          <li><b>머지 담당</b> — 데모 D-2에 오픈 PR 6건 전량 처리(반려 3회 후 머지) → <b>오픈 PR 0건</b>. 파일이 겹치지 않아 GitHub가 <span class="cm">CLEAN</span>으로 표시했지만 <b>옛 상태로 구운 프리팹</b>이 이름을 되돌리던 회귀를 잡아 재베이크 요구 — 초록불이 안전을 뜻하지는 않는다</li>
+          <li>“기획자가 곧 팀장은 아니다” — 의사결정을 <b>다수결 + 플레이테스트 데이터</b>로 정하는 운영 규칙 합의. 코어 재미가 흔들렸을 땐 하루 만에 <b>그레이박스 프로토타입</b>으로 검증해 방향 재정립</li>
         </ul>
         <div class="case">
-          <div class="cbar">/* 문제 → 해결 · 대표 사례 */</div>
+          <div class="cbar">/* 문제 → 해결 · 대표 사례 — HILT 라우팅 */</div>
           <dl>
-            <dt>problem</dt><dd>강사 피드백으로 <b>코어 재미에 대한 확신이 흔들림</b> — 팀 방향과 사기가 동시에 위기</dd>
-            <dt>constraint</dt><dd>공모전 일정상 긴 재기획에 쓸 시간이 없음</dd>
-            <dt>solution</dt><dd>하루 만에 <b>그레이박스 프로토타입</b>을 만들어 코어 루프를 실제 플레이로 검증</dd>
-            <dt>verify</dt><dd>플레이테스트 결과로 방향 재정립, 팀 합의 하에 개발 재개 — 말이 아니라 <b>플레이로 설득</b></dd>
+            <dt>problem</dt><dd>플레이어가 <b>우회로를 지어도 아무도 쓰지 않았다.</b> 500대가 전부 같은 최단 경로로 몰려 그 길만 터지고 옆 도로는 텅 빔</dd>
+            <dt>diagnose</dt><dd>알고리즘은 제 할 일을 정확히 했다 — 최단 경로를 500번 물으면 500번 같은 답이 나온다. <b>틀린 건 알고리즘이 아니라 질문이었다.</b> 필요한 건 “한 대를 어디로”가 아니라 <b>“수백 대를 어떻게 나눠 태울까”</b></dd>
+            <dt>solution</dt><dd>수요를 한 대씩 순서대로 배정하며 <b>지나갈 길에 혼잡을 미리 적립</b>하고, 다음 차는 그 혼잡을 비용으로 본다 — <span class="str">step = 1 + w × (부하 / 수용량)</span></dd>
+            <dt>verify</dt><dd><b>“우회하라”는 코드는 한 줄도 없다.</b> 앞차가 최단 경로를 채우면 뒷차는 저 곱셈 한 번에서 저절로 갈린다 <span class="cm">(교통공학의 점증 통행배정과 같은 구조)</span></dd>
           </dl>
         </div>
-        <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">시뮬엔진</span><span class="tag">방치형</span><span class="tag">팀리드</span></div>
+        <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">경로탐색</span><span class="tag">시뮬엔진</span><span class="tag">방치형</span><span class="tag">팀리드</span><span class="tag">코드리뷰</span></div>
       </div>
     </article>
 
@@ -255,7 +258,7 @@
       <div class="mtop">
         <span class="fname">gaming-blog.md</span>
         <h4>개발자의 눈으로 보는 게임</h4>
-        <span class="stx done">운영 중 · 38편</span>
+        <span class="stx done">운영 중 · 69편</span>
       </div>
       <p>화제작을 개발자 렌즈로 분석하는 게임 블로그. 시스템·BM·장르 문법을 뜯어보며 <b>"왜 재미있는가"를 언어화</b>하는 훈련 — 게임을 이해하는 개발자의 증거이자, 만들 게임의 시장 감각을 기르는 루틴.</p>
       <div class="row2">
@@ -284,11 +287,11 @@
       <pre>{
   <span class="k">"engine"</span>       : <span class="v">"Unity URP (3D)"</span>,
   <span class="k">"language"</span>     : <span class="v">"C#"</span>,
-  <span class="k">"client_domain"</span>: <span class="v">"Gameplay · UI/HUD · Inventory · 타격감 · Tools"</span>,
+  <span class="k">"client_domain"</span>: <span class="v">"Gameplay · UI/HUD · Inventory · 타격감 · 시뮬레이션 엔진(경로 탐색·배분) · Tools"</span>,
   <span class="k">"design"</span>       : <span class="v">"ScriptableObject · SOLID(SRP/OCP/DIP) · 이벤트 구독"</span>,
-  <span class="k">"collab"</span>       : <span class="v">"Git · Plastic SCM · 복사본 작업 · dev-log 문서화"</span>,
-  <span class="k">"edge"</span>         : <span class="v">"게임 분석 블로그 38편 · 시장 데이터로 기획 검증 · 게임 × LLM"</span>,
-  <span class="k">"education"</span>    : <span class="v">"방송통신대 컴공(2027.02) · 개발 부트캠프(2026.08)"</span>
+  <span class="k">"collab"</span>       : <span class="v">"Git(브랜치·PR 리뷰·머지) · Plastic SCM · dev-log 문서화"</span>,
+  <span class="k">"edge"</span>         : <span class="v">"LLM 응답 품질 평가(Scale AI · 리뷰어 선발) · 게임 분석 블로그 69편 · 게임 × LLM"</span>,
+  <span class="k">"education"</span>    : <span class="v">"방송통신대 컴공(2027.02 졸업 예정) · 개발 부트캠프(2026.08.16 수료)"</span>
 }</pre>
     </div>
   </section>
@@ -297,12 +300,13 @@
     <div class="chead"><b>//</b> 여러 길을 돌아, 게임으로</div>
     <div class="glog">
       <div class="grow head"><span class="hash">지금 →</span><span class="node">●</span><span class="msg"><b>게임 개발</b> <span>— 아이디어를 진짜로 만들어 내놓는 일</span></span></div>
-      <div class="grow"><span class="hash">이전</span><span class="node">│</span><span class="msg"><b>가게 운영</b> <span>— 시작한 일은 끝까지 완성한다</span></span></div>
-      <div class="grow"><span class="hash">사업</span><span class="node">│</span><span class="msg"><b>구매대행</b> <span>— 아이디어를 실제 수익으로 (성공도, 실패도)</span></span></div>
+      <div class="grow"><span class="hash">3년 9개월</span><span class="node">│</span><span class="msg"><b>타코야끼 매장 운영</b> <span>— 메뉴 2종을 나란히 팔아 주문량으로 비교한 뒤 1종으로. 대조군을 두고 판정하는 법</span></span></div>
+      <div class="grow"><span class="hash">2년</span><span class="node">│</span><span class="msg"><b>구매대행</b> <span>— 반복되는 문의를 유형으로 구조화. 불만을 재현 가능한 사실로 바꾸는 일</span></span></div>
       <div class="grow"><span class="hash">2년</span><span class="node">│</span><span class="msg"><b>호주 워킹홀리데이</b> <span>— 영어와 글로벌 감각</span></span></div>
-      <div class="grow"><span class="hash">시작</span><span class="node">│</span><span class="msg"><b>여기어때 마케팅</b> <span>— 작은 팀이 빠르게 움직이는 법</span></span></div>
+      <div class="grow"><span class="hash">11개월</span><span class="node">│</span><span class="msg"><b>구독제 서비스 창업 시도</b> <span>— 1차 시장 검증에서 종료. 검증 안 한 전제 하나가 뒤의 판단을 전부 틀어지게 한다</span></span></div>
+      <div class="grow"><span class="hash">1년 9개월</span><span class="node">│</span><span class="msg"><b>여기어때 호텔영업</b> <span>— 초기 멤버로 제휴 영업. 거부하는 상대를 근거로 설득하는 법</span></span></div>
     </div>
-    <p class="thesis2">업종은 바뀌어도 하는 일은 같았습니다 — <b>검증하고, 실행하고, 끝까지 완성하는 것.</b> 이제 그 일을 게임에서 합니다.</p>
+    <p class="thesis2">2015년 첫 입사부터 2026년 3월까지 <b>비어 있는 기간은 없습니다.</b> 업종은 바뀌어도 하는 일은 같았습니다 — <b>가정하고, 실행하고, 기대와 실제를 대조하는 것.</b> 이제 그 일을 게임에서 합니다.</p>
   </section>
 
   <footer class="foot">
