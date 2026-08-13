@@ -8,14 +8,20 @@
 <meta property="og:title" content="김강환 — 게임 QA">
 <meta property="og:description" content="결함 리포트·테스트 설계·게임성 분석 — 감이 아니라 재현과 근거로">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
-<style>html,body{margin:0;background:#0A0C10}</style>
+<style>html,body{margin:0;background:#0A0C10}
+  /* 모션 민감 대응 — 움직임만 제거하고 색·경계 피드백은 유지한다 */
+  @media (prefers-reduced-motion:reduce){
+    .kh *{transition-property:color,background-color,border-color,box-shadow,opacity!important;transition-duration:.12s!important}
+    .file:hover,.stat:hover,.kh a.vbtn:hover,.grow:hover{transform:none!important}
+  }
+</style>
 </head>
 <body>
 <style>
   .kh{
     --bg:#0A0C10; --bg2:#0F131A; --panel:#12161E; --panel2:#161B24;
     --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
-    --tx:#D5DAE1; --mut:#828B98; --faint:#565C66;
+    --tx:#D5DAE1; --mut:#9AA3B0; --faint:#7E8694;
     --cyan:#71C7DB; --amber:#E6AB55; --green:#9CCB7C; --red:#E06C75; --violet:#C79BE6;
     --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,"D2Coding",monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI",sans-serif;
@@ -58,7 +64,7 @@
   .stat span{color:var(--mut);font-size:12px;letter-spacing:.01em}
 
   .sec{margin-top:60px}
-  .chead{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:13px;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:26px;letter-spacing:.01em}
+  .chead{display:flex;font-weight:400;margin:0 0 26px;align-items:center;gap:10px;color:var(--mut);font-size:15.5px;padding-bottom:18px;border-bottom:1px solid var(--line);letter-spacing:.01em}
   .chead b{color:var(--green);font-weight:400}
   .chead .cm{margin-left:auto}
   .lead{font-family:var(--sans);color:var(--mut);font-size:14.5px;line-height:1.7;margin:-8px 0 22px;max-width:70ch}
@@ -72,7 +78,7 @@
   .fbar .fdots{display:flex;gap:6px}
   .fbar .fdots i{width:9px;height:9px;border-radius:50%;display:block;background:rgba(255,255,255,.1)}
   .fbar .fname{color:var(--mut);font-size:12.5px;letter-spacing:.02em}
-  .fbar .stx{margin-left:auto;font-size:11px;padding:4px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.04em}
+  .fbar .stx{margin-left:auto;font-size:12px;padding:4px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.04em}
   .fbar .stx::before{content:"";width:6px;height:6px;border-radius:50%}
   .stx.dev{color:var(--amber);background:rgba(230,171,85,.12)} .stx.dev::before{background:var(--amber)}
   .stx.done{color:var(--green);background:rgba(156,203,124,.12)} .stx.done::before{background:var(--green)}
@@ -92,25 +98,25 @@
   .fbody li b{color:var(--tx);font-weight:500}
 
   .case{margin:20px 0 0;border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.28);overflow:hidden}
-  .case .cbar{padding:10px 16px;color:var(--green);font-size:11.5px;border-bottom:1px solid var(--line);background:rgba(156,203,124,.05);letter-spacing:.02em}
+  .case .cbar{padding:10px 16px;color:var(--green);font-size:12px;border-bottom:1px solid var(--line);background:rgba(156,203,124,.05);letter-spacing:.02em}
   .case dl{margin:0;padding:15px 16px;display:grid;grid-template-columns:84px 1fr;gap:10px 16px}
   .case dt{color:var(--violet);font-size:12px;letter-spacing:.02em}
   .case dd{margin:0;font-family:var(--sans);color:var(--mut);font-size:13.5px;line-height:1.6}
   .case dd b{color:var(--tx);font-weight:500}
 
-  .grade{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px;font-size:11.5px}
+  .grade{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px;font-size:12px}
   .gr{border:1px solid var(--line);border-radius:7px;padding:4px 10px;color:var(--mut);background:rgba(255,255,255,.02)}
   .gr b{color:var(--tx);font-weight:600}
   .gr.down{border-color:rgba(224,108,117,.28);color:var(--red)}
   .gr.down b{color:var(--red)}
 
   .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-  .tag{font-size:11.5px;color:var(--mut);border:1px solid var(--line);border-radius:7px;padding:4px 10px;background:rgba(255,255,255,.02);transition:border-color .2s,color .2s}
+  .tag{font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:7px;padding:4px 10px;background:rgba(255,255,255,.02);transition:border-color .2s,color .2s}
   .tag:hover{border-color:var(--line2);color:var(--tx)}
   .tag::before{content:"#";color:var(--faint)}
-  .vbtn{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-size:13px;color:#10130f;background:var(--amber);padding:9px 15px;border-radius:7px;font-weight:600;transition:transform .15s,box-shadow .2s}
-  .vbtn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(229,164,75,.22);text-decoration:none}
-  .vbtn .yt{font-size:11px;opacity:.72}
+  .kh a.vbtn{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-size:13px;color:#10130f;background:var(--amber);padding:9px 15px;border-radius:7px;font-weight:600;transition:transform .15s,box-shadow .2s}
+  .kh a.vbtn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(229,164,75,.22);text-decoration:none}
+  .kh a.vbtn .yt{font-size:12px;opacity:.72}
   .plink{display:inline-block;margin-top:16px;font-size:12.5px}
 
   /* table */
@@ -186,7 +192,7 @@
   </header>
 
   <section class="sec">
-    <div class="chead"><b>//</b> reports/ <span class="cm">— 결함 리포트 · 붉은사막(Crimson Desert)</span></div>
+    <h2 class="chead"><b>//</b> reports/ <span class="cm">— 결함 리포트 · 붉은사막(Crimson Desert)</span></h2>
     <p class="lead">PS5 · 빌드 1.16.03 · 기본 난이도 · 기본 컨트롤 프리셋. <b>외부 분석</b>이라 기획서·기능명세서를 볼 수 없으므로,
       명세 이슈는 게임 내 공개 사양과 장르 표준을 기준으로 <b>정책 확정이 필요해 보이는 지점을 질문 형태로</b> 정리했습니다.
       코드 원인 추정은 전부 <b>검증되지 않은 가설</b>로 표시했습니다.</p>
@@ -296,7 +302,7 @@
   </section>
 
   <section class="sec">
-    <div class="chead"><b>//</b> test-design/ <span class="cm">— 우연히 마주친 것에서, 계획적으로 찾는 것으로</span></div>
+    <h2 class="chead"><b>//</b> test-design/ <span class="cm">— 우연히 마주친 것에서, 계획적으로 찾는 것으로</span></h2>
     <p class="lead">여기까지는 <b>우연히 마주친 것</b>을 기록했습니다. 이 전환이 "게임 잘하는 사람"과 QA의 차이라고 생각합니다 —
       겪은 결함에서 <b>아직 안 겪은 결함이 있을 자리</b>를 찾습니다.</p>
 
@@ -347,7 +353,7 @@
   </section>
 
   <section class="sec">
-    <div class="chead"><b>//</b> analysis/ <span class="cm">— 게임 분석서 · 관찰이 수렴한 4개 패턴</span></div>
+    <h2 class="chead"><b>//</b> analysis/ <span class="cm">— 게임 분석서 · 관찰이 수렴한 4개 패턴</span></h2>
     <p class="lead">개별 마찰들은 흩어진 불만이 아니라 <b>네 갈래로 수렴</b>했습니다. 결함 리포트가 "이것을 고쳐 달라"라면,
       이 분석은 <b>"왜 같은 종류의 문제가 계속 나오는가"</b>입니다.</p>
     <div class="tw">
@@ -370,7 +376,7 @@
   </section>
 
   <section class="sec">
-    <div class="chead"><b>//</b> skills.json</div>
+    <h2 class="chead"><b>//</b> skills.json</h2>
     <div class="json">
       <div class="fbar2">skills.json</div>
       <pre>{
@@ -389,7 +395,7 @@
   </section>
 
   <section class="sec">
-    <div class="chead"><b>//</b> play-history <span class="cm">— 오래 좋아한 취미를, 이제 직무의 눈으로도</span></div>
+    <h2 class="chead"><b>//</b> play-history <span class="cm">— 오래 좋아한 취미를, 이제 직무의 눈으로도</span></h2>
     <div class="tw">
       <table class="t">
         <thead><tr><th>축</th><th>내용</th><th>QA에서 쓰이는 지점</th></tr></thead>
@@ -407,7 +413,7 @@
   </section>
 
   <section class="sec">
-    <div class="chead"><b>//</b> 여러 길을 돌아, 게임으로</div>
+    <h2 class="chead"><b>//</b> 여러 길을 돌아, 게임으로</h2>
     <div class="glog">
       <div class="grow head"><span class="hash">지금 →</span><span class="node">●</span><span class="msg"><b>게임 QA</b> <span>— 기대와 실제를 대조하는 일</span></span></div>
       <div class="grow"><span class="hash">약 1년</span><span class="node">│</span><span class="msg"><b>Scale AI · LLM 응답 품질 평가</b> <span>— A/B를 정확성 기준으로 비교하고 근거를 서술. <b>평가자 → 리뷰어로 선발</b>돼 다른 평가자의 판정을 검토</span></span></div>

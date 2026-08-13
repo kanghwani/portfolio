@@ -8,14 +8,20 @@
 <meta property="og:title" content="김강환 — Unity Client Developer">
 <meta property="og:description" content="게임을 이해하고, 끝까지 완성하는 Unity 클라이언트 개발자">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
-<style>html,body{margin:0;background:#0A0C10}</style>
+<style>html,body{margin:0;background:#0A0C10}
+  /* 모션 민감 대응 — 움직임만 제거하고 색·경계 피드백은 유지한다 */
+  @media (prefers-reduced-motion:reduce){
+    .kh *{transition-property:color,background-color,border-color,box-shadow,opacity!important;transition-duration:.12s!important}
+    .file:hover,.stat:hover,.kh a.vbtn:hover,.grow:hover{transform:none!important}
+  }
+</style>
 </head>
 <body>
 <style>
   .kh{
     --bg:#0A0C10; --bg2:#0F131A; --panel:#12161E; --panel2:#161B24;
     --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
-    --tx:#D5DAE1; --mut:#828B98; --faint:#565C66;
+    --tx:#D5DAE1; --mut:#9AA3B0; --faint:#7E8694;
     --cyan:#71C7DB; --amber:#E6AB55; --green:#9CCB7C; --red:#E06C75; --violet:#C79BE6;
     --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,"D2Coding",monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI",sans-serif;
@@ -70,7 +76,7 @@
   .mini .mtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .mini .fname{color:var(--mut);font-size:12px}
   .mini h4{margin:0;font-size:16px;font-weight:600;color:var(--tx)}
-  .mini .stx.done{font-size:10.5px;padding:2px 8px;border-radius:11px;color:var(--green);background:rgba(152,195,121,.1);display:inline-flex;align-items:center;gap:5px}
+  .mini .stx.done{font-size:12px;padding:2px 8px;border-radius:11px;color:var(--green);background:rgba(152,195,121,.1);display:inline-flex;align-items:center;gap:5px}
   .mini .stx.done::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--green)}
   .mini p{font-family:var(--sans);margin:9px 0 0;color:var(--mut);font-size:13.5px;line-height:1.6}
   .mini p b{color:var(--tx);font-weight:500}
@@ -85,7 +91,7 @@
 
   /* section */
   .sec{margin-top:60px}
-  .chead{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:13px;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:26px;letter-spacing:.01em}
+  .chead{display:flex;font-weight:400;margin:0 0 26px;align-items:center;gap:10px;color:var(--mut);font-size:15.5px;padding-bottom:18px;border-bottom:1px solid var(--line);letter-spacing:.01em}
   .chead b{color:var(--green);font-weight:400}
   .chead .cm{margin-left:auto}
 
@@ -98,7 +104,7 @@
   .fbar .fdots{display:flex;gap:6px}
   .fbar .fdots i{width:9px;height:9px;border-radius:50%;display:block;background:rgba(255,255,255,.1)}
   .fbar .fname{color:var(--mut);font-size:12.5px;letter-spacing:.02em}
-  .fbar .stx{margin-left:auto;font-size:11px;padding:4px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.04em}
+  .fbar .stx{margin-left:auto;font-size:12px;padding:4px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.04em}
   .fbar .stx::before{content:"";width:6px;height:6px;border-radius:50%}
   .stx.dev{color:var(--amber);background:rgba(230,171,85,.12)} .stx.dev::before{background:var(--amber);box-shadow:0 0 7px var(--amber)}
   .stx.done{color:var(--green);background:rgba(156,203,124,.12)} .stx.done::before{background:var(--green)}
@@ -118,19 +124,19 @@
 
   /* case block = code comment */
   .case{margin:20px 0 0;border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.28);overflow:hidden}
-  .case .cbar{padding:10px 16px;color:var(--green);font-size:11.5px;border-bottom:1px solid var(--line);background:rgba(156,203,124,.05);letter-spacing:.02em}
+  .case .cbar{padding:10px 16px;color:var(--green);font-size:12px;border-bottom:1px solid var(--line);background:rgba(156,203,124,.05);letter-spacing:.02em}
   .case dl{margin:0;padding:15px 16px;display:grid;grid-template-columns:72px 1fr;gap:10px 16px}
   .case dt{color:var(--violet);font-size:12px;letter-spacing:.02em}
   .case dd{margin:0;font-family:var(--sans);color:var(--mut);font-size:13.5px;line-height:1.6}
   .case dd b{color:var(--tx);font-weight:500}
 
   .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-  .tag{font-size:11.5px;color:var(--mut);border:1px solid var(--line);border-radius:7px;padding:4px 10px;background:rgba(255,255,255,.02);transition:border-color .2s,color .2s}
+  .tag{font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:7px;padding:4px 10px;background:rgba(255,255,255,.02);transition:border-color .2s,color .2s}
   .tag:hover{border-color:var(--line2);color:var(--tx)}
   .tag::before{content:"#";color:var(--faint)}
-  .vbtn{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-size:13px;color:#10130f;background:var(--amber);padding:9px 15px;border-radius:7px;font-weight:600;transition:transform .15s,box-shadow .2s}
-  .vbtn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(229,164,75,.22);text-decoration:none}
-  .vbtn .yt{font-size:11px;opacity:.72}
+  .kh a.vbtn{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-size:13px;color:#10130f;background:var(--amber);padding:9px 15px;border-radius:7px;font-weight:600;transition:transform .15s,box-shadow .2s}
+  .kh a.vbtn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(229,164,75,.22);text-decoration:none}
+  .kh a.vbtn .yt{font-size:12px;opacity:.72}
   .plink{display:inline-block;margin-top:16px;font-size:12.5px}
 
   /* skills = json */
@@ -168,7 +174,6 @@
     .case dl{grid-template-columns:56px 1fr}
     .term-top .lk{gap:11px}
   }
-  @media (prefers-reduced-motion:reduce){.cur{animation:none}}
 </style>
 
 <div class="kh">
@@ -199,7 +204,7 @@
   </header>
 
   <section class="sec">
-    <div class="chead"><b>//</b> projects/ <span class="cm">— 게임 프로젝트</span></div>
+    <h2 class="chead"><b>//</b> projects/ <span class="cm">— 게임 프로젝트</span></h2>
 
     <article class="file feat">
       <div class="fbar"><span class="fdots"><i></i><i></i><i></i></span><span class="fname">cityflow.unity</span><span class="stx dev">개발 중</span></div>
@@ -281,7 +286,7 @@
   </section>
 
   <section class="sec">
-    <div class="chead"><b>//</b> skills.json</div>
+    <h2 class="chead"><b>//</b> skills.json</h2>
     <div class="json">
       <div class="fbar2">skills.json</div>
       <pre>{
@@ -297,7 +302,7 @@
   </section>
 
   <section class="sec">
-    <div class="chead"><b>//</b> 여러 길을 돌아, 게임으로</div>
+    <h2 class="chead"><b>//</b> 여러 길을 돌아, 게임으로</h2>
     <div class="glog">
       <div class="grow head"><span class="hash">지금 →</span><span class="node">●</span><span class="msg"><b>게임 개발</b> <span>— 아이디어를 진짜로 만들어 내놓는 일</span></span></div>
       <div class="grow"><span class="hash">3년 9개월</span><span class="node">│</span><span class="msg"><b>타코야끼 매장 운영</b> <span>— 메뉴 2종을 나란히 팔아 주문량으로 비교한 뒤 1종으로. 대조군을 두고 판정하는 법</span></span></div>
