@@ -3,327 +3,330 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>김강환 — Unity Client Developer</title>
-<meta name="description" content="김강환 · Unity 클라이언트 개발자 포트폴리오 — 완성하는 개발자">
-<meta property="og:title" content="김강환 — Unity Client Developer">
-<meta property="og:description" content="게임을 이해하고, 끝까지 완성하는 Unity 클라이언트 개발자">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
-<style>html,body{margin:0;background:#0A0C10}
-  /* 모션 민감 대응 — 움직임만 제거하고 색·경계 피드백은 유지한다 */
-  @media (prefers-reduced-motion:reduce){
-    .kh *{transition-property:color,background-color,border-color,box-shadow,opacity!important;transition-duration:.12s!important}
-    .file:hover,.stat:hover,.kh a.vbtn:hover,.grow:hover{transform:none!important}
+<title>김강환 - Unity 클라이언트 개발자</title>
+<meta name="description" content="김강환. Unity 클라이언트 개발자. 방치형 도시 시뮬레이션 IDLE CITY의 기획과 교통 시뮬레이션 코어를 맡았습니다.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="김강환 - Unity 클라이언트 개발자">
+<meta property="og:description" content="방치형 도시 시뮬레이션 IDLE CITY의 기획과 교통 시뮬레이션 코어를 맡았습니다.">
+<meta property="og:image" content="https://kanghwani.github.io/portfolio/assets/idle-city.jpg">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231F5B3E'/><text x='16' y='23' font-size='19' font-family='sans-serif' font-weight='700' fill='%23F4F4F0' text-anchor='middle'>K</text></svg>">
+<style>
+/* ── 토큰 ──────────────────────────────────────────────
+   에디토리얼. 종이 바탕 + 먹색 + 딥그린 액센트 하나.
+   라운드는 두 단계만: 큰 면(이미지) 4px / 작은 것(태그) 3px.
+   에디토리얼이라 라운드를 거의 안 준다. 모서리가 종이처럼 서 있어야 함. */
+:root{
+  --paper:#F4F4F0; --paper-2:#EBEBE5;
+  --rule:#D8D8D0; --rule-soft:#E4E4DC;
+  --ink:#16191A; --body:#43474A; --muted:#767B7C;
+  --accent:#1F5B3E;
+  --r-lg:4px; --r-sm:3px;
+  --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono","JetBrains Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#151614; --paper-2:#1D1F1C;
+    --rule:#33362F; --rule-soft:#26291F;
+    --ink:#EFEFE9; --body:#B4B7B0; --muted:#83877F;
+    --accent:#6FC79A;
   }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--body);
+  font-family:var(--sans); font-size:17px; line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none; text-underline-offset:3px; text-decoration-thickness:1px}
+a:hover{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+h1,h2,h3,h4{color:var(--ink); margin:0; letter-spacing:-.02em}
+p{margin:0 0 1.05em}
+p:last-child{margin-bottom:0}
+strong{color:var(--ink); font-weight:600}
+code{font-family:var(--mono); font-size:.86em; color:var(--ink);
+  border-bottom:1px solid var(--accent); padding-bottom:1px}
+
+/* 지면. 사진은 지면 전체 폭, 글은 안쪽 단으로 들여쓴다. */
+.frame{max-width:940px; margin:0 auto; padding:0 32px 120px}
+
+/* ── 마스트헤드 ── */
+.masthead{
+  display:flex; align-items:baseline; gap:20px; flex-wrap:wrap;
+  padding:64px 0 20px; border-bottom:1.5px solid var(--ink);
+}
+.masthead h1{font-size:23px; font-weight:700}
+.masthead .role{margin:0; color:var(--muted); font-size:15px}
+.masthead nav{margin-left:auto; display:flex; gap:20px; font-size:15px}
+
+.lede{
+  margin:44px 0 0; margin-left:150px; max-width:600px;
+  font-size:20px; line-height:1.75; color:var(--ink); font-weight:450;
+}
+
+/* ── 섹션 ── */
+.sec{margin-top:104px}
+.sec > h2{
+  font-size:15px; font-weight:600; color:var(--muted);
+  padding-bottom:12px; border-bottom:1px solid var(--rule); margin-bottom:52px;
+}
+
+/* ── 프로젝트: 사진 = 지면 폭, 글 = 오른쪽 단 ── */
+.project{display:grid; grid-template-columns:150px minmax(0,1fr); margin-bottom:110px}
+.project:last-child{margin-bottom:0}
+.project > *{grid-column:2}
+.project figure{grid-column:1 / -1; margin:0 0 34px}
+.project img{
+  display:block; width:100%; height:auto;
+  border-radius:var(--r-lg); border:1px solid var(--rule-soft);
+}
+.project h3{grid-column:1 / -1; font-size:44px; line-height:1.08; font-weight:700}
+.project .meta{grid-column:1 / -1; margin:12px 0 40px; color:var(--muted); font-size:15px}
+.project .body{max-width:600px}
+.project h4{
+  font-size:17px; font-weight:650; margin:44px 0 16px;
+  padding-top:14px; border-top:1px solid var(--rule);
+}
+.project h4:first-child{margin-top:0}
+.project ul{margin:0; padding:0; list-style:none}
+.project li{position:relative; padding-left:19px; margin-bottom:15px}
+.project li:last-child{margin-bottom:0}
+.project li::before{
+  content:""; position:absolute; left:0; top:.78em;
+  width:7px; height:1px; background:var(--muted);
+}
+
+/* 사례는 상자로 가두지 않는다. 여백과 얇은 규칙선으로 묶는다. */
+.story{font-size:17.5px; line-height:1.85}
+.story p{margin-bottom:1.15em}
+
+.stack{display:flex; flex-wrap:wrap; gap:8px; margin-top:44px}
+.stack span{
+  font-size:13px; font-family:var(--mono); color:var(--muted);
+  border:1px solid var(--rule); border-radius:var(--r-sm); padding:3px 10px;
+}
+.plinks{margin-top:22px; font-size:16px}
+
+/* ── 그 외 ── */
+.aside-item{display:grid; grid-template-columns:150px minmax(0,1fr)}
+.aside-item h3{grid-column:1 / -1; font-size:26px; font-weight:650}
+.aside-item .body{grid-column:2; margin-top:14px; max-width:600px}
+
+/* ── 기술 ── */
+.rows{display:grid; grid-template-columns:150px minmax(0,1fr); gap:16px 0; margin:0; max-width:750px}
+.rows dt{color:var(--muted); font-size:15px}
+.rows dd{margin:0}
+.rows dd b{color:var(--ink); font-weight:600}
+
+/* ── 푸터 ── */
+footer{margin-top:104px; padding-top:26px; border-top:1.5px solid var(--ink)}
+footer .flinks{display:flex; flex-wrap:wrap; gap:26px; font-size:16px}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .frame{padding:0 20px 80px}
+  .masthead{padding-top:44px}
+  .masthead nav{margin-left:0; width:100%; gap:18px}
+  .lede{margin-left:0; margin-top:34px; font-size:18px}
+  .sec{margin-top:68px}
+  .sec > h2{margin-bottom:36px}
+  .project,.aside-item,.rows{grid-template-columns:1fr}
+  .project > *,.project figure,.project h3,.project .meta,
+  .aside-item h3,.aside-item .body{grid-column:1}
+  .project h3{font-size:32px}
+  .project{margin-bottom:76px}
+  .rows{gap:2px 0}
+  .rows dd{margin-bottom:16px}
+  footer{margin-top:68px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important; animation:none!important}
+}
 </style>
 </head>
 <body>
-<style>
-  .kh{
-    --bg:#0A0C10; --bg2:#0F131A; --panel:#12161E; --panel2:#161B24;
-    --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
-    --tx:#D5DAE1; --mut:#9AA3B0; --faint:#7E8694;
-    --cyan:#71C7DB; --amber:#E6AB55; --green:#9CCB7C; --red:#E06C75;
-    --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,"D2Coding",monospace;
-    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI",sans-serif;
-    color:var(--tx); font-family:var(--mono);
-    line-height:1.6; -webkit-font-smoothing:antialiased;
-    margin:0 auto; max-width:880px; padding:0 22px 96px; font-size:15px;
-    background:
-      radial-gradient(80% 46% at 78% -4%, rgba(113,199,219,.09), transparent 62%),
-      radial-gradient(70% 42% at 10% 2%, rgba(230,171,85,.07), transparent 60%),
-      var(--bg);
-  }
-  .kh *{box-sizing:border-box}
-  .kh a{color:var(--cyan);text-decoration:none}
-  .kh a:hover{text-decoration:underline}
-  .kh a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
-  .kh em{font-style:normal;color:var(--amber)}
-  .cm{color:var(--faint)}                 /* comment */
-  .kw{color:var(--faint)}                 /* keyword */
-  .str{color:var(--amber)}                 /* string */
-  .fn{color:var(--cyan)}                   /* function */
-  .sans{font-family:var(--sans)}
+<div class="frame">
 
-  /* window chrome */
-  .term-top{display:flex;align-items:center;gap:14px;padding:13px 4px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
-  .dots{display:flex;gap:7px}
-  .dots i{width:11px;height:11px;border-radius:50%;display:block}
-  .dots .r{background:#E06C75}.dots .y{background:#E5A44B}.dots .g{background:#98C379}
-  .term-top .ttl{color:var(--mut);font-size:12px}
-  .term-top .lk{margin-left:auto;display:flex;gap:16px;font-size:12px}
+<header class="masthead">
+  <h1>김강환</h1>
+  <p class="role">Unity 클라이언트 개발자</p>
+  <nav>
+    <a href="https://github.com/kanghwani">GitHub</a>
+    <a href="https://blog.naver.com/zzangh91">블로그</a>
+    <a href="mailto:zzangh91@naver.com">메일</a>
+  </nav>
+</header>
 
-  /* prompt lines */
-  .pr{color:var(--faint)} .pth{color:var(--cyan)} .pct{color:var(--mut)}
-  .line{margin:0;color:var(--tx);white-space:pre-wrap}
-  .line .cmd{color:var(--tx)}
-  .out{margin:5px 0 0;color:var(--mut)}
-  .out.arrow{padding-left:16px;position:relative}
-  .out.arrow::before{content:"↳";position:absolute;left:0;color:var(--faint)}
+<p class="lede">
+  전혀 다른 일을 하다가 게임 개발로 왔습니다.
+  가게를 운영하면서 방송통신대 컴퓨터공학과에 들어갔고, 1년 뒤 3년 9개월 하던 가게를 정리하고
+  부트캠프에 들어갔습니다. 지금은 게임만 만듭니다.
+</p>
 
-  /* hero */
-  .hero{padding:58px 0 22px}
-  .hero .eyebrow{display:flex;align-items:center;gap:9px;color:var(--mut);font-size:12px;margin-bottom:24px}
-  .hero .thesis{font-size:clamp(30px,5.2vw,50px);line-height:1.12;color:var(--tx);margin:0;letter-spacing:-.02em;font-weight:640;text-wrap:balance;max-width:16ch}
-  .hero .sub{font-family:var(--sans);font-size:19px;color:var(--mut);max-width:60ch;margin:22px 0 0;line-height:1.7}
-  .hero .sub b{color:var(--tx);font-weight:500}
-  .hrule{height:1px;background:linear-gradient(90deg,var(--cyan),var(--amber) 55%,transparent);margin:30px 0 0;opacity:.55;max-width:340px}
+<section class="sec">
+  <h2>프로젝트</h2>
 
-  /* mini side card (non-game) */
-  .side-h{color:var(--faint);font-size:12px;margin:26px 0 12px}
-  .mini{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);padding:17px 19px;transition:border-color .2s}
-  .mini:hover{border-color:var(--line2)}
-  .mini .mtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .mini .fname{color:var(--mut);font-size:12px}
-  .mini h4{margin:0;font-size:15px;font-weight:600;color:var(--tx)}
-  .mini .stx.done{font-size:12px;padding:2px 8px;border-radius:12px;color:var(--green);background:rgba(152,195,121,.1);display:inline-flex;align-items:center;gap:5px}
-  .mini .stx.done::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--green)}
-  .mini p{font-family:var(--sans);margin:9px 0 0;color:var(--mut);font-size:13px;line-height:1.6}
-  .mini p b{color:var(--tx);font-weight:500}
-  .mini .row2{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:11px}
-  .mini .mtags{display:flex;gap:6px;flex-wrap:wrap}
+  <article class="project">
+    <figure>
+      <img src="assets/idle-city.jpg"
+           alt="IDLE CITY 플레이 화면. 주택가와 사무실 건물 사이 교차로에 신호등이 서 있고, 주차칸마다 통근 차량이 늘어서 있다."
+           width="1600" height="800" loading="lazy"
+           onerror="this.closest('figure').remove()">
+    </figure>
+    <h3>IDLE CITY</h3>
+    <p class="meta">방치형 도시건설 시뮬레이션 · 2026년 7~8월, 5인 팀</p>
+    <div class="body">
+      <p>
+        기획 공모전에 낸 제 기획이 선정돼서 팀 프로젝트가 됐습니다.
+        게임의 인게임 기획을 설계하고 결정했고, 구현에서는 코어인 교통 시뮬레이션을 맡았습니다.
+        팀 커밋 1,008건 중 577건을 썼습니다.
+      </p>
 
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:26px 0 0}
-  .stat{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent);padding:15px 17px;display:flex;flex-direction:column;gap:3px;transition:border-color .2s,transform .2s}
-  .stat:hover{border-color:var(--line2);transform:translateY(-2px)}
-  .stat b{color:var(--amber);font-size:27px;font-weight:640;font-variant-numeric:tabular-nums;line-height:1.05;letter-spacing:-.01em}
-  .stat span{color:var(--mut);font-size:12px;letter-spacing:.01em}
+      <h4>기획</h4>
+      <ul>
+        <li>도시의 하루를 무엇으로 채울지. 출퇴근만 있던 도로에 점심과 저녁 외출, 특수건물 방문을 얹어
+          하루 종일 교통이 흐르게 했습니다</li>
+        <li>회사를 사무실, 물류창고, 공장 세 종류로 나누고 정원과 출퇴근 시각을 다르게 뒀습니다.
+          일부러 겹치게 배치해서 러시아워를 만들었고, 20시 출근 05시 퇴근처럼 자정을 넘는 교대도 처리합니다</li>
+        <li>교통 도구가 각각 무엇을 사가는 것인지. 신호등은 무신호 교차로의 통과량 상한을 풀고,
+          버스 정류장은 통근차 자체를 줄입니다</li>
+      </ul>
 
-  /* section */
-  .sec{margin-top:60px}
-  .chead{display:flex;font-weight:400;margin:0 0 26px;align-items:center;gap:10px;color:var(--mut);font-size:20px;padding-bottom:18px;border-bottom:1px solid var(--line);letter-spacing:.01em}
-  .chead b{color:var(--faint);font-weight:400}
-  .chead .cm{margin-left:auto}
+      <h4>코어 구현</h4>
+      <ul>
+        <li><strong>길찾기(HILT 라우팅)</strong> · 차량 수백 대를 서로 다른 경로로 흩어놓는 배분 알고리즘</li>
+        <li><strong>차량 주행</strong> · 개별 속도 시뮬레이션과 트럭 차급, 교차로 점유와 연속 대기열,
+          굳어버린 차를 되살리는 워치독</li>
+        <li><strong>시뮬레이션과 화면의 권한 분리</strong> · 위치와 점유의 진실을 시뮬레이션 한쪽으로 모으고
+          화면은 보간만 하게 바꿨습니다. 둘 다 판단하던 동안 차가 겹치고 교차로가 굳었습니다</li>
+        <li><strong>정체 가시화</strong> · 정체 누적 히트맵과 도구 설치 전후 비교</li>
+      </ul>
 
-  /* project = file panel */
-  .file{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px;background:var(--panel);transition:transform .22s cubic-bezier(.2,.7,.3,1),border-color .22s,box-shadow .22s}
-  .file:hover{transform:translateY(-3px);border-color:var(--line2)}
-  .file.feat{border-color:rgba(113,199,219,.22);background:linear-gradient(158deg,#16202a,#11151c 70%)}
-  .file.feat:hover{border-color:rgba(113,199,219,.4)}
-  .fbar{display:flex;align-items:center;gap:10px;padding:12px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--line)}
-  .fbar .fdots{display:flex;gap:6px}
-  .fbar .fdots i{width:9px;height:9px;border-radius:50%;display:block;background:rgba(255,255,255,.1)}
-  .fbar .fname{color:var(--mut);font-size:12px;letter-spacing:.02em}
-  .fbar .stx{margin-left:auto;font-size:12px;padding:4px 11px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.04em}
-  .fbar .stx::before{content:"";width:6px;height:6px;border-radius:50%}
-  .stx.dev{color:var(--amber);background:rgba(230,171,85,.12)} .stx.dev::before{background:var(--amber)}
-  .stx.done{color:var(--green);background:rgba(156,203,124,.12)} .stx.done::before{background:var(--green)}
-  .fbody{padding:24px 24px 26px}
-  .fbody h3{margin:0;font-size:22px;font-weight:640;letter-spacing:-.015em;color:#EDF0F4}
-  .file.feat .fbody h3{font-size:27px}
-  .fbody h3 .gn{color:var(--faint);font-size:13px;font-weight:400;letter-spacing:0}
-  .fbody .meta{color:var(--mut);font-size:12px;margin-top:8px;letter-spacing:.01em}
-  .fbody .role{font-family:var(--sans);margin:15px 0 0;color:var(--tx);font-size:15px;line-height:1.65}
-  .fbody .desc{font-family:var(--sans);margin:12px 0 0;color:var(--mut);font-size:15px;line-height:1.65;max-width:66ch}
-  .fbody .cmlabel{color:var(--faint);font-size:12px;margin:18px 0 8px}
-  .fbody ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
-  .fbody li{font-family:var(--sans);position:relative;padding-left:20px;color:var(--mut);font-size:15px;line-height:1.6}
-  .fbody li::before{content:"+";position:absolute;left:2px;color:var(--faint);font-family:var(--mono)}
-  .file.feat li::before{content:"›";color:var(--cyan)}
-  .fbody li b{color:var(--tx);font-weight:500}
+      <h4>길찾기를 다시 짠 이유</h4>
+      <div class="story">
+        <p>
+          우회로를 지어도 차가 안 갔습니다. 500대가 전부 같은 길로 몰려서 그 길만 막히고
+          옆 도로는 비어 있었습니다.
+        </p>
+        <p>
+          최단 경로를 500번 물으면 500번 같은 답이 나오니까 당연한 결과였습니다.
+          필요한 건 한 대를 어디로 보낼지가 아니라 수백 대를 어떻게 나눌지였습니다.
+        </p>
+        <p>
+          그래서 차를 한 대씩 순서대로 배정하면서, 그 차가 지나갈 도로에 혼잡도를 미리 더해뒀습니다.
+          다음 차는 그 혼잡을 비용으로 봅니다. <code>step = 1 + w × (부하 / 수용량)</code>
+        </p>
+        <p>
+          우회하라는 조건문은 따로 없습니다. 앞차가 최단 경로를 채우면 뒷차는 이 곱셈에서 갈립니다.
+          다 만들고 나서 찾아보니 교통공학의 점증 통행배정과 같은 구조였습니다.
+        </p>
+      </div>
 
-  /* case block = code comment */
-  .case{margin:20px 0 0;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.28);overflow:hidden}
-  .case .cbar{padding:10px 16px;color:var(--faint);font-size:12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02);letter-spacing:.02em}
-  .case dl{margin:0;padding:15px 16px;display:grid;grid-template-columns:72px 1fr;gap:10px 16px}
-  .case dt{color:var(--faint);font-size:12px;letter-spacing:.02em}
-  .case dd{margin:0;font-family:var(--sans);color:var(--mut);font-size:13px;line-height:1.6}
-  .case dd b{color:var(--tx);font-weight:500}
+      <h4>플레이테스트 뒤에 만든 지표</h4>
+      <div class="story">
+        <p>
+          2차 빌드 플레이테스트에서 내가 뭘 하고 있는지 모르겠다는 말이 나왔습니다.
+          도구는 여러 개인데, 도구를 놓았을 때 무엇이 좋아졌는지 화면에 없었습니다.
+        </p>
+        <p>
+          그래서 모든 교통 도구가 함께 올리는 지표 하나를 만들었습니다. 한 번도 멈추지 않고 통과한
+          교차로의 수입니다. 신호등이든 버스 정류장이든 도로 확장이든, 무엇을 놓아도 이 숫자가 움직입니다.
+          단계가 오르면 차가 초록으로 빛나고 통근 보상이 빨라집니다.
+        </p>
+        <p>
+          판정은 시뮬레이션 쪽에서만 합니다. 화면이 같이 판단하면 진실이 두 개가 되는데,
+          그건 이 프로젝트에서 이미 한 번 버그의 원인이었습니다. 새 에셋은 쓰지 않았습니다.
+        </p>
+      </div>
 
-  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-  .tag{font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:4px 10px;background:rgba(255,255,255,.02);transition:border-color .2s,color .2s}
-  .tag:hover{border-color:var(--line2);color:var(--tx)}
-  .tag::before{content:"#";color:var(--faint)}
-  .kh a.vbtn{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-size:13px;color:#10130f;background:var(--amber);padding:9px 15px;border-radius:6px;font-weight:600;transition:transform .15s,box-shadow .2s}
-  .kh a.vbtn:hover{transform:translateY(-1px);text-decoration:none}
-  .kh a.vbtn .yt{font-size:12px;opacity:.72}
-  .plink{display:inline-block;margin-top:16px;font-size:12px}
+      <div class="stack">
+        <span>Unity</span><span>C#</span><span>기획</span><span>경로 탐색</span><span>시뮬레이션</span><span>성능 최적화</span>
+      </div>
+    </div>
+  </article>
 
-  /* skills = json */
-  .json{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
-  .json .fbar2{padding:12px 18px;border-bottom:1px solid var(--line);color:var(--mut);font-size:12px;background:rgba(255,255,255,.02)}
-  .json pre{margin:0;padding:20px 20px;font-size:13px;line-height:2;color:var(--tx);white-space:pre;overflow-x:auto}
-  .json .k{color:var(--cyan)} .json .v{color:var(--amber)} .json .p{color:var(--faint)}
+  <article class="project">
+    <figure>
+      <img src="assets/molten-arena.jpg"
+           alt="Molten Arena 플레이 화면. 용암 지형에서 플레이어가 망치를 들고 해골 적들과 싸우고 있다."
+           width="1600" height="800" loading="lazy"
+           onerror="this.closest('figure').remove()">
+    </figure>
+    <h3>Molten Arena</h3>
+    <p class="meta">3인칭 웨이브 생존 · 2026년 6월, 2인 팀</p>
+    <div class="body">
+      <p>
+        부트캠프 1차 팀 프로젝트로 만든 3인칭 웨이브 생존 게임입니다.
+        클라이언트 구현을 맡아 한 달 안에 완주해서 발표했습니다.
+      </p>
 
-  /* journey = git log */
-  .glog{display:grid;gap:1px;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--panel)}
-  .grow{display:grid;grid-template-columns:88px 22px 1fr;gap:14px;align-items:baseline;padding:11px 14px;border-radius:6px;transition:background .16s}
-  .grow:hover{background:rgba(255,255,255,.03)}
-  .grow .hash{color:var(--amber);font-size:12px;letter-spacing:.02em}
-  .grow .node{color:var(--faint);text-align:center;font-size:13px}
-  .grow.head .node{color:var(--green)}
-  .grow .msg{font-family:var(--sans);font-size:15px}
-  .grow .msg b{font-weight:600}
-  .grow .msg span{color:var(--mut);font-size:13px}
-  .grow.head .msg b{color:var(--green)}
-  .grow .tagref{color:var(--cyan);font-size:12px}
-  .thesis2{font-family:var(--sans);margin-top:22px;font-size:15px;color:var(--tx);line-height:1.7;border-left:2px solid var(--amber);padding-left:16px;text-wrap:balance}
-  .thesis2 b{color:var(--amber);font-weight:600}
+      <h4>맡은 부분</h4>
+      <ul>
+        <li>무기와 아이템 데이터를 ScriptableObject로 빼고 런타임 상태를 분리해서,
+          새 무기를 추가할 때 기존 코드를 고치지 않아도 되게 만들었습니다</li>
+        <li>히트스톱과 VFX 풀링으로 타격감, 이벤트 구독 방식 인벤토리와 통합 핫바, 로그라이트 레벨업</li>
+        <li>한 판 클리어 시간을 3분에서 6분으로 늘려 난이도를 다시 잡았습니다</li>
+      </ul>
 
-  /* footer */
-  .foot{margin-top:56px;border-top:1px solid var(--line);padding-top:30px}
-  .foot .p{color:var(--tx);margin-bottom:14px}
-  .foot .p .pr{color:var(--faint)}
-  .foot .links{display:grid;gap:8px;font-size:13px}
-  .foot .links a{display:inline-flex;gap:10px;align-items:center;width:fit-content}
-  .foot .links a::before{content:"→";color:var(--faint)}
-  .foot .end{color:var(--faint);font-size:12px;margin-top:20px}
+      <h4>가장 오래 붙잡은 문제</h4>
+      <div class="story">
+        <p>
+          일시정지를 걸어도 카메라가 계속 돌고 마우스 커서가 안 풀렸습니다.
+          회전 로직이 동료가 쓴 코드 안에 있어서, 직접 고치면 나중에 합칠 때 충돌이 날 것 같았습니다.
+        </p>
+        <p>
+          그래서 <code>timeScale</code>이 0이 되면 회전을 멈추고 커서를 푸는 컴포넌트를 따로 붙였습니다.
+          동료 코드는 건드리지 않았고, 일시정지와 레벨업, 결과 화면 세 경로에서 전부 확인했습니다.
+        </p>
+      </div>
 
-  @media (max-width:560px){
-    .grow{grid-template-columns:78px 18px 1fr;gap:9px}
-    .case dl{grid-template-columns:56px 1fr}
-    .term-top .lk{gap:11px}
-  }
-</style>
+      <div class="stack">
+        <span>Unity URP</span><span>C#</span><span>ScriptableObject</span><span>NavMesh</span><span>Cinemachine</span>
+      </div>
+      <div class="plinks"><a href="https://youtu.be/rlZltzKGEIY">플레이 영상 보기</a></div>
+    </div>
+  </article>
+</section>
 
-<div class="kh">
-  <div class="term-top">
-    <span class="dots"><i class="r"></i><i class="y"></i><i class="g"></i></span>
-    <span class="ttl">kanghwan — portfolio — zsh</span>
-    <span class="lk">
-      <a href="https://github.com/kanghwani">github</a>
-      <a href="https://blog.naver.com/zzangh91">blog</a>
-      <a href="mailto:zzangh91@naver.com">mail</a>
-    </span>
+<section class="sec">
+  <h2>그 외</h2>
+  <div class="aside-item">
+    <h3>게임 분석 블로그</h3>
+    <div class="body">
+      <p>
+        화제작을 개발자 관점에서 뜯어보는 글을 주 2~3회 씁니다.
+        시스템 구조와 BM, 장르 문법을 다루고 지금까지 69편 썼습니다.
+      </p>
+      <div class="plinks"><a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91</a></div>
+    </div>
   </div>
+</section>
 
-  <header class="hero">
-    <div class="eyebrow">김강환 · Unity 클라이언트 개발자 · 주니어</div>
-    <h1 class="thesis">화려한 것보다,<br><em>완성된 것</em>을 만듭니다.</h1>
-    <p class="sub">Unity로 전투·인벤토리·타격감·<b>시뮬레이션 엔진</b>을 구현하는 주니어 클라이언트 개발자.
-      교과서 알고리즘이 게임에 맞지 않을 때 <b>게임에 맞는 알고리즘을 직접 설계</b>하고,
-      <a href="https://blog.naver.com/zzangh91">게임 분석 69편</a>을 쓰며 "왜 재미있는가"를 언어로 뜯어보고,
-      시작한 프로젝트는 <b>끝까지 완성해 내놓습니다</b>.</p>
-    <div class="hrule"></div>
-    <div class="stats">
-      <div class="stat"><b>2</b><span>완성·발표한 게임</span></div>
-      <div class="stat"><b>577</b><span>팀 프로젝트 커밋 (1,008 중)</span></div>
-      <div class="stat"><b>69</b><span>게임 블로그 발행</span></div>
-      <div class="stat"><b>2</b><span>직접 만든 LLM 시스템</span></div>
-    </div>
-  </header>
+<section class="sec">
+  <h2>기술</h2>
+  <dl class="rows">
+    <dt>엔진</dt>      <dd>Unity 6 (URP, 3D)</dd>
+    <dt>언어</dt>      <dd>C#, Python</dd>
+    <dt>클라이언트</dt> <dd>게임플레이, UI와 HUD, 인벤토리, 타격감, 경로 탐색과 배분, 에디터 툴</dd>
+    <dt>설계</dt>      <dd>ScriptableObject, 이벤트 구독, SOLID</dd>
+    <dt>협업</dt>      <dd>Git (브랜치, PR 리뷰, 머지), Plastic SCM, 개발 로그 문서화</dd>
+    <dt>학력</dt>      <dd>한국방송통신대학교 컴퓨터공학과 <b>2027.03 졸업 예정</b><br>
+                          오즈코딩스쿨 게임 개발 부트캠프 (2026.03 - 2026.08)</dd>
+  </dl>
+</section>
 
-  <section class="sec">
-    <h2 class="chead"><b>//</b> projects/ <span class="cm">— 게임 프로젝트</span></h2>
+<footer>
+  <div class="flinks">
+    <a href="mailto:zzangh91@naver.com">zzangh91@naver.com</a>
+    <a href="https://github.com/kanghwani">github.com/kanghwani</a>
+    <a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91</a>
+  </div>
+</footer>
 
-    <article class="file feat">
-      <div class="fbar"><span class="fdots"><i></i><i></i><i></i></span><span class="fname">idle-city.unity</span><span class="stx done">완성 · 발표</span></div>
-      <div class="fbody">
-        <h3>IDLE CITY <span class="gn">방치형 도시건설 시뮬레이션</span></h3>
-        <div class="meta"><b>기획 공모전 선정작</b> · 5인 팀 · 2026.07 ~ 08 · <b>최초 기획 + 교통 시뮬레이션 코어</b></div>
-        <p class="role"><b>제가 기획한 게임입니다.</b> 최초 기획부터 인게임 콘텐츠 전반을 설계했고, 구현에서는 도시가 스스로 움직이는 부분 —
-          <b>길찾기 · 회사와 사람 · 도로 도구 · 주행 연출</b> — 을 맡았습니다. 팀 커밋 1,008건 중 <b>577건</b>.</p>
-        <div class="cmlabel">// 내가 만든 것</div>
-        <ul>
-          <li><b>HILT 라우팅</b> — 게임 규칙에 맞는 경로 <b>배분</b> 알고리즘을 직접 설계 (아래 사례)</li>
-          <li><b>출퇴근 시간표</b> — 회사 3종(사무실·물류창고·공장)의 정원과 출퇴근 시간을 다르게 두고 <b>일부러 겹치게</b> 배치해 러시아워를 만듦. 자정을 넘는 교대(20시 출근 → 05시 퇴근) 판정 포함</li>
-          <li><b>머지 담당</b> — 데모 D-2에 오픈 PR 6건 전량 처리(반려 3회 후 머지) → <b>오픈 PR 0건</b>. 파일이 겹치지 않아 GitHub가 <span class="cm">CLEAN</span>으로 표시했지만 <b>옛 상태로 구운 프리팹</b>이 이름을 되돌리던 회귀를 잡아 재베이크 요구 — 초록불이 안전을 뜻하지는 않는다</li>
-          <li><b>기획자가 곧 팀장은 아니다</b> — 기획은 제가 했지만 팀 운영은 팀장이 맡았고, 의사결정은 <b>다수결 + 플레이테스트 데이터</b>로 정하는 규칙을 합의했습니다. 코어 재미가 흔들렸을 땐 말로 방어하지 않고 하루 만에 <b>그레이박스 프로토타입</b>으로 확인해 방향을 다시 잡았습니다</li>
-        </ul>
-        <div class="case">
-          <div class="cbar">/* 문제 → 해결 · 대표 사례 — HILT 라우팅 */</div>
-          <dl>
-            <dt>problem</dt><dd>플레이어가 <b>우회로를 지어도 아무도 쓰지 않았다.</b> 500대가 전부 같은 최단 경로로 몰려 그 길만 터지고 옆 도로는 텅 빔</dd>
-            <dt>diagnose</dt><dd>알고리즘은 제 할 일을 정확히 했다 — 최단 경로를 500번 물으면 500번 같은 답이 나온다. <b>틀린 건 알고리즘이 아니라 질문이었다.</b> 필요한 건 “한 대를 어디로”가 아니라 <b>“수백 대를 어떻게 나눠 태울까”</b></dd>
-            <dt>solution</dt><dd>수요를 한 대씩 순서대로 배정하며 <b>지나갈 길에 혼잡을 미리 적립</b>하고, 다음 차는 그 혼잡을 비용으로 본다 — <span class="str">step = 1 + w × (부하 / 수용량)</span></dd>
-            <dt>verify</dt><dd><b>“우회하라”는 코드는 한 줄도 없다.</b> 앞차가 최단 경로를 채우면 뒷차는 저 곱셈 한 번에서 저절로 갈린다 <span class="cm">(교통공학의 점증 통행배정과 같은 구조)</span></dd>
-          </dl>
-        </div>
-        <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">경로탐색</span><span class="tag">시뮬엔진</span><span class="tag">방치형</span><span class="tag">성능최적화</span><span class="tag">기획</span><span class="tag">코드리뷰</span></div>
-      </div>
-    </article>
-
-    <article class="file">
-      <div class="fbar"><span class="fdots"><i></i><i></i><i></i></span><span class="fname">molten-arena.unity</span><span class="stx done">완성 · 발표</span></div>
-      <div class="fbody">
-        <h3>Molten Arena <span class="gn">3인칭 웨이브 생존 · 로그라이트</span></h3>
-        <div class="meta">부트캠프 1차 팀 프로젝트 · 2인 · 1개월 · 클라이언트 구현</div>
-        <p class="desc">Unity URP 기반 TPS를 데이터 설계부터 타격감까지 폭넓게 구현하고, 부트캠프 1개월 팀플을 <b>완주·발표</b>했습니다.</p>
-        <div class="cmlabel">// 내가 만든 것</div>
-        <ul>
-          <li>ScriptableObject로 무기·아이템 데이터층 설계 + 런타임 상태 분리 → 새 무기 추가 시 <b>코드 0줄로 확장</b>(OCP)</li>
-          <li>타격감 시스템(히트스톱·VfxPool 풀링) · 이벤트 구독 인벤토리 · 통합 핫바 · 로그라이트 레벨업</li>
-          <li>난이도 밸런싱 — 1판 클리어 <b>~3분 → ~6분</b>으로 조정해 압박감 강화</li>
-        </ul>
-        <div class="case">
-          <div class="cbar">/* 문제 → 해결 · 대표 사례 */</div>
-          <dl>
-            <dt>problem</dt><dd>일시정지(timeScale=0)에도 카메라가 계속 회전하고 커서가 안 풀림</dd>
-            <dt>constraint</dt><dd>회전 로직이 <b>동료 코드</b>에 있어 직접 수정 시 통합 충돌 위험</dd>
-            <dt>solution</dt><dd><b>CameraPauseGate</b>를 별도 추가 — timeScale==0 감지해 회전 정지·커서 해제. 동료 코드 무수정</dd>
-            <dt>verify</dt><dd>일시정지·레벨업·결과화면 전부 카메라 고정·커서 해제 확인, <b>콘솔 에러 0</b></dd>
-          </dl>
-        </div>
-        <div class="tags"><span class="tag">Unity URP</span><span class="tag">ScriptableObject</span><span class="tag">NavMesh</span><span class="tag">Cinemachine</span><span class="tag">Plastic SCM</span></div>
-        <div><a class="vbtn" href="https://youtu.be/rlZltzKGEIY">▶ 플레이 영상 보기 <span class="yt">youtu.be/rlZltzKGEIY</span></a></div>
-      </div>
-    </article>
-
-    <div class="side-h"><span class="cm">//</span> 그 외 — 게임을 이해하는 훈련</div>
-    <div class="mini">
-      <div class="mtop">
-        <span class="fname">gaming-blog.md</span>
-        <h4>개발자의 눈으로 보는 게임</h4>
-        <span class="stx done">운영 중 · 69편</span>
-      </div>
-      <p>화제작을 개발자 렌즈로 분석하는 게임 블로그. 시스템·BM·장르 문법을 뜯어보며 <b>"왜 재미있는가"를 언어화</b>하는 훈련 — 게임을 이해하는 개발자의 증거이자, 만들 게임의 시장 감각을 기르는 루틴.</p>
-      <div class="row2">
-        <div class="mtags"><span class="tag">게임분석</span><span class="tag">장르문법</span><span class="tag">주2~3회</span></div>
-        <a class="plink" style="margin:0" href="https://blog.naver.com/zzangh91">↗ blog.naver.com/zzangh91</a>
-      </div>
-    </div>
-    <div class="mini" style="margin-top:12px">
-      <div class="mtop">
-        <span class="fname">llm-systems.py</span>
-        <h4>LLM Systems</h4>
-        <span class="stx done">운영 중</span>
-      </div>
-      <p>LLM을 파이프라인으로 엮어 반복을 자동화한 사이드 프로젝트 — AI 세컨드 브레인(위키 컴파일러) + 위 블로그의 발행 파이프라인 자동화. 게임 도메인에 AI 활용을 얹는 실험.</p>
-      <div class="row2">
-        <div class="mtags"><span class="tag">Python</span><span class="tag">파이프라인</span><span class="tag">게임×LLM</span></div>
-        <a class="plink" style="margin:0" href="https://github.com/kanghwani/llm-systems">↗ github.com/kanghwani/llm-systems</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec">
-    <h2 class="chead"><b>//</b> skills.json</h2>
-    <div class="json">
-      <div class="fbar2">skills.json</div>
-      <pre>{
-  <span class="k">"engine"</span>       : <span class="v">"Unity URP (3D)"</span>,
-  <span class="k">"language"</span>     : <span class="v">"C#"</span>,
-  <span class="k">"client_domain"</span>: <span class="v">"Gameplay · UI/HUD · Inventory · 타격감 · 시뮬레이션 엔진(경로 탐색·배분) · Tools"</span>,
-  <span class="k">"design"</span>       : <span class="v">"ScriptableObject · SOLID(SRP/OCP/DIP) · 이벤트 구독"</span>,
-  <span class="k">"collab"</span>       : <span class="v">"Git(브랜치·PR 리뷰·머지) · Plastic SCM · dev-log 문서화"</span>,
-  <span class="k">"edge"</span>         : <span class="v">"LLM 응답 품질 평가(Scale AI · 리뷰어 선발) · 게임 분석 블로그 69편 · 게임 × LLM"</span>,
-  <span class="k">"education"</span>    : <span class="v">"방송통신대 컴공(2027.02 졸업 예정) · 개발 부트캠프(2026.08.16 수료)"</span>
-}</pre>
-    </div>
-  </section>
-
-  <section class="sec">
-    <h2 class="chead"><b>//</b> 여러 길을 돌아, 게임으로</h2>
-    <div class="glog">
-      <div class="grow head"><span class="hash">지금 →</span><span class="node">●</span><span class="msg"><b>게임 개발</b> <span>— 아이디어를 진짜로 만들어 내놓는 일</span></span></div>
-      <div class="grow"><span class="hash">3년 9개월</span><span class="node">│</span><span class="msg"><b>타코야끼 매장 운영</b> <span>— 메뉴 2종을 나란히 팔아 주문량으로 비교한 뒤 1종으로. 대조군을 두고 판정하는 법</span></span></div>
-      <div class="grow"><span class="hash">2년</span><span class="node">│</span><span class="msg"><b>구매대행</b> <span>— 반복되는 문의를 유형으로 구조화. 불만을 재현 가능한 사실로 바꾸는 일</span></span></div>
-      <div class="grow"><span class="hash">2년</span><span class="node">│</span><span class="msg"><b>호주 워킹홀리데이</b> <span>— 영어와 글로벌 감각</span></span></div>
-      <div class="grow"><span class="hash">11개월</span><span class="node">│</span><span class="msg"><b>구독제 서비스 창업 시도</b> <span>— 1차 시장 검증에서 종료. 검증 안 한 전제 하나가 뒤의 판단을 전부 틀어지게 한다</span></span></div>
-      <div class="grow"><span class="hash">1년 9개월</span><span class="node">│</span><span class="msg"><b>여기어때 호텔영업</b> <span>— 초기 멤버로 제휴 영업. 거부하는 상대를 근거로 설득하는 법</span></span></div>
-    </div>
-    <p class="thesis2">2015년 첫 입사부터 2026년 3월까지 <b>비어 있는 기간은 없습니다.</b> 업종은 바뀌어도 하는 일은 같았습니다 — <b>가정하고, 실행하고, 기대와 실제를 대조하는 것.</b> 이제 그 일을 게임에서 합니다.</p>
-  </section>
-
-  <footer class="foot">
-    <p class="p" style="font-size:20px;font-weight:600;color:var(--tx);font-family:var(--sans)">함께 만들 준비가 되어 있습니다.</p>
-    <div class="links">
-      <a href="mailto:zzangh91@naver.com">zzangh91@naver.com</a>
-      <a href="https://github.com/kanghwani">github.com/kanghwani</a>
-      <a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91 — 개발자의 눈으로 보는 게임</a>
-      <a href="https://youtu.be/rlZltzKGEIY">플레이 영상 (Molten Arena)</a>
-    </div>
-  </footer>
 </div>
-
 </body>
 </html>
