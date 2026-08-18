@@ -73,6 +73,10 @@
   .chead .cm{margin-left:auto;font-size:13px}
   .lead{font-family:var(--sans);color:var(--mut);font-size:15px;line-height:1.7;margin:0 0 22px;max-width:72ch}
   .lead b{color:var(--tx);font-weight:500}
+/* 도판. 파일이 없으면 figure 자체가 제거된다(onerror). */
+.shot{margin:0 0 22px}
+.shot img{display:block;width:100%;height:auto;border:1px solid var(--line2);border-radius:10px}
+.shot figcaption{margin-top:9px;color:var(--faint);font-size:12.5px;line-height:1.6;font-family:var(--sans)}
 
   .card{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:22px 24px;margin-bottom:16px}
   .card.feat{border-color:rgba(113,199,219,.22);background:linear-gradient(158deg,#16202a,#11151c 70%)}
@@ -256,6 +260,12 @@
       <b>새 기술을 배울 이유는 생기되, 그것이 정답이 되지는 않는 것.</b>
       이 게임의 재미가 「선택지 증가」에서 오므로, <b>선택지가 정답으로 바뀌면 가르치려던 재미를 스스로 부숩니다.</b>
       그 사이의 창을 수치로 잡았습니다.</p>
+    <figure class="shot">
+      <img src="../assets/design-unlock-encounter.gif"
+           alt="기술 해금 직후 전투 상황. 해금한 기술이 유효한 적 1체가 배치되어 있고, 전투 중 시네마틱 전환으로 기술 사용 순간이 이어진다."
+           loading="lazy" onerror="this.closest('figure').remove()">
+      <figcaption>개입 지점 — 이미 게임에 있는 「기술 해금 이벤트 + 전투 중 시네마틱」. 신규 시스템·UI·애셋 0.</figcaption>
+    </figure>
     <div class="card">
       <div class="sim">
         <div class="ctl">

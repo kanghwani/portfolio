@@ -96,6 +96,11 @@
   .file.feat li::before{content:"›";color:var(--cyan)}
   .fbody li b{color:var(--tx);font-weight:500}
 
+  /* 재현 도판. 결함 리포트에서 재현 영상은 본문이지 장식이 아니다.
+     파일이 없으면 figure 자체가 제거된다(onerror). */
+  .shot{margin:20px 0 0}
+  .shot img{display:block;width:100%;height:auto;border:1px solid var(--line2);border-radius:10px}
+  .shot figcaption{margin-top:9px;color:var(--faint);font-size:12.5px;line-height:1.6}
   .case{margin:20px 0 0;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.28);overflow:hidden}
   .case .cbar{padding:10px 16px;color:var(--faint);font-size:12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02);letter-spacing:.02em}
   .case dl{margin:0;padding:15px 16px;display:grid;grid-template-columns:84px 1fr;gap:10px 16px}
@@ -202,6 +207,12 @@
         <h3>특정 지점에서 대형 오브젝트 운반 중 회피 시<br>카메라가 5초간 캐릭터에서 분리</h3>
         <div class="meta">운반 상태 전이 / 카메라 · 재현율 <b>5 / 5 (100%)</b></div>
         <p class="desc">제가 쓴 첫 리포트이자, <b>재검증으로 제가 매긴 등급을 스스로 내린</b> 리포트입니다. 발견을 부풀리면 개발팀의 우선순위 판단을 왜곡시킵니다.</p>
+        <figure class="shot">
+          <img src="../assets/qa-bug001-repro.gif"
+               alt="대형 오브젝트 운반 중 회피 입력 시 카메라가 캐릭터에서 분리되어 약 5초간 고정되었다가 페이드와 함께 복구된다."
+               loading="lazy" onerror="this.closest('figure').remove()">
+          <figcaption>BUG-001 재현 — 운반 중 회피 입력 → 카메라 분리 → 약 5초 뒤 자동 복구. 재현율 5/5.</figcaption>
+        </figure>
         <div class="case">
           <div class="cbar">/* 조건을 어떻게 좁혔나 — 축을 둘로 갈랐다 */</div>
           <dl>
