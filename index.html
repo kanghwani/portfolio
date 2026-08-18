@@ -333,6 +333,42 @@ footer .flinks{display:flex; flex-wrap:wrap; gap:26px; font-size:16px}
       <div class="plinks"><a href="https://youtu.be/rlZltzKGEIY">플레이 영상 보기</a></div>
     </div>
   </article>
+
+  <article class="project">
+    <figure>
+      <img src="assets/takoyaki.gif"
+           alt="타코야끼 판 24구에서 굽기 상태가 흰색에서 노란색으로 변하고, 뒤집기 타이밍에 맞춰 조작하는 화면."
+           loading="lazy" onerror="this.closest('figure').remove()">
+    </figure>
+    <h3>타코야끼 리듬 포장마차</h3>
+    <p class="meta">하이퍼캐주얼 웹게임 · 2026.08 · 개인 · OpenAI Game Builders Seoul 잼 제출작</p>
+    <div class="body">
+      <p>
+        브라우저에서 링크만 열면 실행되는 90초 세션 게임이다.
+        <strong>의존성 0 · 빌드 없음 · 이미지 파일 없음</strong>을 제약으로 두고 바닐라 JS와 Canvas 2D로만 구현했다.
+        도형·색과 WebAudio 합성음으로 화면과 소리를 전부 코드에서 만든다.
+      </p>
+
+      <h4>설계</h4>
+      <ul>
+        <li><strong>코어 긴장은 조작 난이도가 아니라 동시성</strong> · 타코야끼 24구가 각자 익음 타이머를 갖고
+          흰색 → 노랑(뒤집을 때) → 갈색(늦음) → 검정(탐)으로 진행한다. 여러 개가 동시에 뒤집을 때가 되면
+          손이 모자라는 순간이 게임의 재미다</li>
+        <li><strong>제약을 먼저 정하고 시작했다</strong> · 제출물이 zip 하나에 5MB 이하여야 하므로
+          외부 에셋을 쓰지 않기로 정했다. 도형은 코드 한 줄로 바뀌지만 이미지는 도구를 열어야 한다</li>
+        <li><strong>90초 세션</strong> · 주문 처리·콤보·그루브를 단일 점수로 수렴시켜 한 판이 끝나면
+          바로 다시 시작하게 했다</li>
+      </ul>
+
+      <div class="stack">
+        <span>JavaScript</span><span>Canvas 2D</span><span>WebAudio</span><span>의존성 0</span><span>하이퍼캐주얼</span>
+      </div>
+      <div class="plinks">
+        <a href="https://kanghwani.github.io/takoyaki/">지금 플레이하기</a> ·
+        <a href="https://github.com/kanghwani/takoyaki">소스 보기</a>
+      </div>
+    </div>
+  </article>
 </section>
 
 <section class="sec">
