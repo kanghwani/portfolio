@@ -1,0 +1,12 @@
+{
+  "name": "playdata-dump",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "psn": "node dump-psn.mjs",
+    "steam": "node dump-steam.mjs"
+  },
+  "dependencies": {
+    "psn-api": "^2"
+  }
+}
