@@ -1,0 +1,4 @@
+tools/playdata/.env
+tools/playdata/node_modules/
+.impeccable/review/
+.impeccable/questions/
