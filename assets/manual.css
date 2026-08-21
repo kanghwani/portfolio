@@ -1,0 +1,405 @@
+@font-face{
+  font-family:"NeoDunggeunmo";
+  src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/NeoDunggeunmo.woff") format("woff");
+  font-weight:normal; font-display:swap;
+}
+/* ═══════════════════════════════════════════════════════════════
+   박스 소프트웨어 매뉴얼 — 색지 디바이더 + 밀크 아세테이트 리프
+   · 각 장(章)은 원색 색판(board)이고, 읽기 면은 그 위에 1mm 떠 있는
+     아세테이트 리프다. 리프 알파는 런타임에 색판 명도에 맞춰 푼다.
+   · 아무것도 ease하지 않는다: 모든 변화는 90ms steps(2), 힌지는 펀치 모서리.
+   · 버밀리언은 정오표(errata) 전용.
+═══════════════════════════════════════════════════════════════ */
+:root{
+  --ink:#191714; --ink-soft:#3A362F; --milk:#F6F3EC;
+  --vermilion:#E4372E;
+  --c1:#CD6433; --c2:#F0C81C; --c3:#55A14C; --c4:#2B9286;
+  --c5:#4058B7; --c6:#7C55AE; --c7:#976A46;
+  --step:90ms steps(2,end);
+  --serif:"Gowun Batang","Apple SD Gothic Neo",serif;
+  --sans:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --disp:"Do Hyeon",var(--sans); /* 90년대 인쇄 고딕 결의 표제 전용 */
+  --mono:"NeoDunggeunmo",ui-monospace,"SF Mono","D2Coding",Menlo,monospace; /* 90년대 비트맵 기계음 */
+  --rail-w:66px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto; -webkit-text-size-adjust:100%; background:var(--c6)} /* 캔버스 여분은 마지막 색판이 잇는다 */
+body{
+  margin:0; color:var(--ink);
+  font-family:var(--serif); font-size:17px; line-height:27px;
+  -webkit-font-smoothing:antialiased; background:var(--c1);
+}
+::selection{background:var(--ink); color:var(--milk)}
+input{caret-color:var(--ink)}
+:focus-visible{outline:2.5px solid var(--ink); outline-offset:2px}
+html::-webkit-scrollbar{width:12px}
+html::-webkit-scrollbar-track{background:var(--ink)}
+html::-webkit-scrollbar-thumb{background:var(--milk); border:3px solid var(--ink)}
+a{color:inherit; text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:3px}
+h1,h2,h3,h4{margin:0; font-family:var(--sans); letter-spacing:-.01em}
+p{margin:0 0 1.1em} p:last-child{margin-bottom:0}
+strong{font-weight:600}
+code{font-family:var(--mono); font-size:.85em; background:rgba(25,23,20,.07); padding:1px 5px}
+
+/* ── 장(章) = 색판. 화면 전체가 그 장의 원색이다. ── */
+.board{position:relative; padding:72px 0 96px; padding-right:var(--rail-w)}
+/* 인쇄지 그레인 — 색판과 리프 위에 한 겹, 판 전체가 인쇄된 지류로 읽히게 */
+.board::after{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:3;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size:240px 240px; opacity:.3; mix-blend-mode:overlay;
+}
+.bed{position:relative; z-index:1}
+.board[data-head="light"]{--head-ink:var(--milk)}
+.board[data-head="dark"]{--head-ink:var(--ink)}
+.bed{max-width:1280px; margin:0 auto; padding:0 48px;
+  display:grid; grid-template-columns:210px minmax(0,1fr); gap:0 48px}
+
+/* 장 표제 — 리프 밖, 색판 위 여백 단에 직접 인쇄. 대형 장 번호 + 개요가 여백을 채운다 */
+.chap{grid-column:1; position:sticky; top:26px; align-self:start; color:var(--head-ink)}
+.chap .big{font-family:var(--disp); font-size:96px; line-height:.85; display:block; opacity:.26; margin:0 0 10px -4px}
+.chap .no{font-family:var(--mono); font-size:13px; letter-spacing:.14em; display:block; margin-bottom:8px}
+.chap .sum{font-family:var(--serif); font-size:13.5px; line-height:1.7; margin:14px 0 0; padding-top:12px; border-top:1px solid var(--head-ink); opacity:.92; max-width:170px}
+/* 장별 미니 목차 — 이 장의 소제목을 인쇄 목차처럼 */
+.chap .toc{margin:18px 0 0; padding:12px 0 0; border-top:1px solid var(--head-ink); max-width:176px; list-style:none}
+.chap .toc .tt{font-family:var(--mono); font-size:10.5px; letter-spacing:.2em; display:block; margin-bottom:9px; opacity:.8}
+.chap .toc a{display:block; font-family:var(--sans); font-size:12.5px; font-weight:600; line-height:1.5;
+  text-decoration:none; color:var(--head-ink); padding:4px 0; border-bottom:1px dotted var(--head-ink)}
+.chap .toc li:last-child a{border-bottom:0}
+.chap .toc a:hover{padding-left:5px; transition:padding var(--step)}
+/* 색판 인쇄 장치 — 좌상단 레지스트레이션 마크 */
+.board::before{
+  content:""; position:absolute; left:30px; top:30px; width:16px; height:16px; opacity:.5; z-index:1;
+  background:
+    linear-gradient(var(--head-ink),var(--head-ink)) center/1px 16px no-repeat,
+    linear-gradient(var(--head-ink),var(--head-ink)) center/16px 1px no-repeat,
+    radial-gradient(circle, transparent 4px, var(--head-ink) 4.5px 5.5px, transparent 6px);
+}
+.chap h2{font-family:var(--disp); font-size:23px; font-weight:400; line-height:1.3; color:var(--head-ink); letter-spacing:.01em}
+.chap .ext{font-family:var(--mono); font-size:12px; margin-top:10px; opacity:.85}
+
+/* ── 아세테이트 리프: 펀치홀 2개(제본변) + 절단변 짧은 경질 그림자 ── */
+.leaf{
+  grid-column:2; position:relative; min-width:0;
+  background:rgba(255,255,255,var(--leaf-a,.86));
+  padding:40px 46px 44px 58px;
+  box-shadow:6px 0 0 rgba(25,23,20,.28); /* 절단변(포어엣지) 단일 경질 그림자 */
+  margin-bottom:34px;
+}
+.leaf::before,.leaf::after{
+  content:""; position:absolute; left:16px; width:15px; height:15px;
+  border-radius:50%; background:var(--board-c); box-shadow:inset 1px 1px 1px rgba(25,23,20,.35);
+}
+.leaf::before{top:34px} .leaf::after{bottom:34px}
+.leaf > :first-child{margin-top:0}
+.leaf h3{font-family:var(--disp); font-size:38px; font-weight:400; line-height:1.15; margin:0 0 6px; letter-spacing:.01em}
+.leaf h4{font-family:var(--sans); font-size:16.5px; font-weight:700; margin:38px 0 14px;
+  padding-top:12px; border-top:1.5px solid var(--ink)}
+.leaf .meta{font-family:var(--mono); font-size:13px; color:var(--ink-soft); margin:0 0 26px}
+.leaf .measure{max-width:700px}
+.leaf ul{margin:0; padding:0; list-style:none; max-width:720px}
+.leaf li{position:relative; padding-left:22px; margin-bottom:13px}
+.leaf li::before{content:"▸"; position:absolute; left:0; top:0; font-family:var(--sans); font-size:14px}
+figure{margin:26px 0}
+figure img{display:block; width:100%; height:auto; border:1.5px solid var(--ink)}
+figcaption{font-family:var(--mono); font-size:12.5px; line-height:1.6; margin-top:8px; color:var(--ink-soft)}
+.specrow{display:flex; flex-wrap:wrap; gap:7px; margin-top:34px}
+.specrow span{font-family:var(--mono); font-size:12.5px; border:1.5px solid var(--ink); padding:3px 10px}
+.plinks{margin-top:20px; font-family:var(--sans); font-size:15.5px; font-weight:600}
+.plinks a{margin-right:18px}
+
+/* 정오표 — 버밀리언 전용 */
+.errata{
+  background:var(--vermilion); color:#FFF7F2; font-family:var(--mono);
+  font-size:12.5px; line-height:1.65; padding:10px 14px; margin-top:18px;
+  transform:rotate(-.5deg); max-width:620px; box-shadow:4px 0 0 rgba(25,23,20,.3);
+}
+
+/* ── 표지(제0장) ── */
+.cover .leaf{padding-top:48px}
+.cover-kind{font-family:var(--mono); font-size:13px; letter-spacing:.22em; margin:0 0 20px;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+.cover h1{font-family:var(--disp); font-size:clamp(42px,6vw,66px); font-weight:400; line-height:1.06; letter-spacing:.01em}
+.cover .role{font-family:var(--sans); font-size:19px; font-weight:600; margin:12px 0 30px}
+.cover .lede{font-size:18px; line-height:1.85; max-width:690px}
+.spec-box{border:2px solid var(--ink); margin-top:34px; max-width:690px}
+.spec-box table{width:100%; table-layout:fixed; border-collapse:collapse; font-family:var(--mono); font-size:13.5px}
+.spec-box td{padding:9px 14px; border-top:1px solid var(--ink); overflow-wrap:anywhere}
+.spec-box tr:first-child td{border-top:0}
+.spec-box td:first-child{width:44%; border-right:1px solid var(--ink); font-weight:400}
+.spec-box td:last-child{font-weight:700}
+.barrow{display:flex; align-items:flex-end; gap:14px; margin-top:34px; flex-wrap:wrap}
+.barcode{display:inline-block; width:150px; height:34px;
+  background:repeating-linear-gradient(90deg,
+    var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 9px,
+    var(--ink) 9px 12px, transparent 12px 14px, var(--ink) 14px 15px, transparent 15px 18px)}
+.serial{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; color:var(--ink-soft)}
+.enclosed{margin-top:30px; font-family:var(--sans); font-size:15.5px; font-weight:600}
+.enclosed span{font-family:var(--mono); font-size:12px; font-weight:400; letter-spacing:.14em; display:block; margin-bottom:8px}
+.enclosed a{margin-right:18px}
+
+/* ── 부록 A: 플레이 기록 카드 ── */
+.playhead{display:flex; align-items:baseline; gap:18px; flex-wrap:wrap; margin:30px 0 20px}
+.playhead input{
+  flex:1; min-width:180px; max-width:280px; font-family:var(--sans); font-size:15px;
+  background:transparent; border:1.5px solid var(--ink); padding:7px 12px; color:var(--ink);
+}
+.playhead input::placeholder{color:var(--ink-soft)}
+.playhead .cnt{font-family:var(--mono); font-size:13px}
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(196px,1fr)); gap:18px}
+.gcard{
+  background:rgba(255,255,255,.94); border:1.5px solid var(--ink);
+  transform-origin:left center; transition:transform var(--step), box-shadow var(--step);
+}
+.gcard:hover{transform:translate(-2px,-2px); box-shadow:5px 0 0 rgba(25,23,20,.3)}
+.gcard .art{aspect-ratio:16/9; background:var(--ink); overflow:hidden}
+.gcard .art img{width:100%; height:100%; object-fit:cover; display:block}
+.gcard .art .noart{width:100%; height:100%; display:grid; place-items:center;
+  color:var(--milk); font-family:var(--mono); font-size:11px; letter-spacing:.2em}
+/* 수기 기록 카드 — 커버아트 대신 매뉴얼식 기입란 */
+.gcard .art .manual-art{
+  width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:6px; background:var(--milk); box-shadow:inset 0 0 0 1.5px var(--ink), inset 0 0 0 5px var(--milk), inset 0 0 0 6.5px rgba(25,23,20,.35);
+}
+.gcard .art .manual-art .t{font-family:var(--disp); font-size:17px; color:var(--ink); padding:0 12px; text-align:center; line-height:1.2}
+.gcard .art .manual-art .s{font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--ink-soft)}
+.gcard .txt{padding:10px 12px 12px}
+.gcard .nm{font-family:var(--sans); font-size:14.5px; font-weight:700; line-height:1.35;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.7em}
+.gcard .row{display:flex; justify-content:space-between; align-items:baseline; margin-top:7px}
+.gcard .pf{font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-soft)}
+.gcard .dt{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-top:3px}
+.playmore{
+  margin-top:22px; font-family:var(--sans); font-size:15px; font-weight:700; cursor:pointer;
+  background:var(--milk); border:1.5px solid var(--ink); padding:9px 18px; color:var(--ink);
+  box-shadow:3px 0 0 rgba(25,23,20,.3); transition:transform var(--step), box-shadow var(--step);
+}
+.playmore:hover{transform:translate(-1px,-1px); box-shadow:4px 0 0 rgba(25,23,20,.3)}
+.playnote{font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--ink-soft); margin-top:24px; max-width:620px}
+.lineage{display:flex; flex-wrap:wrap; gap:7px; margin:16px 0 6px}
+.lineage span{font-family:var(--sans); font-size:13.5px; font-weight:600; border:1.5px solid var(--ink);
+  background:rgba(255,255,255,.55); padding:4px 12px}
+
+/* ── 부록 B: 기술 사양 ── */
+.rows{display:grid; grid-template-columns:130px minmax(0,1fr); gap:14px 22px; margin:0; max-width:680px}
+.rows dt{font-family:var(--mono); font-size:13px; padding-top:3px}
+.rows dd{margin:0; font-family:var(--sans); font-size:16px}
+.rows dd b{font-weight:700}
+
+/* ── 판권 ── */
+.colophon .leaf{padding-bottom:40px}
+.colo-links{display:flex; flex-wrap:wrap; gap:8px 26px; font-family:var(--sans); font-size:16.5px; font-weight:600; min-width:0}
+.colo-links a,.plinks a,.enclosed a{overflow-wrap:anywhere}
+.colo-fine{font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin-top:26px}
+
+/* ── 포어엣지 탭 레일: 책 단면(페이지 결) 위에 물성 있는 인덱스 탭 ── */
+.rail{position:fixed; top:0; right:0; bottom:0; width:var(--rail-w); z-index:50;
+  display:flex; flex-direction:column;
+  background:repeating-linear-gradient(to bottom, #191714 0 3px, #302C25 3px 4px); /* 책 단면 종이 결 */
+  border-left:2px solid var(--ink)}
+.rail a{
+  flex:var(--ext) 1 0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:7px; padding:10px 0; text-decoration:none; background:var(--tab-c); border-top:2px solid var(--ink);
+  margin-left:18px; position:relative; min-height:0; overflow:hidden;
+  border-radius:5px 0 0 5px;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.32), inset 0 -1.5px 0 rgba(25,23,20,.28),
+    inset 1.5px 0 0 rgba(255,255,255,.18); /* 지류 두께 */
+}
+.rail a:first-child{border-top:0}
+.rail a .num{font-family:var(--disp); font-size:15px; color:var(--tab-ink); line-height:1}
+.rail a .lb{
+  writing-mode:vertical-rl; font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+  color:var(--tab-ink); white-space:nowrap; overflow:hidden; max-height:100%;
+}
+.rail a.cur{margin-left:0; box-shadow:inset 0 1.5px 0 rgba(255,255,255,.32), inset 0 -1.5px 0 rgba(25,23,20,.28)}
+.rail a.cur::after{content:""; position:absolute; left:9px; top:50%; margin-top:-4.5px;
+  width:9px; height:9px; border-radius:50%; background:var(--ink);
+  box-shadow:inset 1px 1px 1px rgba(255,255,255,.25)} /* 현재 장 = 펀치홀 */
+
+.runfoot{position:absolute; left:0; right:var(--rail-w); bottom:22px; text-align:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em; color:var(--head-ink); opacity:.65}
+
+/* 복사 도장 */
+#stamp{position:fixed; left:50%; bottom:34px; transform:translateX(-50%) rotate(-1deg); z-index:99;
+  background:var(--ink); color:var(--milk); font-family:var(--mono); font-size:12.5px;
+  padding:8px 16px; box-shadow:3px 0 0 rgba(25,23,20,.4); display:none}
+#stamp.on{display:block}
+
+/* ── 반응형: 폭이 리프를 줄인다 (4단→2단→1단) ── */
+@media (min-width:1600px){
+  .bed{max-width:1460px}
+  body{font-size:18.5px; line-height:30px}
+  .leaf{padding:48px 56px 52px 66px}
+  .leaf .measure{max-width:780px}
+  .leaf ul{max-width:800px}
+  .cover .lede{max-width:760px; font-size:19.5px}
+  .spec-box{max-width:760px}
+  .cards{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+}
+@media (max-width:900px){
+  .bed{grid-template-columns:minmax(0,1fr); padding:0 22px}
+  .chap{position:static; margin-bottom:18px}
+  .board{padding:52px 0 64px; padding-right:34px}
+  .leaf{padding:30px 26px 34px 44px}
+  .leaf::before{top:26px} .leaf::after{bottom:26px}
+  .leaf h3{font-size:27px}
+  :root{--rail-w:34px}
+  .rail a{margin-left:9px}
+  .rail a .lb{font-size:9.5px; letter-spacing:.1em}
+  .cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px}
+  .playhead input{min-width:0; width:100%; max-width:none}
+  .rows{grid-template-columns:1fr; gap:2px}
+  .rows dd{margin-bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important; animation:none!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   부록 컴포넌트 — 하위 볼륨(기획서 · QA 보고서)이 쓰는 인쇄 부품
+   · 색은 늘리지 않는다: 잉크·밀크·색판뿐. 강조는 채움/괘선으로 낸다.
+   · 버밀리언은 여기서도 정오표(.errata)뿐 — 규칙 위반 경고가 곧 정오표다.
+═══════════════════════════════════════════════════════════════ */
+
+/* 도입 문단 — 장 첫머리 산문 */
+.lead{max-width:700px; margin:0 0 24px}
+.lead:last-child{margin-bottom:0}
+
+/* 근거 표시 — 관찰(채움) vs 가정(테두리). 색이 아니라 잉크량으로 가른다 */
+.src{font-family:var(--mono); font-size:11px; letter-spacing:.12em; padding:2px 7px;
+  border:1.5px solid var(--ink); white-space:nowrap; display:inline-block; vertical-align:1px}
+.src.obs{background:var(--ink); color:var(--milk)}
+.src.asm{background:transparent; color:var(--ink)}
+
+/* 주(註) — 리프 안의 접힌 쪽지 */
+.note{font-family:var(--serif); font-size:15px; line-height:1.75; margin-top:22px;
+  border:1.5px solid var(--ink); background:rgba(255,255,255,.5); padding:16px 18px; max-width:700px}
+.note::before{content:"주(註)"; font-family:var(--mono); font-size:11px; letter-spacing:.2em;
+  display:block; margin-bottom:8px}
+.keynote{font-family:var(--serif); font-size:15.5px; line-height:1.75; margin-top:18px;
+  border-top:1.5px solid var(--ink); padding-top:12px; max-width:700px}
+.keynote .cm{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft)}
+.cm{color:var(--ink-soft)}
+
+/* 표 — 매뉴얼 사양표와 같은 물성(2px 외곽 · 1px 괘선) */
+.tw{overflow-x:auto; border:2px solid var(--ink); margin:0 0 4px}
+table.t{border-collapse:collapse; width:100%; min-width:560px; font-family:var(--sans); font-size:14px}
+table.t th,table.t td{text-align:left; padding:10px 14px; border-top:1px solid var(--ink);
+  border-right:1px solid var(--ink); vertical-align:top; line-height:1.6}
+table.t th:last-child,table.t td:last-child{border-right:0}
+table.t thead th{font-family:var(--mono); font-size:12px; font-weight:400; letter-spacing:.08em;
+  background:var(--ink); color:var(--milk); border-top:0; border-right-color:rgba(246,243,236,.35)}
+table.t td.k{font-family:var(--mono); font-size:12.5px; white-space:nowrap}
+table.t td b,table.t td strong{font-weight:700}
+.pass::before{content:"○ "} .fail::before{content:"✕ "} .blk::before{content:"— "}
+.fail{font-weight:700} .blk{color:var(--ink-soft)}
+
+/* 조사 기록 — 대조군·가설을 적는 기입란 */
+.case{margin-top:22px; border:1.5px solid var(--ink); max-width:720px}
+.case .cbar{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em;
+  background:var(--ink); color:var(--milk); padding:7px 14px}
+.case dl{margin:0; display:grid; grid-template-columns:86px minmax(0,1fr)}
+.case dt{font-family:var(--mono); font-size:12px; padding:10px 0 10px 14px; border-top:1px solid var(--ink)}
+.case dd{margin:0; font-family:var(--sans); font-size:14.5px; line-height:1.6;
+  padding:10px 14px; border-top:1px solid var(--ink)}
+.case dl > dt:first-of-type,.case dl > dt:first-of-type + dd{border-top:0}
+
+/* 등급 정정 칩 — 심각도를 스스로 내린 기록 */
+.grade{display:flex; flex-wrap:wrap; gap:7px; margin-top:16px}
+.grade span{font-family:var(--mono); font-size:12px; border:1.5px solid var(--ink); padding:3px 10px}
+.grade span.down{background:var(--ink); color:var(--milk)}
+
+/* 리포트 머리 — 리프 상단의 문서 번호 띠 */
+.filehead{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:baseline;
+  font-family:var(--mono); font-size:12px; letter-spacing:.1em;
+  border-bottom:1.5px solid var(--ink); padding-bottom:9px; margin-bottom:18px}
+.filehead .stx{margin-left:auto; background:var(--ink); color:var(--milk); padding:2px 9px; letter-spacing:.06em}
+
+/* 상태 전이 실습 — 눌러보는 명세표 */
+.fsm{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:22px; margin-top:6px}
+.fsm-l{display:flex; flex-direction:column; align-items:center; gap:10px}
+.node{border:1.5px solid var(--ink); padding:9px 20px; font-family:var(--sans); font-size:15px; font-weight:600;
+  background:rgba(255,255,255,.5); text-align:center}
+.node.on{background:var(--ink); color:var(--milk)}
+.arrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em}
+.inputs{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; width:100%; margin-top:6px}
+.ibtn{font-family:var(--mono); font-size:12px; padding:13px 6px; min-height:44px; cursor:pointer;
+  background:var(--milk); border:1.5px solid var(--ink); color:var(--ink); text-align:center;
+  box-shadow:3px 0 0 rgba(25,23,20,.3); transition:transform var(--step), box-shadow var(--step)}
+.ibtn:hover{transform:translate(-1px,-1px); box-shadow:4px 0 0 rgba(25,23,20,.3)}
+.ibtn.sel{background:var(--ink); color:var(--milk); box-shadow:none; transform:none}
+.fsm-r{border:1.5px solid var(--ink); background:rgba(255,255,255,.5); padding:18px 20px;
+  min-height:250px; display:flex; flex-direction:column; justify-content:center}
+.fsm-r .empty{font-family:var(--mono); font-size:12.5px; text-align:center; color:var(--ink-soft)}
+.fsm-r .rtitle{font-family:var(--sans); font-size:17px; font-weight:800; margin:0 0 8px}
+.fsm-r .verdict{font-family:var(--mono); font-size:12px; letter-spacing:.1em; padding:3px 10px;
+  border:1.5px solid var(--ink); align-self:flex-start; margin-bottom:14px}
+.fsm-r .verdict.v-blk{background:var(--ink); color:var(--milk)}
+.fsm-r dl{margin:0; display:grid; grid-template-columns:56px minmax(0,1fr); gap:9px 14px}
+.fsm-r dt{font-family:var(--mono); font-size:12px}
+.fsm-r dd{margin:0; font-family:var(--sans); font-size:14px; line-height:1.6}
+
+/* 조우 시뮬레이터 — 손잡이가 달린 계산판 */
+.sim{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:22px; margin-top:6px}
+.ctl{display:grid; gap:18px; align-content:start}
+.ctl label{display:block; font-family:var(--mono); font-size:12.5px; margin-bottom:9px}
+.ctl label b{float:right; font-weight:700; font-variant-numeric:tabular-nums}
+.ctl input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:3px;
+  background:var(--ink); outline:none}
+.ctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:14px; height:20px;
+  background:var(--ink); border:0; cursor:pointer}
+.ctl input[type=range]::-moz-range-thumb{width:14px; height:20px; border:0; border-radius:0;
+  background:var(--ink); cursor:pointer}
+.out{border:2px solid var(--ink); background:rgba(255,255,255,.55); padding:16px 18px}
+.out .oh{font-family:var(--mono); font-size:11px; letter-spacing:.2em; margin-bottom:12px}
+.out .row{display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+  padding:7px 0; border-top:1px solid var(--ink); font-family:var(--sans); font-size:14px}
+.out .row b{font-family:var(--mono); font-weight:700; font-variant-numeric:tabular-nums}
+.out .row.hi b{font-size:20px}
+.gauge{margin-top:16px}
+.gauge .gl,.gcap{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px}
+.gauge .gl{margin-bottom:6px} .gcap{margin-top:7px; color:var(--ink-soft)}
+.gtrack{position:relative; height:24px; border:1.5px solid var(--ink)}
+.gwin{position:absolute; top:0; bottom:0;
+  background:repeating-linear-gradient(45deg, rgba(25,23,20,.22) 0 2px, transparent 2px 6px);
+  border-left:1.5px solid var(--ink); border-right:1.5px solid var(--ink)}
+.gmark{position:absolute; top:-5px; bottom:-5px; width:3px; background:var(--ink)}
+.okmsg{font-family:var(--mono); font-size:12.5px; line-height:1.7; margin-top:14px;
+  border:1.5px solid var(--ink); padding:10px 14px; max-width:620px}
+
+/* 결정 로그 — 지워진 줄과 덧쓴 줄 */
+.dlog{border:1.5px solid var(--ink); margin-bottom:16px; max-width:760px}
+.dlog .dh{font-family:var(--sans); font-size:15.5px; font-weight:800;
+  background:var(--ink); color:var(--milk); padding:9px 14px}
+.dlog dl{margin:0; display:grid; grid-template-columns:78px minmax(0,1fr)}
+.dlog dt{font-family:var(--mono); font-size:12px; padding:10px 0 10px 14px; border-top:1px solid var(--ink)}
+.dlog dd{margin:0; font-family:var(--sans); font-size:14.5px; line-height:1.6;
+  padding:10px 14px; border-top:1px solid var(--ink)}
+.dlog dl:first-of-type dt,.dlog dl:first-of-type dd{border-top:0}
+.del{text-decoration:line-through; color:var(--ink-soft)}
+.add{font-weight:600}
+
+/* 연혁 — 판권 뒤에 붙는 이력 */
+.glog{border:1.5px solid var(--ink); max-width:760px}
+.grow{display:grid; grid-template-columns:96px minmax(0,1fr); border-top:1px solid var(--ink)}
+.grow:first-child{border-top:0}
+.grow.head{background:var(--ink); color:var(--milk)}
+.grow .hash{font-family:var(--mono); font-size:12px; padding:11px 0 11px 14px}
+.grow .msg{font-family:var(--sans); font-size:14.5px; line-height:1.6; padding:11px 14px}
+.grow .msg b{font-weight:700}
+
+/* 링크 버튼 — playmore와 같은 물성 */
+a.playmore{display:inline-block; text-decoration:none; margin-top:18px}
+a.playmore .yt{font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; margin-left:8px}
+
+@media (max-width:900px){
+  .fsm,.sim{grid-template-columns:minmax(0,1fr)}
+  .case dl,.dlog dl{grid-template-columns:1fr}
+  .case dt,.dlog dt{padding:10px 14px 0; border-top:1px solid var(--ink)}
+  .case dd,.dlog dd{border-top:0}
+  .case dl > dt:first-of-type + dd{border-top:0}
+  .grow{grid-template-columns:1fr}
+  .grow .hash{padding:10px 14px 0}
+  .grow .msg{padding-top:4px}
+  .note,.keynote,.lead{max-width:none}
+}

@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-정적 HTML/CSS/JS 단일 파일 구성 (GitHub Pages 배포 전제, 빌드 도구 없음). 페이지별 독립 HTML: `index.html`(개발), `design/`(기획), `qa/`(QA).
+정적 HTML/CSS/JS (GitHub Pages 배포 전제, 빌드 도구 없음). 페이지 3장 — `index.html`(개발) · `design/`(기획) · `qa/`(QA) — 이 `assets/manual.css`·`assets/manual.js` 한 벌을 공유한다 (2026-08-21 통합).
 
 ## Users
 
