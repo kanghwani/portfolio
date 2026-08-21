@@ -76,18 +76,19 @@ BOUNDARY: 이 페이지는 DESIGN.md의 월드를 상속한다(2026-08-21 경계
         아래는 그 방식으로 실제로 굴러간 프로젝트입니다.</p>
 
       <h4>IDLE CITY — 부트캠프 최종 프로젝트 (기획 선정)</h4>
+      <p class="meta" style="margin:0 0 14px"><a href="https://github.com/hjh8874/GreenLight">소스 공개 · github.com/hjh8874/GreenLight</a> — 아래 내용은 전부 이 레포에서 확인하실 수 있습니다</p>
       <p class="meta">방치형 도시건설 시뮬레이션 · 2026.07.01–08.13 (6주) · 5인 팀 (팀장 별도) · 최초 기획자 + 교통 시뮬레이션 코어 구현</p>
       <div class="tw">
         <table class="t">
           <thead><tr><th>구분</th><th>무엇을 했나</th></tr></thead>
           <tbody>
             <tr><td class="k">기획</td><td>부트캠프 최종 프로젝트에서 <b>제가 낸 기획안이 팀 기획 선정을 통과해</b> 5인 팀 프로젝트가 됐습니다. 최초 기획자로 인게임 콘텐츠 전반을 설계했습니다</td></tr>
-            <tr><td class="k">기획 → 구현</td><td>기획 의도(<b>도로를 지으면 교통이 분산된다</b>)가 표준 최단경로 탐색과 충돌하는 지점을 특정하고, 혼잡도를 반영한 점증 통행배정 방식을 직접 설계·구현했습니다</td></tr>
-            <tr><td class="k">검증</td><td>교통 시뮬레이션 코어에 자동 테스트 <b>671개</b>. 가중치를 끄면(<code>w=0</code>) 실패하는 회귀 테스트로 특성을 고정했습니다</td></tr>
-            <tr><td class="k">콘텐츠 설계</td><td>출퇴근 시간표. 회사 3종 유형별 통행 창을 설계해 하루 안에서 수요가 몰리고 빠지는 리듬을 만들었습니다</td></tr>
+            <tr><td class="k">기획 → 구현</td><td>기획 의도(<b>도로를 지으면 교통이 분산된다</b>)가 표준 최단경로 탐색과 충돌하는 지점을 특정하고, 혼잡도를 반영한 점증 통행배정 방식을 직접 설계·구현했습니다. <span class="cm">→ <code>CityFlow/Sim/RoutePlanner.cs</code></span></td></tr>
+            <tr><td class="k">검증</td><td>교통 시뮬레이션 코어에 자동 테스트 <b>671개</b>. 가중치를 끄면(<code>w=0</code>) 실패하는 회귀 테스트로 특성을 고정했습니다. <span class="cm">→ <code>Assets/Tests/EditMode/</code></span></td></tr>
+            <tr><td class="k">콘텐츠 설계</td><td>출퇴근 시간표. 회사 3종 유형별 통행 창을 설계해 하루 안에서 수요가 몰리고 빠지는 리듬을 만들었습니다. <span class="cm">→ <code>CityFlow/Sim/CommuteWindow.cs</code></span></td></tr>
             <tr><td class="k">플레이테스트 대응</td><td>"무엇을 하고 있는지 모르겠다"는 피드백을, 모든 교통 도구가 공통으로 올리는 <b>단일 지표(무정차로 연속 통과한 교차로 수)</b>와 3단계 시각 피드백으로 해소했습니다</td></tr>
             <tr><td class="k">속도</td><td>기획 제안 → 6주 만에 구현·최종 발표까지 완주. 팀에 제안하기 전 <b>하루 만에 그레이박스</b>를 만들어 코어를 확인했고, 그 자리에서 「핵심 메커니즘이 없다」는 피드백을 받아 <b>같은 날 코어를 피벗</b>했습니다</td></tr>
-            <tr><td class="k">기여</td><td>인게임 콘텐츠 설계 전반 + 교통 시뮬레이션 코어 구현 (non-merge 커밋 팀 604건 중 350건 · 후반 머지 담당 인수)</td></tr>
+            <tr><td class="k">기여</td><td>인게임 콘텐츠 설계 전반 + 교통 시뮬레이션 코어 구현. 후반 머지 담당을 인수해 오픈 PR을 정리했습니다. <span class="cm">커밋 424 / 팀 752 — 레포 Contributors 탭에서 확인하실 수 있습니다</span></td></tr>
           </tbody>
         </table>
       </div>
