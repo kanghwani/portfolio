@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김강환 — 기술 포트폴리오 · 111퍼센트 제출본</title>
+<meta name="description" content="김강환. Unity 클라이언트 개발자. 하루에 만든 웹 게임, 6주에 완주한 팀 프로젝트, 그리고 접은 것까지.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Do+Hyeon&display=swap">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23C7501A'/><circle cx='7' cy='16' r='2.6' fill='%23F4F1EA'/><text x='19' y='23' font-size='17' font-family='sans-serif' font-weight='800' fill='%23F4F1EA' text-anchor='middle'>K</text></svg>">
+<link rel="stylesheet" href="../assets/manual.css">
+<style>
+/* 이 볼륨 전용 — 제출은 PDF다. 한 장(章)이 한 페이지가 되게 한다. */
+.rr{display:grid; grid-template-columns:96px minmax(0,1fr); gap:10px 18px; margin:22px 0 0; max-width:700px}
+.rr dt{font-family:var(--mono); font-size:12px; letter-spacing:.1em; padding-top:4px; color:var(--ink-soft)}
+.rr dd{margin:0; font-size:16px; line-height:1.7}
+.rr dd b{font-weight:700}
+.tri{display:grid; gap:14px; margin-top:18px; max-width:720px}
+.tri div{border-left:3px solid var(--ink); padding:2px 0 2px 14px}
+.tri .k{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; display:block; margin-bottom:5px; color:var(--ink-soft)}
+.tag{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; border:1.5px solid var(--ink); padding:2px 9px; display:inline-block; margin-bottom:14px}
+/* 「기존 → 변경 후」 비교 — 구조를 나란히 놓고 각 칸에 실측치를 단다 */
+.ba{display:grid; grid-template-columns:1fr 34px 1fr; align-items:stretch; gap:0; margin:18px 0 0; max-width:720px}
+.ba .box{border:2px solid var(--ink); padding:10px 13px; background:rgba(255,255,255,.5)}
+.ba .box .k{font-family:var(--mono); font-size:11px; letter-spacing:.14em; display:block; margin-bottom:6px; color:var(--ink-soft)}
+.ba .box .s{font-family:var(--sans); font-size:14px; font-weight:600; line-height:1.5; display:block}
+.ba .box .n{font-family:var(--mono); font-size:12px; line-height:1.5; display:block; margin-top:8px; padding-top:7px; border-top:1px dashed var(--ink)}
+.ba .arw{display:grid; place-items:center; font-family:var(--sans); font-size:19px; font-weight:700}
+.ba-note{font-family:var(--mono); font-size:12px; line-height:1.65; color:var(--ink-soft); margin-top:9px; max-width:700px}
+/* 코드 — 에디터 창처럼. 다크 테마 + 줄번호 + 파일 탭 */
+details.code{margin-top:16px; max-width:760px; border:2px solid var(--ink); background:#1E1F22;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact}
+details.code>summary{font-family:var(--mono); font-size:12px; padding:7px 12px; cursor:pointer;
+  list-style:none; color:#BCBEC4; background:#2B2D30; border-bottom:1px solid #393B40; letter-spacing:.02em}
+details.code>summary::-webkit-details-marker{display:none}
+details.code>summary::before{content:"● "; color:#E5007F}
+details.code pre{margin:0; padding:12px 0; overflow-x:auto; font-family:var(--mono);
+  font-size:11.5px; line-height:1.72; color:#BCBEC4; counter-reset:ln}
+details.code pre .l{display:block; padding:0 14px 0 0; white-space:pre}
+details.code pre .l::before{counter-increment:ln; content:counter(ln);
+  display:inline-block; width:34px; margin-right:12px; text-align:right;
+  color:#4E5157; -webkit-user-select:none; user-select:none}
+details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; color:#9DA0A8;
+  margin:0; padding:9px 14px 11px 60px; border-top:1px solid #393B40; background:#232528}
+.k1{color:#CF8E6D} .k2{color:#C77DBB} .st{color:#6AAB73} .cm{color:#7A7E85; font-style:italic}
+.nu{color:#2AACB8} .ty{color:#8888C6} .fn{color:#57AAF7}
+
+/* 자소서 ↔ 포폴 대응 */
+.xref{width:100%; border-collapse:collapse; margin-top:16px; max-width:720px; font-size:14px}
+.xref td{border:1px solid var(--ink); padding:7px 11px; vertical-align:top}
+.xref td:first-child{font-family:var(--mono); font-size:12px; width:38%; background:rgba(255,255,255,.4)}
+
+/* 표지 연락처 — 한 줄에 하나씩 */
+.contact{border-collapse:collapse; margin:22px 0 28px; max-width:430px; width:100%}
+.contact td{padding:6px 0; border-bottom:1px solid rgba(25,23,20,.25)}
+.contact tr:first-child td{border-top:2px solid var(--ink)}
+.contact tr:last-child td{border-bottom:2px solid var(--ink)}
+.contact td:first-child{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; width:96px; color:var(--ink-soft)}
+.contact td:last-child{font-family:var(--sans); font-size:15px; font-weight:600; overflow-wrap:anywhere}
+/* 신조 4줄 */
+.creed{margin:0 0 30px !important; max-width:730px}
+.creed li{font-size:15.5px; line-height:1.65}
+/* 슈퍼드리머 원형 뱃지 — 공고의 6색 원을 인용한다 */
+.sd{display:flex; gap:5px; margin:0 0 14px; flex-wrap:wrap; align-items:center}
+.sd i{width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  font-family:var(--disp); font-size:19px; font-style:normal; color:#fff; line-height:1;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact}
+.sd .lb{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; margin-left:9px; color:var(--ink-soft)}
+/* 목차 */
+.toc2{width:100%; border-collapse:collapse; margin:14px 0 0; max-width:740px}
+.toc2 td{border:1.5px solid var(--ink); padding:9px 12px; vertical-align:top}
+.toc2 td.c{width:26%; font-family:var(--sans); font-size:12.5px; line-height:1.5; background:rgba(255,255,255,.45)}
+.toc2 td.c b{font-family:var(--disp); font-size:17px; font-weight:400; display:block; margin:2px 0}
+.toc2 td.c span{font-family:var(--mono); font-size:10.5px; color:var(--ink-soft)}
+.toc2 a{display:block; font-family:var(--sans); font-size:14px; font-weight:600; line-height:1.5;
+  padding:3px 0; text-decoration:none; border-bottom:1px dotted rgba(25,23,20,.35)}
+.toc2 a:last-child{border-bottom:0}
+.toc2 a:hover{padding-left:6px; transition:padding var(--step)}
+/* 프로젝트 개요표 */
+.ov{width:100%; border-collapse:collapse; margin:0 0 22px; max-width:760px; font-size:14px}
+.ov td{border:1.5px solid var(--ink); padding:7px 12px; vertical-align:top}
+.ov td.k{font-family:var(--mono); font-size:12px; background:rgba(255,255,255,.45); white-space:nowrap; width:11%}
+.ov ul{margin:0; padding:0}
+.ov li{margin-bottom:5px; padding-left:15px; font-size:13.5px}
+.ov li:last-child{margin-bottom:0}
+.ov li::before{content:"–"}
+.hash{font-family:var(--mono); font-size:12.5px; letter-spacing:.06em; margin:0 0 14px; color:var(--ink-soft)}
+.hash b{font-weight:400; color:var(--ink)}
+
+@media print{
+  @page{size:A4; margin:12mm}
+  html,body{background:#fff}
+  .rail,.runfoot,#stamp{display:none !important}
+  .board{break-after:page; padding:0 0 18px !important; background:#fff !important}
+  .board::before,.board::after{display:none !important}
+  .board:last-of-type{break-after:auto}
+  .bed{max-width:none; padding:0; gap:0 22px; grid-template-columns:150px minmax(0,1fr)}
+  .chap{position:static; color:var(--ink) !important; --head-ink:var(--ink)}
+  .chap .big{opacity:.16}
+  .chap .toc{display:none}
+  .leaf{background:#fff !important; box-shadow:none; padding:0; margin-bottom:0}
+  .leaf::before,.leaf::after{display:none}
+  body{font-size:14.5px; line-height:22px}
+  .leaf h3{font-size:30px}
+  .leaf h4{break-after:avoid; font-size:15px; margin:22px 0 10px; padding-top:8px}
+  details.code[open],details.code{break-inside:avoid}
+  details.code>summary{display:none}          /* 종이에서는 접을 수 없다 — 펼쳐서 인쇄한다 */
+  details.code>*{display:revert !important}
+  details.code pre{font-size:10px; line-height:1.5; white-space:pre-wrap}
+  .ba{break-inside:avoid} .ba .box .s{font-size:12.5px} .ba .box .n{font-size:10.5px}
+  .xref{font-size:11.5px} .xref td{padding:4px 8px}
+  .barrow{display:none}
+  .sd i{width:30px; height:30px; font-size:15px}
+  .fit{font-size:11.5px} .fit td{padding:4px 8px}
+  .ov{font-size:11.5px; break-inside:avoid} .ov td{padding:4px 8px} .ov li{font-size:11px; margin-bottom:3px}
+  .hash{font-size:10.5px}
+  .toc2{font-size:11px; break-inside:avoid} .toc2 td{padding:5px 9px}
+  .toc2 a{font-size:11.5px; padding:1.5px 0; border-bottom:0}
+  .toc2 td.c b{font-size:13px}
+  .contact{margin:14px 0 16px; padding:7px 0; font-size:12px; gap:4px 14px}
+  .creed{margin-bottom:18px !important} .creed li{font-size:12.5px; margin-bottom:4px}                        /* 바코드는 장식 */
+  .spec-box td{padding:4px 9px}
+  .cover .leaf .measure p{margin-bottom:.6em}
+  .errata{padding:7px 11px; font-size:10.5px; transform:none}
+  .enclosed{margin-top:16px}
+  details.code pre{font-size:9px; line-height:1.6; padding:8px 0}
+  details.code pre .l{white-space:pre-wrap}
+  details.code .cap{font-size:10.5px; padding:6px 12px 8px 50px}
+  details.code>summary{font-size:10px; padding:5px 10px}
+  .ba-note{font-size:10.5px}
+  .leaf .meta{margin-bottom:16px}
+  .leaf li{margin-bottom:8px}
+  p{margin-bottom:.8em}
+  .rr{gap:7px 16px; margin-top:14px}
+  .rr dd{font-size:14px; line-height:1.55}
+  .tri{gap:10px; margin-top:12px}
+  .spec-box table{font-size:12px}
+  .spec-box td{padding:6px 10px}
+  .cover .lede{font-size:15px; line-height:1.7}
+  figure{margin:16px 0}
+  .specrow{margin-top:20px}
+  figure,table,.spec-box,.errata,.tri div{break-inside:avoid}
+  a{text-decoration:none}
+  /* 종이에서는 링크가 안 눌린다. 주소를 같이 인쇄한다 */
+  .plinks a::after,.enclosed a::after{content:" " attr(href); font-family:var(--mono); font-size:.62em; font-weight:400; color:var(--ink-soft); word-break:break-all}
+  .plinks a,.enclosed a{display:inline-block; margin:0 14px 4px 0}
+}
+</style>
+</head>
+<body data-book="김강환 — 기술 포트폴리오 · 111% 제출본">
+
+<!-- 표지 -->
+<section class="board cover" id="cover" data-sum="연락처와 요약, 목차입니다. 목차 항목을 누르면 해당 절로 이동합니다." data-c="1" data-title="표지 · 요약">
+  <div class="bed">
+    <div class="chap">
+      <span class="no">MANUAL 01</span>
+      <h2>표지 · 요약</h2>
+      <span class="ext">요약 · 목차</span>
+    </div>
+    <div class="leaf">
+      <p class="cover-kind"><span>TECH PORTFOLIO</span><span>111PERCENT · 2026.08</span></p>
+      <div class="sd">
+        <i style="background:#E5007F">슈</i><i style="background:#F0A020">퍼</i><i style="background:#253C9E">드</i><i style="background:#3FAE49">리</i><i style="background:#35C6D8">머</i><i style="background:#CE2028">8</i>
+        <span class="lb">8기 · 게임 클라이언트 개발자 지원</span>
+      </div>
+      <h1>김강환</h1>
+      <p class="role">게임 디벨로퍼 &nbsp;·&nbsp; Unity 클라이언트</p>
+
+      <table class="contact">
+        <tr><td>이메일</td><td><a href="mailto:zzangh91@naver.com" data-copy="zzangh91@naver.com">zzangh91@naver.com</a></td></tr>
+        <tr><td>GitHub</td><td><a href="https://github.com/kanghwani">github.com/kanghwani</a></td></tr>
+        <tr><td>블로그</td><td><a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91</a></td></tr>
+        <tr><td>포트폴리오</td><td><a href="../">kanghwani.github.io/portfolio</a></td></tr>
+      </table>
+
+      <ul class="creed">
+        <li>게임 개발을 시작한 지는 오래되지 않았지만, 개발에 열정적으로 임하고 게임에 정말 진심입니다</li>
+        <li><b>자기주도적인 업무</b>, 새로운 방식을 테스트하고 실행하는 데 최적화되어 있습니다</li>
+        <li>게임에서 재미라는 요소는 측정이 어렵기 때문에 <b>빠른 실행력과 테스트</b>가 가장 중요하다고 생각하는 개발자입니다</li>
+        <li>문제 해결에 있어서 당장의 해결책보다 <b>올바른 방향성</b>이 더 중요하다고 생각합니다</li>
+      </ul>
+
+      <h4>1.1 이 문서 요약</h4>
+      <div class="measure">
+        <p>
+          게임 3개를 담았습니다. <b>IDLE CITY</b>는 게임 개발 부트캠프의 최종 팀 프로젝트로,
+          제가 낸 기획안이 팀 기획 선정을 통과해 5인이 6주간 만들었습니다. Unity로 만든 것 중 가장 깊게 판 프로젝트입니다.
+          <b>Molten Arena</b>는 그 직전 부트캠프 팀 프로젝트로 2인 팀에서 1개월에 완주했습니다.
+          <b>PARRYWAY</b>는 개인 작업입니다. AI를 활용해 웹 게임을 하나 만들어 올려보고 싶어서 시작했고,
+          착수한 날 안에 플레이 가능한 빌드까지 갔습니다.
+        </p>
+        <p>
+          중심은 IDLE CITY의 <b>교통 시뮬레이션 코어</b>입니다.
+          최단 경로 탐색으로는 "도로를 지으면 교통이 분산된다"는 기획 자체가 성립하지 않아서,
+          길찾기가 아니라 통행 배정 문제로 다시 보고 코어를 새로 설계했습니다(2.2).
+        </p>
+        <p>
+          각 절은 <b>왜 그것을 문제라고 봤는지</b>부터 시작해서 버린 선택지, 고른 이유,
+          그 선택의 단점 순으로 적었습니다. 틀린 진단으로 시작한 절과 만들어놓고 접은 판단(5.1)도
+          지우지 않고 그대로 뒀습니다.
+        </p>
+      </div>
+
+      <div class="spec-box" style="max-width:720px">
+        <table>
+          <tr><td>대표 프로젝트</td><td>IDLE CITY — 교통 시뮬레이션 코어 설계·구현</td></tr>
+          <tr><td>가장 최근에 만든 것</td><td>PARRYWAY — 웹 게임, 착수부터 플레이까지 하루. 모바일 대응</td></tr>
+          <tr><td>완주 기록</td><td>팀 프로젝트 2건 (6주 · 1개월) 전부 최종 발표까지</td></tr>
+          <tr><td>검증 방법</td><td>EditMode 자동 테스트 · 직접 만든 벤치마크</td></tr>
+          <tr><td>동작 환경</td><td>Unity 6 (URP) · C# / TypeScript · Canvas 2D</td></tr>
+        </table>
+      </div>
+
+      <h4>1.2 목차</h4>
+      <table class="toc2">
+        <tr><td class="c">제2장<br><b>IDLE CITY</b><br><span>5인 팀 → 솔로 · Unity</span></td><td>
+          <a href="#idle-city-h0">2.1 어떤 게임인가</a>
+          <a href="#idle-city-h1">2.2 통행 배정 알고리즘 설계</a>
+          <a href="#idle-city-h2">2.3 성능 측정과 한계</a>
+          <a href="#idle-city-h3">2.4 플레이 지표 설계</a>
+          <a href="#idle-city-h4">2.5 그 외 담당</a>
+          <a href="#idle-city-h5">2.6 경제 어뷰징 차단</a>
+          <a href="#idle-city-h6">2.7 벤치마크 툴 제작</a>
+          <a href="#idle-city-h7">2.8 솔로 인수 이후 — 주차 겹침 추적</a></td></tr>
+        <tr><td class="c">제3장<br><b>PARRYWAY</b><br><span>개인 · 웹 · 하루</span></td><td>
+          <a href="#parryway-h0">3.1 어떤 게임인가</a>
+          <a href="#parryway-h1">3.2 개발 개요</a>
+          <a href="#parryway-h2">3.3 방패 판정 설계</a>
+          <a href="#parryway-h3">3.4 속도감 튜닝</a>
+          <a href="#parryway-h4">3.5 AI 심사 패널과 수정 10건</a>
+          <a href="#parryway-h5">3.6 모바일 대응</a></td></tr>
+        <tr><td class="c">제4장<br><b>Molten Arena</b><br><span>2인 팀 · Unity · 1개월</span></td><td>
+          <a href="#molten-h0">4.1 어떤 게임인가</a>
+          <a href="#molten-h1">4.2 일시정지 게이트 — 병합 충돌 회피</a></td></tr>
+        <tr><td class="c">제5장<br><b>접은 것</b></td><td>
+          <a href="#dropped-h0">5.1 타코야끼 — 접은 이유</a>
+          <a href="#dropped-h1">5.2 아직 못 넘은 벽</a></td></tr>
+        <tr><td class="c">부록 A<br><b>일하는 방식</b></td><td>
+          <a href="#how-h0">A.1 피드백 처리</a>
+          <a href="#how-h1">A.2 시키지 않았는데 집은 일</a>
+          <a href="#how-h2">A.3 기술 사양</a></td></tr>
+      </table>
+
+
+      <div class="barrow">
+        <span class="barcode" aria-hidden="true"></span>
+        <span class="serial">S/N KHW-2026.08 · 111P · MADE IN INCHEON</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 제3장 IDLE CITY -->
+<section class="board" id="idle-city" data-sum="제가 낸 기획을 직접 구현한 교통 시뮬레이션 코어입니다. 코드와 측정값을 함께 실었습니다." data-c="2" data-title="제2장 IDLE CITY">
+  <div class="bed">
+    <div class="chap">
+      <span class="no">MANUAL 02</span>
+      <h2>IDLE CITY</h2>
+      <span class="ext">5인 팀 · 간판</span>
+    </div>
+    <div class="leaf">
+      <p class="hash"><b>#Unity6 #C# #경로탐색 #시뮬레이션 #EditMode테스트 #기획</b></p>
+      <h3>IDLE CITY</h3>
+      <table class="ov">
+        <tr><td class="k">플랫폼</td><td>PC (Windows)</td><td class="k">장르</td><td><b>데스크탑 플로팅</b> 방치형 도시건설 시뮬레이션</td></tr>
+        <tr><td class="k">개발 인원</td><td><b>5명</b> → 현재 <b>1명(본인)</b></td><td class="k">개발 기간</td><td>2026.07.01 – 08.13 (<b>6주</b>) · 팀 개발 완료<br>이후 <b>솔로 인수, 출시 준비 중</b></td></tr>
+        <tr><td class="k">개발 도구</td><td>C# · Unity 6 (URP)</td><td class="k">소스</td><td><a href="https://github.com/hjh8874/GreenLight">github.com/hjh8874/GreenLight</a> (공개)</td></tr>
+        <tr><td class="k">요약</td><td colspan="3"><b>바탕화면 위에 띄워두고 곁눈으로 보는 방치형 도시 시뮬레이션</b>입니다. 코지 게임의 수요가 커지고 있고 방치형은 파고들 여지가 남아 있는 장르라고 봐서 이 조합을 기획했습니다. 도로를 지으면 교통이 분산되는 것이 핵심 상호작용입니다.<br><b>제가 낸 기획안이 부트캠프 최종 프로젝트 기획 선정을 통과해</b> 5인 팀 프로젝트가 됐고, 최초 기획자로 인게임 콘텐츠를 설계하면서 구현에서는 교통 시뮬레이션 코어를 맡았습니다.</td></tr>
+        <tr><td class="k">담당 내용</td><td colspan="3"><ul>
+          <li>부하 적립 통행 배정(<code>RoutePlanner</code>) 설계·구현 — 최단 경로로는 성립하지 않던 기획을 코어 재설계로 살렸습니다 (2.2)</li>
+          <li>차량 주행 · 교차로 점유 · 워치독, 시뮬레이션과 화면의 권한 분리 (2.5)</li>
+          <li>인게임 기획 — 출퇴근 시간표, 회사 3종, 교통 도구의 구매 대상 정의</li>
+          <li>EditMode 벤치마크 툴 직접 제작, 후반 머지 담당 인수(오픈 PR 6건 처리)</li>
+          <li>커밋 <b>424 / 752건(56%)</b> · 코어 테스트 671개(화면 포함 1,204개)</li>
+          <li><b>팀 해산 후 단독 인수 (2026.08~).</b> 스팀 출시를 목표로 씬 13→5개 정리, 라이선스 미증빙 음원 16곡 삭제, 품질 계측 도구 구축 (2.8)</li>
+        </ul></td></tr>
+        <tr><td class="k">영상</td><td colspan="3">🔎 없습니다. 지금 확인하실 수 있는 것은 <b>공개 저장소의 코드와 테스트</b>입니다</td></tr>
+      </table>
+      <figure>
+        <img src="../assets/idle-city.jpg"
+             alt="IDLE CITY 플레이 화면. 주택가와 사무실 건물 사이 교차로에 신호등이 서 있고 통근 차량이 늘어서 있다."
+             width="1600" height="800" loading="lazy"
+             onerror="this.closest('figure').remove()">
+        <figcaption>그림 2-1 · 도로를 지으면 교통이 분산되는 것이 이 게임의 핵심 상호작용입니다.</figcaption>
+      </figure>
+
+
+      <h4>2.1 어떤 게임인가</h4>
+      <div class="measure">
+        <p>
+          빈 땅에 <b>도로와 건물을 놓으면 도시가 알아서 굴러가는</b> 방치형 시뮬레이션입니다.
+          창을 전체화면으로 띄우는 대신 <b>바탕화면 위에 얹어두고</b> 다른 일을 하다가 가끔 눈을 주는 형태입니다.
+          집에 사는 사람이 아침에 회사로 출근하고 저녁에 돌아오는데, 이 통근 차량이 도로를 지나갈 때마다
+          수익이 들어옵니다.
+        </p>
+        <p>
+          <b>이 조합을 고른 이유.</b> 코지 게임의 수요가 눈에 띄게 커지고 있었고,
+          방치형은 완성된 형태가 굳어진 장르가 아니라 아직 파고들 여지가 남아 있다고 봤습니다.
+          바탕화면에 상주하는 형태는 그 두 가지가 만나는 자리입니다.
+          오래 켜두는 게임이니 <b>보고 있지 않을 때도 도시가 스스로 굴러가야</b> 하고,
+          그 요구가 뒤의 기술적 선택 대부분을 결정했습니다.
+        </p>
+        <p>
+          문제는 <b>길이 막히면 수익이 멈춘다</b>는 것입니다. 회사 3종(사무실·물류창고·공장)의 출퇴근 시각을
+          일부러 겹쳐 놨기 때문에 러시아워가 생기고, 플레이어는 그걸 보고 도로를 넓히거나 우회로를 내거나
+          신호등·버스 정류장을 삽니다.
+        </p>
+        <p>
+          그래서 <b>도로를 지으면 교통이 분산된다</b>가 이 게임의 핵심 상호작용입니다.
+          이것이 성립하지 않으면 도로를 짓는 행위 자체가 의미를 잃습니다. 바로 다음 절이 그 이야기입니다.
+        </p>
+      </div>
+
+      <h4>2.2 통행 배정 알고리즘 설계</h4>
+      <dl class="rr">
+        <dt>PROBLEM</dt><dd>우회로를 지어도 통행량이 옮겨가지 않았습니다. 도로를 짓는 행위 자체가 무의미해지는 상태라, 기획의 핵심 상호작용이 성립하지 않았습니다</dd>
+        <dt>원인</dt><dd>최단 경로 탐색을 수백 번 돌리면 수백 대가 전부 같은 답을 돌려받습니다. 한 대씩 보면 전부 정답인 게 문제였습니다</dd>
+        <dt>CONSTRAINT</dt><dd>혼잡을 반영하는 휴리스틱은 만들 수 없었습니다. 부하는 지금 이 경로를 배정하면서 생기는 중이라 순환 의존이 되기 때문입니다</dd>
+        <dt>OPTIONS</dt><dd>① 차량마다 무작위 가중치를 섞는다 → 분산은 되지만 이유가 없어 플레이어가 학습할 수 없습니다<br>② 우회를 지시하는 규칙을 넣는다 → 도로 종류가 늘 때마다 규칙이 늘어납니다<br>③ 배정 자체를 순차로 바꾼다 → 채택</dd>
+        <dt>DECISION</dt><dd>수요를 한 대씩 순차로 배정하면서 확정된 경로의 타일에 부하를 쌓고, 다음 차량이 그 부하를 비용으로 읽게 했습니다. <code>step = 1 + w × (부하 / 수용량)</code>, w=2</dd>
+        <dt>RESULT</dt><dd>우회를 지시하는 분기문 없이 통행량이 병렬 도로로 분산됩니다. <code>w=0</code>이면 실패하는 회귀 테스트로 특성을 고정했고, 세이브·로드 재현성을 위해 전 구간 tie-break를 명시했습니다</dd>
+        <dt>VERIFY</dt><dd>구현하고 나서 대조해 보니 교통공학의 점증 통행배정과 같은 구조였습니다. 이름을 먼저 알고 쓴 게 아니라 문제에서 나온 셈입니다</dd>
+      </dl>
+
+      <div class="ba">
+        <div class="box"><span class="k">기존</span><span class="s">차량마다 최단 경로 1회<br>서로를 모른 채 독립 계산</span><span class="n">수백 대가 동일 경로<br>우회로 건설 후 통행량 이동 <b>0</b></span></div>
+        <div class="arw">→</div>
+        <div class="box"><span class="k">변경 후</span><span class="s">한 대씩 순차 배정<br>확정 경로 타일에 부하 적립</span><span class="n">우회 지시 분기문 <b>0개</b>로 분산<br><code>w=0</code>이면 실패하는 회귀 테스트</span></div>
+      </div>
+      <p class="ba-note">⚠️ 분산의 정도는 아직 수치로 재지 않았습니다. 지금 제시할 수 있는 증거는 특성을 고정한 회귀 테스트까지이고, 부하 감소율 측정은 다음 작업입니다. 재지 않은 값을 적지 않으려고 여기에 밝혀둡니다.</p>
+
+      <details class="code" open>
+        <summary>RoutePlanner.cs &nbsp;—&nbsp; Assets/01_Scripts/CityFlow/Sim/</summary>
+<pre>// ① 배정이 끝난 차량의 경로를 부하로 적립한다 (Plan)
+for (int i = 0; i &lt; demands.Count; i++) {
+    var carPath = Search(grid, demands[i].SourceRoad, demands[i].SinkRoad, ...);
+    if (carPath == null) continue;
+    for (int p = 0; p &lt; carPath.Count; p++)
+        _load[carPath[p].y * _w + carPath[p].x] += 1f;   // 뒤차가 읽을 값
+}
+
+// ② 다음 차량은 그 부하를 비용으로 읽는다 (Search)
+float capInv = cfg.RoadCapacity &gt; 0f ? 1f / cfg.RoadCapacity : 0f;
+float w      = cfg.RoutingCongestionWeight;             // w = 2
+...
+float step = 1f + w * _load[ni] * capInv;
+float cand = _cost[cur] + step;
+if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
+        <p class="cap">우회를 지시하는 조건문이 없습니다. 비용 함수 한 줄이 바뀌었을 뿐이고 분산은 그 결과로 나옵니다. `capInv`의 0 방어는 용량 0일 때 순수 최단경로로 퇴화시키기 위한 것입니다.</p>
+      </details>
+
+      <div class="measure" style="margin-top:16px">
+        <p>
+          <b>이 선택의 단점.</b> 순차 배정이라 <b>차량 순서가 결과를 바꿉니다.</b>
+          그래서 세이브·로드에서 같은 그림이 나오려면 전 구간 tie-break를 명시해야 했고,
+          동률일 때 낮은 인덱스를 고르도록 못 박았습니다. 병렬화도 막힙니다.
+          앞차의 결과가 뒷차의 입력이라 순서를 흩뜨릴 수 없기 때문입니다.
+          재현성을 얻고 병렬성을 포기한 셈입니다.
+        </p>
+      </div>
+
+      <h4>2.3 성능 측정과 한계</h4>
+      <div class="measure">
+        <p>
+          통행 배정 1회(<code>Plan</code>)의 비용을 재는 EditMode 벤치마크를 직접 만들었습니다.
+          이 함수는 매 프레임이 아니라 도로를 지을 때만 불리기 때문에,
+          기준은 프레임 타임이 아니라 건설 클릭의 체감입니다.
+        </p>
+        <p>
+          처음엔 이걸 프레임 문제로 봤습니다. 차량이 늘면 느려질 거라고 짐작하고
+          차량 수만 올려가며 쟀는데, 1대당 비용이 거의 안 변했습니다.
+          짐작이 틀렸다는 뜻이라 도로망 크기를 축으로 바꿔 다시 쟀고, 그제서야 벽이 나왔습니다.
+          <b>재기 전에 세운 가설이 틀렸던 것이 이 표의 출발점입니다.</b>
+        </p>
+      </div>
+      <div class="spec-box" style="max-width:680px">
+        <table>
+          <tr><td>플레이 구역</td><td>도로 타일</td><td>차량</td><td>재계획</td></tr>
+          <tr><td>20×20 (초기 해금)</td><td>175</td><td>18대</td><td>2.7 ms</td></tr>
+          <tr><td>20×20 (만차)</td><td>175</td><td>82대</td><td>12.1 ms</td></tr>
+          <tr><td>40×40</td><td>700</td><td>96대</td><td>388 ms</td></tr>
+          <tr><td>60×60</td><td>1,575</td><td>96대</td><td>1,106 ms</td></tr>
+          <tr><td>80×80</td><td>2,800</td><td>96대</td><td>1,879 ms</td></tr>
+        </table>
+      </div>
+      <p class="playnote">
+        측정 조건 — Apple M4 Pro · Unity 6000.5.2f1 · EditMode · 11회 중앙값(워밍업 3회) ·
+        차량 상한 96(SimConfig) · 격자 도로망 자동 생성<br>
+        <a href="https://github.com/hjh8874/GreenLight/blob/develop/Assets/Tests/EditMode/RoutePlannerBenchmarkTests.cs">벤치마크 코드</a> ·
+        <a href="https://github.com/hjh8874/GreenLight/pull/257">PR #257</a>
+      </p>
+      <div class="measure" style="margin-top:20px">
+        <p>
+          <b>차량 수에는 선형입니다.</b> 같은 도로망에서 18대와 82대의 1대당 비용이
+          0.151ms와 0.147ms로 거의 같습니다. 부하를 쌓으며 한 대씩 배정하는 구조가
+          수요 증가에는 예상대로 버틴다는 뜻입니다.
+        </p>
+        <p>
+          <b>도로망 크기에는 무너집니다.</b> 도로가 175칸에서 700칸으로 4배 늘 때
+          1대당 비용은 27배가 됐습니다. 탐색 구역 한 변을 20으로 두고 배열 스캔 다익스트라를 쓴 선택이
+          그 경계를 넘는 순간 비용으로 돌아온 것입니다.
+          게임이 20×20에서 시작해 청크 단위로 해금되니 현재 플레이 범위에서는 안 보이지만,
+          도시가 커지면 건설 순간의 멈춤으로 나타납니다.
+        </p>
+        <p>
+          <b>LIMITS.</b> 아직 못 고쳤습니다. 우선순위 큐로 탐색을 바꾸고
+          전체 재계획 대신 변경된 구역만 다시 푸는 쪽이 답이라고 보고 있는데, 아직 재보지 않았습니다.
+          다만 벤치마크를 테스트로 남겨뒀으니 고치면 그 자리에서 확인됩니다.
+        </p>
+      </div>
+
+      <h4>2.4 플레이 지표 설계</h4>
+      <div class="measure">
+        <p>
+          2차 빌드 플레이테스트에서 조작의 효과가 느껴지지 않는다는 말이 나왔습니다.
+          교통 도구는 여러 갠데, 설치한 결과로 뭐가 나아졌는지가 화면에 없었기 때문입니다.
+        </p>
+        <p>
+          지표 후보가 셋이었습니다.
+        </p>
+        <ul>
+          <li><strong>평균 통행 시간.</strong> 정확하지만 <b>버렸습니다.</b> 신호등을 놓은 직후에는 오히려 나빠졌다가 나중에 좋아져서, 플레이어의 클릭과 숫자의 반응이 어긋납니다</li>
+          <li><strong>도착한 차량 수.</strong> 반응은 빠른데 <b>버렸습니다.</b> 도로를 아무렇게나 늘려도 올라가서, 잘 놓았는지를 구분하지 못합니다</li>
+          <li><strong>정지 없이 연속 통과한 교차로 수.</strong> <b>채택.</b> 무엇을 설치하든 즉시 반응하고, 막히면 그 자리에서 끊깁니다. 플레이어가 노리는 것(막힘 없음)과 숫자가 같은 방향입니다</li>
+        </ul>
+        <p>
+          단계가 오르면 차체 발광 3단계와 통근 보상 가속이 붙습니다.
+          판정은 시뮬레이션 계층에서만 합니다. 화면이 같이 판정하면 진실이 두 개가 되는데,
+          그게 이 프로젝트에서 실제로 겪은 버그의 원인이었습니다.
+        </p>
+        <p>
+          <b>아쉬운 점.</b> 이 지표는 <b>버스 정류장을 제대로 평가하지 못합니다.</b>
+          정류장은 통행량 자체를 줄이는 도구인데, 차가 줄면 연속 통과는 그냥 쉬워집니다.
+          한 지표로 모든 도구를 재려다 보니 성격이 다른 하나가 헐겁게 잡힙니다.
+        </p>
+      </div>
+
+      <h4>2.5 그 외 담당</h4>
+      <ul>
+        <li><strong>출퇴근 시간표.</strong> 사무실·물류창고·공장의 정원과 출퇴근 시각을 분리하고 시간대를 일부러 겹쳐 러시아워를 데이터로 만들었습니다. 자정을 넘는 교대도 판정에 들어갑니다</li>
+        <li><strong>차량 주행.</strong> 개별 속도와 트럭 차급, 교차로 점유·연속 대기열. 멈춘 차를 되살리는 워치독을 두어(재라우팅 3회 → 재시작 6회) 한 대가 막혀 도시 전체가 굳는 것을 막았습니다</li>
+        <li><strong>시뮬과 화면의 권한 분리.</strong> 위치·점유 판정을 시뮬레이션으로 단일화하고 화면은 보간만 하게 재설계했습니다(PR 5건). 차선 오프셋 검증 80/80, 차간 위반 0</li>
+      </ul>
+
+      <h4>2.6 경제 어뷰징 차단</h4>
+      <div class="measure">
+        <p>
+          플레이해보다가 <b>정체를 일부러 만드는 쪽이 더 벌린다</b>는 것을 발견했습니다.
+          교통을 뚫는 게임인데 막는 쪽이 이득이면 게임의 목표와 최적 전략이 반대가 됩니다.
+        </p>
+      </div>
+      <div class="ba">
+        <div class="box"><span class="k">기존</span><span class="s">대기 차량에도 정산이 누적</span><span class="n">편법 <b>35코인</b> · 정상 <b>24코인</b><br>막을수록 이득</span></div>
+        <div class="arw">→</div>
+        <div class="box"><span class="k">변경 후</span><span class="s">무이자 정산 + 장부 소각</span><span class="n">순위 역전<br>단언 테스트 <b>3종</b>으로 고정</span></div>
+      </div>
+
+      <h4>2.7 벤치마크 툴 제작</h4>
+      <div class="measure">
+        <p>
+          성능이 걱정된다는 말은 나왔는데 잴 방법이 없었습니다. 프레임 타임을 보는 것도 맞지 않았습니다.
+          통행 배정은 매 프레임이 아니라 <b>도로를 지을 때만</b> 불리기 때문입니다.
+        </p>
+        <p>
+          그래서 도로망 규모를 인자로 받아 재계획 시간을 표로 뽑는 EditMode 벤치마크를 만들었습니다(<a href="https://github.com/hjh8874/GreenLight/pull/257">PR #257</a>).
+          워밍업 3회를 버리고 11회 중앙값을 쓰며, 회귀 상한을 테스트로 걸어뒀습니다.
+          2.3의 표는 전부 이 도구가 뽑은 값입니다.
+        </p>
+        <p>
+          <b>여기에 시간을 쓴 이유.</b> 개발자가 게임의 재미를 직접 늘리기는 어렵지만,
+          같은 팀이 더 빨리·더 정확히 만들게 하는 것은 개발자 몫이라고 봤습니다.
+          도구를 만들기 전에는 "느린 것 같다"였고, 만든 뒤에는 "700칸에서 388ms"가 됐습니다.
+          <b>다만 이 도구는 통행 배정 하나만 잽니다.</b> 프레임 단위 프로파일링은 아직 못 했습니다.
+        </p>
+      </div>
+
+      <h4>2.8 솔로 인수 이후 — 주차 겹침 추적</h4>
+      <div class="measure">
+        <p>
+          팀 프로젝트가 발표로 끝난 뒤 <b>혼자 이어받아 스팀 출시를 준비하고 있습니다.</b>
+          플레이해보니 주차된 차들이 서로 파고들어 있었습니다. 눈에는 보이는데,
+          얼마나 심한지 어디가 원인인지는 알 수 없는 상태였습니다.
+        </p>
+        <p>
+          <b>재기 전에 자를 먼저 만들었습니다.</b> 기존 진단 코드는 1.5초에 한 줄씩 로그만 찍고
+          카운터가 없었습니다. 겹침을 값 타입으로 바꾸고 격자 도시를 돌리는 하네스를 만들었더니
+          두 가지가 드러났습니다. 한 쌍이 N틱 겹쳐 있으면 N번 세고 있었고(<b>13,153 → 66</b>),
+          AABB로 재고 있어서 회전한 차를 과대 보고하고 있었습니다(OBB/SAT로 교체).
+        </p>
+        <p>
+          <b>첫 진단은 틀렸습니다.</b> 슬롯 앞뒤 간격 0.4가 차 길이 0.44보다 좁아서라고 보고 고쳤습니다.
+          사건 수는 47에서 33으로 줄었는데, <b>겹쳐 있던 시간은 249틱에서 16,437틱으로 오히려 늘었습니다.</b>
+          스쳐 지나가던 것이 서 있는 것으로 바뀐 것입니다.
+        </p>
+      </div>
+
+      <div class="ba">
+        <div class="box"><span class="k">의도</span><span class="s">옆으로 나란히 주차</span><span class="n">차 진행축 성분 <b>0.0</b><br>차 수직축 성분 0.31</span></div>
+        <div class="arw">vs</div>
+        <div class="box"><span class="k">실측</span><span class="s">스퍼 접선 방향으로 약 60° 회전</span><span class="n">차 진행축 성분 <b>0.291</b><br>차 수직축 성분 0.163</span></div>
+      </div>
+      <p class="ba-note">간격의 <b>크기</b>는 0.333타일로 의도값과 사실상 같았습니다. 틀린 것은 크기가 아니라 방향이었고, 스칼라만 비교하는 동안은 보이지 않았습니다.</p>
+
+      <div class="measure" style="margin-top:16px">
+        <p>
+          원인은 한 줄이었습니다. 주차 포즈는 위치와 방향을 <b>둘 다</b> 갖는데,
+          경로를 굽는 쪽에서 방향을 <code>out _</code>로 버리고 위치만 받아갔습니다.
+          그래서 접선이 "마지막 도로점 → 앵커" 직선이 되고, 차가 슬롯을 가로질러 비스듬히 섰습니다.
+        </p>
+      </div>
+
+      <details class="code" open>
+        <summary>CarMotion.cs &nbsp;—&nbsp; 버리던 방향을 경로 베이크로 넘긴다</summary>
+<pre>Vector3 homeAnchor = GetParkingAnchor(
+    car.Home, outboundTiles[0], car.HomeSlot,
+    simEngine.CarSimHomeParkingSlots,
+    out Vector3? homeForward);        // 전에는 out _ 로 버렸다
+
+bakedRoutes[car.RouteIndex] = new BakedRoutePair {
+    // 스퍼가 주차 포즈의 방향으로 시작/종료하게 한다 — 안 넘기면
+    // 앵커까지의 직선 방향이 접선이 되어 차가 슬롯을 가로질러 비스듬히 선다.
+    Outbound = BakeCommuteRoute(
+        outboundTiles, homeAnchor, workParking,
+        homeForward, workParkingForward),</pre>
+        <p class="cap">부호는 강제하지 않고 진행 방향에 맞춰 고릅니다. 집·사무실은 슬롯이 건물 가장자리이고 forward가 건물 안쪽이라(코 박고 주차), 부호를 강제하면 나가는 차가 건물 속으로 먼저 향합니다. `null`이면 종전 동작이라 로터리·버스·앰뷸런스 경로는 바뀌지 않습니다.</p>
+      </details>
+
+      <div class="ba" style="margin-top:18px">
+        <div class="box"><span class="k">수정 전</span><span class="s">주차 포즈의 방향을 버림</span><span class="n">겹친 시간 합 <b>16,437틱</b><br>둘 다 주행 5 · 건물 간 간섭 3,236</span></div>
+        <div class="arw">→</div>
+        <div class="box"><span class="k">수정 후</span><span class="s">접선을 주차 축에 스냅</span><span class="n">겹친 시간 합 <b>28틱</b><br>둘 다 주행 <b>0</b> · 건물 간 간섭 <b>0</b></span></div>
+      </div>
+      <p class="ba-note">같은 조건 40×40에서도 19,385 → 26틱. 남은 24건은 합쳐 28틱이라 건당 1틱짜리 순간 스침입니다.</p>
+
+      <div class="measure" style="margin-top:18px">
+        <p>
+          <b>이 결함을 통과시킨 테스트가 있었습니다.</b> 주차 슬롯 가드가 "쌍 간 거리 0.3 이상"만 봤는데
+          그 자리에 놓이는 차가 0.44였습니다. 기준이 실제 제약보다 느슨하면 결함이 초록으로 통과합니다.
+          <b>느슨한 가드는 없는 가드보다 나쁩니다</b> — 있으면 확인했다고 믿기 때문입니다. 차체 기준으로 다시 썼습니다.
+        </p>
+        <p>
+          <b>아직 못 푼 것.</b> 실제 씬에서는 하네스가 0으로 보고하는 현상이 남아 있습니다.
+          집 앞 도로에 차가 오래 서 있다가 다시 움직입니다. 워치독 임계값은 1.2초·2.4초로 짧으니
+          워치독이 봤다면 오래 서 있을 수 없습니다. 워치독은 시뮬레이션의 막힘 틱을 보는데
+          화면에서 차를 세우는 것은 화면 쪽 속도 천장이라, <b>둘이 어긋나면 아무도 못 잡는다</b>는 것이 지금 가설입니다.
+          다음 작업은 정지 사유를 코드로 기록해 이 가설을 확인하는 것입니다.
+        </p>
+      </div>
+
+      <div class="specrow">
+        <span>Unity 6</span><span>C#</span><span>기획</span><span>경로 탐색</span><span>시뮬레이션</span><span>EditMode 테스트</span>
+      </div>
+      <p class="plinks">
+        <a href="https://github.com/hjh8874/GreenLight">저장소 (공개)</a>
+        <a href="https://github.com/hjh8874/GreenLight/blob/develop/Assets/01_Scripts/CityFlow/Sim/RoutePlanner.cs">통행 배정 코드</a>
+        <a href="https://github.com/hjh8874/GreenLight/tree/develop/Assets/Tests/EditMode">코어 테스트 671개</a>
+      </p>
+    </div>
+  </div>
+</section>
+<!-- 제2장 PARRYWAY -->
+<section class="board" id="parryway" data-sum="AI에 구현을 분배해 하루 만에 만든 웹 게임입니다. 판정 설계와 심사 대응을 담았습니다." data-c="3" data-title="제3장 PARRYWAY">
+  <div class="bed">
+    <div class="chap">
+      <span class="no">MANUAL 03</span>
+      <h2>PARRYWAY</h2>
+      <span class="ext">개인 · 하루</span>
+    </div>
+    <div class="leaf">
+      <p class="hash"><b>#TypeScript #Canvas2D #WebAudio #모바일터치 #AI오케스트레이션</b></p>
+      <h3>PARRYWAY</h3>
+      <table class="ov">
+        <tr><td class="k">플랫폼</td><td>웹 브라우저 · 모바일 터치</td><td class="k">장르</td><td>리듬 패링 러너 로그라이트</td></tr>
+        <tr><td class="k">개발 인원</td><td><b>1명 (개인)</b></td><td class="k">개발 기간</td><td>2026.08.18–19 <b>착수 하루</b> · 08.23 2차 튜닝</td></tr>
+        <tr><td class="k">개발 도구</td><td>TypeScript · Canvas 2D · Web Audio · Vite</td><td class="k">플레이 링크</td><td>itch.io 업로드 예정 (소스 동시 공개)</td></tr>
+        <tr><td class="k">요약</td><td colspan="3">공격도 이동도 없이 <b>4방향 방패만</b> 남긴 러너. 왕은 알아서 걷고 플레이어는 막는 것만 책임집니다. 막을 때마다 펜타토닉 음이 나서 잘 막으면 연주가 되고, 1,000m를 걸으면 집에 도착합니다.<br>구현을 AI 워커에 태스크 단위로 분배하고 저는 명세와 판정만 잡는 방식을 처음 써봤습니다.</td></tr>
+        <tr><td class="k">담당 내용</td><td colspan="3"><ul>
+          <li>기획·구현·튜닝 전부. 판정 규칙(방패 상태 기반)과 리듬 레이어 설계</li>
+          <li>AI 워커 오케스트레이션 — 태스크 7개 분배, 손맛 게이트에서 코어 리워크 1회 결정</li>
+          <li>AI 심사 3인 패널 운영 → 교차 지적 10건 전량 수정 후 배포</li>
+        </ul></td></tr>
+      </table>
+
+      <h4>3.1 어떤 게임인가</h4>
+      <div class="measure">
+        <p>
+          왕이 왼쪽에서 오른쪽으로 <b>알아서 걷습니다.</b> 플레이어는 이동도 공격도 하지 않고
+          <b>방향키 4개로 방패만</b> 듭니다. 앞에서는 대포알이, 위에서는 폭탄이, 뒤에서는 돼지가 날아오고,
+          날아온 방향에 맞는 방패를 제때 들고 있으면 막힙니다.
+        </p>
+        <p>
+          막을 때마다 <b>방향마다 다른 음</b>이 납니다(↓A3 ←C4 →E4 ↑A4). 펜타토닉이라 아무렇게나 막아도
+          불협이 나지 않고, 잘 막으면 그게 연주가 됩니다. <b>막을수록 음악이 된다</b>가 이 게임의 한 줄입니다.
+        </p>
+        <p>
+          100m마다 능력을 하나 고르고, 죽으면 모은 코인으로 상점에서 성장합니다.
+          <b>1,000m를 걸으면 집에 도착하고 끝납니다.</b> 제목이 약속한 목적지를 게임 안에 넣어뒀습니다.
+        </p>
+      </div>
+
+      <h4>3.2 개발 개요</h4>
+      <dl class="rr">
+        <dt>CONTEXT</dt><dd>Unity로 만들던 패링 게임이 아트에서 막혀 멈춰 있었습니다. 도형과 CC0 에셋만 쓰는 웹으로 다시 짜면 아트를 우회할 수 있다고 봤습니다</dd>
+        <dt>PROBLEM</dt><dd>같은 코어를 다시 세우는 데 며칠을 쓸 수는 없었습니다. 하루 안에 <b>플레이해서 판단할 수 있는 상태</b>까지 가는 것이 목표였습니다</dd>
+        <dt>CONSTRAINT</dt><dd>런타임 의존성 0 · 이미지 파일 없이 도형과 무료 에셋만 · 브라우저에서 링크 하나로 실행. 제약을 먼저 못 박고 시작했습니다</dd>
+        <dt>DECISION</dt><dd>구현을 AI 워커 여럿에게 태스크 단위로 나눠 맡기고, 저는 명세와 판정 기준만 잡았습니다. 처음 해보는 방식이었습니다</dd>
+        <dt>BUILD</dt><dd>태스크 7개를 배치 A~D로 흘려보내고, 손맛이 안 나온 시점에 <b>3레인 근접에서 4방향 전원거리로 코어를 갈아엎었습니다</b>(리워크 1회)</dd>
+        <dt>MEASURE</dt><dd>착수 하루 만에 플레이 가능한 빌드. 이후 2차 튜닝까지 포함해 테스트 <b>56개</b> · strict TypeScript 클린 · 런타임 의존성 0 · 빌드 gzip 20KB</dd>
+        <dt>LIMITS</dt><dd>무료 에셋 티가 남아 있는 게 지금 최대 약점입니다. 아트 후처리를 한 겹 더 올려야 한다고 보고 있고, 리듬 시계를 통일한 뒤의 박자 체감은 아직 제 손으로 풀런해보지 못했습니다</dd>
+      </dl>
+
+      <h4>3.3 방패 판정 설계</h4>
+      <div class="measure">
+        <p>
+          처음엔 흔한 방식대로 입력 타임스탬프와 임팩트 시각의 차이로 판정했습니다.
+          그런데 방향을 바꾸는 도중에도 판정이 성립해버려서, 아무 방향이나 연타하는 쪽이 유리해졌습니다.
+        </p>
+        <p>
+          그래서 <b>임팩트가 일어난 순간의 방패 상태</b>를 보도록 바꿨습니다.
+          방향키를 누르면 90ms 동안 그 방향에 묶이고, 활성 60ms 안에 맞으면 저스트,
+          140ms 안이면 패링, 계속 누르고 있으면 가드입니다. 가드는 안 죽는 대신 8m 밀립니다.
+          연타는 패링 창을 반씩 깎게 해서 스팸의 이득을 없앴습니다.
+        </p>
+        <p>
+          <b>이 선택의 단점.</b> 방향을 바꾸는 90ms 동안은 어떤 공격도 못 막습니다.
+          즉 방향 전환 자체가 비용이 되고, 동시에 두 방향이 오면 하나는 반드시 가드로 받아야 합니다.
+          막을 수 없는 구간을 남기는 대신 규칙이 한 문장으로 설명되는 쪽을 골랐습니다.
+        </p>
+      </div>
+      <details class="code" open>
+        <summary>combat.ts &nbsp;—&nbsp; judgeShield()</summary>
+<pre>if (shield.dir !== attackDir)          return missed('wrong-direction');
+if (shield.loweredAtMs !== null &amp;&amp;
+    impactAtMs &gt;= shield.loweredAtMs + cfg.lowerMs)
+                                       return missed('released');
+if (impactAtMs &lt; shield.raisingUntilMs ||
+    impactAtMs &lt; shield.activeSinceMs) return missed('raising');
+
+const activeAgeMs  = impactAtMs - shield.activeSinceMs;
+const parryFreshMs = Math.min(cfg.parryFreshMs, shield.parryFreshMs);
+if (activeAgeMs &lt;= Math.min(cfg.justMs, parryFreshMs)) return judged('just');
+return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
+        <p class="cap">입력 시각을 저장해두고 빼는 대신, 임팩트가 들어온 순간의 방패 상태 하나만 봅니다. `parryFreshMs`가 연타로 깎이는 값이고, 경계 1ms를 테스트로 고정했습니다.</p>
+      </details>
+
+      <h4>3.4 속도감 튜닝</h4>
+      <div class="measure">
+        <p>
+          플레이해보면 계속 느리게 느껴졌습니다. 처음엔 이동 배율을 올렸는데 체감이 거의 안 바뀌었습니다.
+        </p>
+        <p>
+          원인은 배경 무늬였습니다. <b>가로 줄무늬를 가로로 흘리면 이동이 검출되지 않습니다.</b>
+          움직임을 읽을 수직 엣지가 화면에 없었던 겁니다.
+          벽 배너를 세워 수직 엣지를 만들고 배경을 3층 패럴랙스로 갈랐더니 같은 속도에서 체감이 붙었습니다.
+        </p>
+        <p>
+          밀도도 같이 손봤습니다. 다음 공격을 임팩트 시점이 아니라 <b>발사 시점 기준으로 예약</b>하게 바꿔서
+          투사체 비행시간을 죽은 시간에서 빼냈습니다. 읽을 시간(윈드업)은 그대로 뒀습니다.
+        </p>
+      </div>
+      <div class="ba">
+        <div class="box"><span class="k">기존</span><span class="s">가로 줄무늬 바닥을 가로로 스크롤</span><span class="n">이동 배율 48 → 120<br>체감 변화 거의 없음 · 멀미만 발생</span></div>
+        <div class="arw">→</div>
+        <div class="box"><span class="k">변경 후</span><span class="s">벽 배너로 수직 엣지 + 배경 3층 패럴랙스</span><span class="n">같은 배율에서 속도 체감 발생<br>배너 간격 4m</span></div>
+      </div>
+      <p class="ba-note">여기서 배운 것 — 눈이 속도를 읽는 단서는 배율이 아니라 <b>규칙적으로 지나가는 수직 엣지</b>입니다. 가로 무늬를 가로로 흘리면 아무리 빨라도 이동이 검출되지 않습니다.</p>
+
+      <h4>3.5 AI 심사 패널과 수정 10건</h4>
+      <div class="measure">
+        <p>
+          다 만들고 바로 배포하는 대신, 성향이 다른 심사자 셋(하드코어·캐주얼·인디)에게
+          코드 위치를 근거로 지적하게 했습니다. 점수는 5.5 / 6.0 / 6.5가 나왔고, 셋이 겹쳐 짚은 지적이 10건이었습니다.
+        </p>
+        <p>
+          그중 셋은 두면 게임이 깨지는 것이었습니다. 버스트로 보스를 스킵하고 게이지를 환불받는 무한 루프,
+          가드 릴리즈가 씹히는 미구현 구간, 드래프트 팝업이 뜬 사이에 맞는 문제였습니다.
+          <b>10건 전부 고치고 배포로 넘겼습니다.</b>
+        </p>
+        <p>
+          경제가 무너진 것도 이때 드러났습니다. 풀업까지 2.6런이면 끝나던 것을
+          거리 보상과 가격 곡선(×1.8^lv)을 다시 잡아 <b>27런</b>으로 늘리고, 그 값을 테스트로 고정했습니다.
+        </p>
+      </div>
+      <div class="ba">
+        <div class="box"><span class="k">기존</span><span class="s">거리 보상 없음 · 선형 가격</span><span class="n">메타 상점 풀업까지 <b>2.6런</b><br>성장이 3판 만에 끝남</span></div>
+        <div class="arw">→</div>
+        <div class="box"><span class="k">변경 후</span><span class="s">거리 0.1코인/m · 가격 ×1.8^lv</span><span class="n">풀업까지 <b>27런</b><br>경제 시뮬을 테스트로 고정</span></div>
+      </div>
+
+      <h4>3.6 모바일 대응</h4>
+      <div class="measure">
+        <p>
+          방향 입력이 4개뿐이라 사분면 탭·홀드로 그대로 옮겼고, 손가락 수 제스처를 얹었습니다.
+          조작을 줄여놓은 설계라 터치로 내려도 규칙을 바꿀 게 없었습니다.
+        </p>
+      </div>
+
+      <div class="errata">
+        플레이 링크는 제출 시점 기준으로 이 자리에 들어갑니다. itch.io 업로드 예정 · 소스와 함께 공개합니다.
+      </div>
+
+      <div class="specrow">
+        <span>TypeScript</span><span>Canvas 2D</span><span>Web Audio</span><span>Vite</span><span>의존성 0</span><span>모바일 터치</span><span>AI 오케스트레이션</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 제4장 Molten Arena -->
+<section class="board" id="molten" data-sum="2인 팀에서 1개월에 완주했습니다. 협업 중 충돌을 피한 설계 사례가 있습니다." data-c="4" data-title="제4장 MOLTEN ARENA">
+  <div class="bed">
+    <div class="chap">
+      <span class="no">MANUAL 04</span>
+      <h2>Molten Arena</h2>
+      <span class="ext">2인 팀 · 1개월</span>
+    </div>
+    <div class="leaf">
+      <p class="hash"><b>#UnityURP #C# #ScriptableObject #NavMesh #Cinemachine #타격감</b></p>
+      <h3>Molten Arena</h3>
+      <table class="ov">
+        <tr><td class="k">플랫폼</td><td>PC (Windows)</td><td class="k">장르</td><td>3인칭 웨이브 생존 로그라이트</td></tr>
+        <tr><td class="k">개발 인원</td><td><b>2명</b> · 클라이언트 담당</td><td class="k">개발 기간</td><td>2026.05 – 06 (<b>1개월</b>) · 완주·발표</td></tr>
+        <tr><td class="k">개발 도구</td><td>C# · Unity 6 (URP)</td><td class="k">영상 링크</td><td><a href="https://youtu.be/rlZltzKGEIY">시연 영상 (YouTube)</a></td></tr>
+        <tr><td class="k">요약</td><td colspan="3">용암 아레나에서 웨이브를 버티며 무기·아이템을 모으는 로그라이트. 2인 팀에서 클라이언트 구현을 맡아 1개월 안에 완주하고 발표했습니다.</td></tr>
+        <tr><td class="k">담당 내용</td><td colspan="3"><ul>
+          <li>무기·아이템을 ScriptableObject로 분리해 <b>기존 코드 수정 0줄</b>로 확장되는 구조 설계</li>
+          <li>히트스톱·플래시·스케일 펀치 타격감, VFX 오브젝트 풀링과 동시 상한</li>
+          <li>동료 코드를 건드리지 않는 일시정지 게이트 컴포넌트 (4.2)</li>
+          <li>난이도 조정 — 1판 클리어 약 3분 → 약 6분</li>
+        </ul></td></tr>
+      </table>
+      <figure>
+        <img src="../assets/molten-arena.jpg"
+             alt="Molten Arena 플레이 화면. 용암 지형에서 플레이어가 망치를 들고 해골 적들과 싸우고 있다."
+             width="1600" height="800" loading="lazy"
+             onerror="this.closest('figure').remove()">
+        <figcaption>그림 4-1 · 용암 아레나 전투. 1개월 안에 완주하고 발표했습니다.</figcaption>
+      </figure>
+
+      <h4>4.1 어떤 게임인가</h4>
+      <div class="measure">
+        <p>
+          용암 지형의 아레나에서 <b>몰려오는 적을 웨이브 단위로 버티는</b> 3인칭 로그라이트입니다.
+          적을 잡으면 경험치와 아이템이 떨어지고, 레벨업 때마다 능력을 하나 골라
+          한 판 안에서 빌드를 완성해 갑니다. 한 판은 약 6분입니다.
+        </p>
+        <p>
+          2인 팀이라 역할을 나눴고, 저는 <b>클라이언트 구현</b>을 맡았습니다.
+          무기가 늘어날 것을 알고 있었기 때문에 데이터를 코드에서 떼어내는 것과,
+          때리는 감각을 만드는 것에 시간을 썼습니다.
+        </p>
+      </div>
+
+      <h4>4.2 일시정지 게이트 — 병합 충돌 회피</h4>
+      <dl class="rr">
+        <dt>PROBLEM</dt><dd>일시정지(<code>timeScale = 0</code>) 상태에서도 카메라가 계속 돌고 커서가 풀리지 않았습니다</dd>
+        <dt>CONSTRAINT</dt><dd>회전 로직이 동료가 쓰고 있던 파일 안에 있었습니다. 직접 고치면 병합 충돌이 날 자리였습니다</dd>
+        <dt>DECISION</dt><dd>원본을 건드리지 않고, <code>timeScale</code>이 0일 때 회전 입력만 막고 커서를 푸는 컴포넌트를 따로 붙였습니다</dd>
+        <dt>RESULT</dt><dd><b>동료 코드 수정 0줄.</b> 일시정지·레벨업·결과 화면 3개 경로에서 확인했습니다</dd>
+        <dt>아쉬운 점</dt><dd>근본 해결은 아닙니다. 회전 로직 자체가 <code>timeScale</code>을 모른다는 문제는 그대로 남았고, 저는 밖에서 입력만 막았습니다. 마감이 급하지 않았다면 동료와 합의해 원본을 고치는 쪽이 맞았다고 봅니다</dd>
+      </dl>
+
+      <div class="specrow">
+        <span>Unity URP</span><span>C#</span><span>ScriptableObject</span><span>NavMesh</span><span>Cinemachine</span>
+      </div>
+      <p class="plinks"><a href="https://youtu.be/rlZltzKGEIY">플레이 영상 보기</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- 제5장 접은 것 -->
+<section class="board" id="dropped" data-sum="만들어놓고 접은 판단과, 아직 넘지 못한 한계를 그대로 적었습니다." data-c="5" data-title="제5장 접은 것">
+  <div class="bed">
+    <div class="chap">
+      <span class="no">MANUAL 05</span>
+      <h2>접은 것</h2>
+      <span class="ext">판단 기록</span>
+    </div>
+    <div class="leaf">
+      <h3>접은 것과 못 넘은 벽</h3>
+      <div class="measure">
+        <p>
+          빨리 만드는 것보다 어려운 건 빨리 접는 쪽이라고 생각합니다.
+          아래는 실제로 만들어놓고 접은 것과, 지금도 못 넘고 있는 것입니다.
+        </p>
+      </div>
+
+      <h4>5.1 타코야끼 — 접은 이유</h4>
+      <div class="measure">
+        <p>
+          브라우저에서 바로 돌아가는 리듬 게임을 만들었습니다. 소재는 제가 3년 9개월 운영한 매장이었고,
+          타이틀부터 결과 화면까지 한 바퀴가 도는 상태까지 갔습니다.
+        </p>
+        <p>
+          그런데 직접 플레이해 보니 <b>반복이 단조롭고 성장이 없었습니다.</b>
+          입력이 늘 같은 모양이라 2분이 지나면 더 볼 게 없었습니다.
+          여기서 붙여서 살릴지 접을지를 정해야 했는데, 문제가 연출이 아니라 코어에 있다고 판단해서
+          <b>붙이지 않고 접었습니다.</b> 대신 남은 시간을 PARRYWAY에 넣었고, 그건 하루 만에 나왔습니다.
+        </p>
+        <p>
+          접은 이유를 적어둔 건, 다음에 같은 냄새가 나는 프로토를 만들었을 때 더 빨리 알아보려는 목적입니다.
+          솔직히 이번엔 완결까지 만들고 나서야 알았습니다.
+        </p>
+      </div>
+
+      <h4>5.2 아직 못 넘은 벽</h4>
+      <ul>
+        <li><strong>통행 배정이 도로망 크기에 초선형으로 무너집니다.</strong> 2.3에 측정값이 있습니다. 고칠 방향은 잡았지만 아직 재보지 않았습니다</li>
+        <li><strong>Profiler로 프레임 단위 측정을 해본 적이 없습니다.</strong> 그래서 이 문서 어디에도 "메모리를 최적화했다"고 쓰지 않았습니다. 오브젝트 풀링을 적용했다는 것까지가 제가 확인한 범위입니다</li>
+        <li><strong>Unity로 만든 두 프로젝트는 발표까지입니다. 출시한 게임은 아직 없습니다.</strong> PARRYWAY가 처음으로 링크를 눌러 바로 플레이되는 산출물이 됩니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 부록 A 일하는 방식 -->
+<section class="board" id="how" data-sum="피드백을 처리하는 방식과, 맡지 않았지만 처리한 일입니다." data-c="6" data-title="부록 A 일하는 방식">
+  <div class="bed">
+    <div class="chap">
+      <span class="no">APPENDIX A</span>
+      <h2>일하는 방식</h2>
+      <span class="ext">태도와 사양</span>
+    </div>
+    <div class="leaf">
+      <h3>일하는 방식</h3>
+
+      <h4>A.1 피드백 처리</h4>
+      <div class="spec-box" style="max-width:720px">
+        <table>
+          <tr><td>팀원 코드리뷰</td><td>연출 오브젝트 GC 스파이크 → 풀 재사용으로 전환</td></tr>
+          <tr><td>팀 리뷰</td><td>SO와 코드의 기본값 불일치 → 수정 + 체크리스트로 재발 봉쇄</td></tr>
+          <tr><td>플레이테스터</td><td>"뭘 하는지 모르겠다" → 단일 지표 신설 (2.4)</td></tr>
+          <tr><td>AI 심사 3인</td><td>교차 지적 10건 → 전량 수정 후 배포 (3.5)</td></tr>
+          <tr><td>강사</td><td>이력서 3개 항목 → 당일 전량 반영, 포트폴리오 재배포</td></tr>
+        </table>
+      </div>
+      <div class="measure" style="margin-top:18px">
+        <p>
+          다만 다 받아 삼키지는 않는 편입니다. 마지막 항목을 반영하면서
+          개선안에 섞여 있던 <b>사실과 다른 8건은 걸러냈습니다.</b>
+          쓴 적 없는 알고리즘 이름, 하지 않은 출시, 재본 적 없는 최적화 같은 것들이었습니다.
+          지적의 방향은 전부 맞았으니 형식은 그대로 받고, 숫자만 원본 기록과 대조해 고쳤습니다.
+        </p>
+      </div>
+
+      <h4>A.2 시키지 않았는데 집은 일</h4>
+      <ul>
+        <li><strong>머지 담당.</strong> 후반에 PR이 밀리는 걸 보고 인수해서 오픈 6건을 전부 처리했습니다. 프리팹 스냅샷 회귀도 그때 같이 막았습니다</li>
+        <li><strong>벤치마크 도구.</strong> 성능 얘기를 하려면 잴 게 필요해서 EditMode 벤치마크를 만들고 회귀 상한을 테스트로 걸었습니다(PR #257)</li>
+        <li><strong>블로그 파이프라인.</strong> 게임 분석 글의 소재 선정부터 발행까지를 반자동으로 묶어 18일에 69편을 냈습니다. 어디를 자동으로 돌리고 어디에 사람 판단을 남길지 정한 게 결과물입니다</li>
+      </ul>
+
+      <h4>A.3 기술 사양</h4>
+      <dl class="rows">
+        <dt>주력</dt>       <dd>Unity 6 (URP) · C# — 게임플레이, 시뮬레이션, 경로 탐색, 타격감, UI·HUD</dd>
+        <dt>서브</dt>       <dd>웹 게임 (TypeScript · Canvas 2D · Web Audio) — 프로토타입을 빨리 띄우는 용도</dd>
+        <dt>설계</dt>       <dd>ScriptableObject 데이터 주도 · 이벤트 구독 · 시뮬과 화면의 권한 분리</dd>
+        <dt>검증</dt>       <dd>EditMode·NUnit 회귀 테스트 · 직접 만든 벤치마크</dd>
+        <dt>협업</dt>       <dd>Git 브랜치·PR 리뷰·머지 · 개발 로그 문서화 · AI 워커 오케스트레이션</dd>
+        <dt>학력</dt>       <dd>한국방송통신대 컴퓨터공학과 <b>2027.03 졸업 예정</b><br>오즈코딩스쿨 게임 개발 부트캠프 (2026.03–08)</dd>
+      </dl>
+      <p class="playnote">
+        위 목록에는 실제로 프로젝트에서 써서 결과를 낸 것만 적었습니다.
+        만져만 본 것은 넣지 않았습니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<nav class="rail" id="rail" aria-label="장 바로가기"></nav>
+<script src="../assets/manual.js"></script>
+<script>
+/* 111퍼센트 슈퍼드리머 공고의 6색 원형 뱃지(슈-퍼-드-리-머)를 색판 휠로 인용한다.
+   공유 manual.js는 그대로 두고 이 볼륨에서만 덮어쓴다. */
+(function(){
+  var W={1:"#E5007F",2:"#35C6D8",3:"#3FAE49",4:"#CE2028",5:"#253C9E",6:"#F0A020",7:"#1A1A1A"};
+  function hex(c){return [1,3,5].map(function(i){return parseInt(c.slice(i,i+2),16)/255})}
+  function lum(r){var l=r.map(function(v){return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});
+    return .2126*l[0]+.7152*l[1]+.0722*l[2]}
+  function alpha(h){var b=hex(h),lo=0,hi=1,a,L;
+    for(var i=0;i<24;i++){a=(lo+hi)/2;
+      L=lum(b.map(function(v){return a*1+(1-a)*v}));
+      if(L<.88)lo=a;else hi=a}
+    return Math.min(.97,Math.max(.55,a))}
+  document.querySelectorAll(".board").forEach(function(s){
+    var c=W[s.dataset.c]; if(!c) return;
+    s.style.background=c;
+    s.style.setProperty("--board-c",c);
+    s.style.setProperty("--leaf-a",alpha(c).toFixed(3));
+    s.dataset.head=lum(hex(c))>.45?"dark":"light";
+  });
+  document.querySelectorAll("#rail a").forEach(function(a,i){
+    var s=document.querySelectorAll(".board")[i]; if(!s) return;
+    var c=W[s.dataset.c];
+    a.style.setProperty("--tab-c",c);
+    a.style.setProperty("--tab-ink",lum(hex(c))>.45?"#191714":"#F6F3EC");
+  });
+  /* 코드 하이라이트 — 라이브러리 없이 한 패스. 줄 단위로 감싸 줄번호를 붙인다 */
+  var KW=/^(for|if|else|return|continue|break|while|new|null|true|false|var|let|const|function|export|import|public|private|readonly|static|void|bool|float|int|double|string|class|this)$/;
+  var TY=/^(float|int|bool|void|double|string|var|const|let)$/;
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+  function hl(src){
+    var RE=/(\/\/[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?f?\b)|([A-Za-z_$][\w$]*)(\s*\()?/g;
+    var out="", last=0, m;
+    while((m=RE.exec(src))){
+      out+=esc(src.slice(last,m.index)); last=RE.lastIndex;
+      if(m[1]) out+='<span class="cm">'+esc(m[1])+'</span>';
+      else if(m[2]) out+='<span class="st">'+esc(m[2])+'</span>';
+      else if(m[3]) out+='<span class="nu">'+esc(m[3])+'</span>';
+      else{
+        var w=m[4], tail=m[5]||"";
+        if(KW.test(w)) out+='<span class="'+(TY.test(w)?"k1":"k2")+'">'+esc(w)+'</span>'+esc(tail);
+        else if(tail) out+='<span class="fn">'+esc(w)+'</span>'+esc(tail);
+        else if(/^[A-Z]/.test(w)) out+='<span class="ty">'+esc(w)+'</span>';
+        else out+=esc(w);
+      }
+    }
+    out+=esc(src.slice(last));
+    return out.split("\n").map(function(l){return '<span class="l">'+(l||" ")+'</span>'}).join("");
+  }
+  document.querySelectorAll("details.code pre").forEach(function(pre){
+    pre.innerHTML=hl(pre.textContent.replace(/\s+$/,""));
+  });
+})();
+</script>
+</body>
+</html>
