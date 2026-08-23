@@ -136,22 +136,26 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
   @page{size:A4; margin:12mm}
   html,body{background:#fff}
   .rail,.runfoot,#stamp{display:none !important}
-  /* 화면과 같은 구조로 인쇄한다 — 색판 위에 흰 리프 */
-  .board{break-after:page; padding:0 !important;
-    background:var(--board-c) !important;
+  /* 장 머리에 색 띠 한 줄. 전면 색판은 종이에서 잉크만 먹고 글이 안 읽힌다 */
+  .board{break-after:page; padding:9mm 0 0 !important; background:#fff !important}
+  .board::before{display:block !important; content:"" !important;
+    position:absolute; left:0; right:0; top:0; width:auto; height:6.5mm;
+    background:var(--board-c) !important; opacity:1 !important; border-radius:0;
     -webkit-print-color-adjust:exact; print-color-adjust:exact}
-  .bed{gap:0 14px}
-  .chap{color:var(--head-ink) !important; padding:14px 10px 0 4px !important}
-  .chap .big{opacity:.34 !important; font-size:64px}
-  .chap .no,.chap .ext,.chap .sum{color:var(--head-ink) !important}
-  .chap .sum{font-size:10px; line-height:1.6; max-width:none}
+  .bed{gap:0 16px; grid-template-columns:148px minmax(0,1fr)}
+  .chap{color:var(--ink) !important; padding-left:2px !important}
+  .chap .big{opacity:1 !important; font-size:58px; color:var(--board-c) !important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .chap h2{color:var(--board-c) !important}
+  .chap .no,.chap .ext,.chap .sum{color:var(--ink-soft) !important}
+  .chap .sum{font-size:10px; line-height:1.6; max-width:none; border-top-color:var(--ink)}
   .chap .toc{display:block !important; margin:12px 0 0; padding-top:9px;
-    border-top:1px solid var(--head-ink); max-width:none}
-  .chap .toc .tt{font-size:8.5px; margin-bottom:6px}
+    border-top:1px solid var(--ink); max-width:none}
+  .chap .toc .tt{font-size:8.5px; margin-bottom:6px; color:var(--ink-soft)}
   .chap .toc a{font-size:10px; line-height:1.4; padding:2.5px 0;
-    color:var(--head-ink) !important; border-bottom:1px dotted var(--head-ink)}
-  .leaf{background:#fff !important; padding:16px 18px 20px !important; box-shadow:none}
-  .leaf h4{border-top-color:var(--ink) !important}
+    color:var(--ink) !important; border-bottom:1px dotted rgba(25,23,20,.3)}
+  .leaf{background:#fff !important; padding:0 !important; box-shadow:none}
+  .leaf h4{border-top-color:var(--board-c) !important; border-top-width:2px}
   .toc2 .pg{font-size:10px; width:20px; margin-right:6px}
   .board::before,.board::after{display:none !important}
   .board:last-of-type{break-after:auto}
@@ -304,15 +308,15 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           <a href="#parryway-h3"><span class="pg">11</span>3.4 속도감 튜닝</a>
           <a href="#parryway-h4"><span class="pg">11</span>3.5 모바일 대응</a></td></tr>
         <tr><td class="c">제4장<br><b>Molten Arena</b><br><span>2인 팀 · Unity · 1개월</span></td><td>
-          <a href="#molten-h0"><span class="pg">13</span>4.1 어떤 게임인가</a>
-          <a href="#molten-h1"><span class="pg">14</span>4.2 인벤토리 — UI를 모르는 모델</a>
-          <a href="#molten-h2"><span class="pg">14</span>4.3 아이템 효과를 상속만으로</a>
-          <a href="#molten-h3"><span class="pg">14</span>4.4 적과 감지</a>
-          <a href="#molten-h4"><span class="pg">14</span>4.5 타격감과 부하 차단</a>
-          <a href="#molten-h5"><span class="pg">15</span>4.6 일시정지 게이트</a></td></tr>
+          <a href="#molten-h0"><span class="pg">12</span>4.1 어떤 게임인가</a>
+          <a href="#molten-h1"><span class="pg">13</span>4.2 인벤토리 — UI를 모르는 모델</a>
+          <a href="#molten-h2"><span class="pg">13</span>4.3 아이템 효과를 상속만으로</a>
+          <a href="#molten-h3"><span class="pg">13</span>4.4 적과 감지</a>
+          <a href="#molten-h4"><span class="pg">13</span>4.5 타격감과 부하 차단</a>
+          <a href="#molten-h5"><span class="pg">14</span>4.6 일시정지 게이트</a></td></tr>
         <tr><td class="c">제5장<br><b>플레이 기록</b><br><span>120 타이틀 · 1,972시간</span></td><td>
-          <a href="#play-h0"><span class="pg">16</span>5.1 가장 오래 플레이한 타이틀</a>
-          <a href="#play-h1"><span class="pg">17</span>5.2 플레이를 글로 남깁니다</a></td></tr>
+          <a href="#play-h0"><span class="pg">15</span>5.1 가장 오래 플레이한 타이틀</a>
+          <a href="#play-h1"><span class="pg">16</span>5.2 플레이를 글로 남깁니다</a></td></tr>
       </table>
 
 
