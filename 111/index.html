@@ -291,7 +291,8 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           <a href="#molten-h1">4.2 인벤토리 — UI를 모르는 모델</a>
           <a href="#molten-h2">4.3 아이템 효과를 상속만으로</a>
           <a href="#molten-h3">4.4 적과 감지</a>
-          <a href="#molten-h4">4.5 일시정지 게이트</a></td></tr>
+          <a href="#molten-h4">4.5 타격감과 부하 차단</a>
+          <a href="#molten-h5">4.6 일시정지 게이트</a></td></tr>
         <tr><td class="c">제5장<br><b>플레이 기록</b><br><span>120 타이틀 · 1,972시간</span></td><td>
           <a href="#play-h0">5.1 가장 오래 플레이한 타이틀</a>
           <a href="#play-h1">5.2 플레이를 글로 남깁니다</a></td></tr>
@@ -461,29 +462,20 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
           게임이 20×20에서 시작해 청크 단위로 해금되니 <b>지금 플레이 범위에서는 안 보이지만</b>,
           도시가 커지면 건설 순간의 멈춤으로 나타납니다.
         </p>
-        <p>
-          <b>아직 못 고쳤습니다.</b> 우선순위 큐와 증분 재계획이 답이라고 보고 있지만 재보지 않았습니다.
-          벤치마크가 테스트로 남아 있으니 고치면 그 자리에서 확인됩니다.
-          다만 <b>이 도구가 재는 것은 통행 배정 하나뿐입니다.</b> Profiler로 프레임 단위 측정을 해본 적이 없어서
-          이 문서 어디에도 "메모리를 최적화했다"고 쓰지 않았습니다.
-        </p>
       </div>
 
       <h4>2.4 플레이 지표 설계</h4>
       <div class="measure">
         <p>
           2차 빌드 플레이테스트에서 조작의 효과가 느껴지지 않는다는 말이 나왔습니다.
-          교통 도구는 여러 갠데, 설치한 결과로 뭐가 나아졌는지가 화면에 없었기 때문입니다.
+          교통 도구는 여러 갠데 설치한 결과가 화면에 없었습니다. 후보 셋을 놓고 골랐습니다.
         </p>
-        <p>
-          지표 후보가 셋이었습니다.
-        </p>
-        <ul>
-          <li><strong>평균 통행 시간.</strong> 정확하지만 <b>버렸습니다.</b> 신호등을 놓은 직후에는 오히려 나빠졌다가 나중에 좋아져서, 플레이어의 클릭과 숫자의 반응이 어긋납니다</li>
-          <li><strong>도착한 차량 수.</strong> 반응은 빠른데 <b>버렸습니다.</b> 도로를 아무렇게나 늘려도 올라가서, 잘 놓았는지를 구분하지 못합니다</li>
-          <li><strong>정지 없이 연속 통과한 교차로 수.</strong> <b>채택.</b> 무엇을 설치하든 즉시 반응하고, 막히면 그 자리에서 끊깁니다. 플레이어가 노리는 것(막힘 없음)과 숫자가 같은 방향입니다</li>
-        </ul>
       </div>
+      <ul>
+        <li><strong>평균 통행 시간</strong> — 버렸습니다. 신호등을 놓은 직후엔 오히려 나빠져서 클릭과 숫자가 어긋납니다</li>
+        <li><strong>도착한 차량 수</strong> — 버렸습니다. 도로를 아무렇게나 늘려도 올라가서, 잘 놓았는지를 구분하지 못합니다</li>
+        <li><strong>정지 없이 연속 통과한 교차로 수</strong> — <b>채택.</b> 무엇을 설치하든 즉시 반응하고, 막히면 그 자리에서 끊깁니다. 플레이어가 노리는 것과 숫자가 같은 방향입니다</li>
+      </ul>
       <figure>
         <img src="../assets/idle-metrics.jpg" alt="도로를 달리는 통근 차량과 상단 지표가 함께 보이는 IDLE CITY 화면."
              width="1280" height="720" loading="lazy" onerror="this.closest('figure').remove()">
@@ -491,14 +483,8 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
       </figure>
       <div class="measure">
         <p>
-          단계가 오르면 차체 발광 3단계와 통근 보상 가속이 붙습니다.
           판정은 시뮬레이션 계층에서만 합니다. 화면이 같이 판정하면 진실이 두 개가 되는데,
           그게 이 프로젝트에서 실제로 겪은 버그의 원인이었습니다.
-        </p>
-        <p>
-          <b>아쉬운 점.</b> 이 지표는 <b>버스 정류장을 제대로 평가하지 못합니다.</b>
-          정류장은 통행량 자체를 줄이는 도구인데, 차가 줄면 연속 통과는 그냥 쉬워집니다.
-          한 지표로 모든 도구를 재려다 보니 성격이 다른 하나가 헐겁게 잡힙니다.
         </p>
       </div>
 
@@ -772,7 +758,7 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
       <span class="ext">2인 팀 · 1개월</span>
     </div>
     <div class="leaf">
-      <p class="hash"><b>#UnityURP #C# #ScriptableObject #NavMesh #SOLID #인벤토리</b></p>
+      <p class="hash"><b>#UnityURP #C# #ScriptableObject #NavMesh #Cinemachine #타격감</b></p>
       <h3>Molten Arena</h3>
       <table class="ov">
         <tr><td class="k">플랫폼</td><td>PC (Windows)</td><td class="k">장르</td><td>3인칭 웨이브 생존 로그라이트</td></tr>
@@ -783,7 +769,8 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
           <li>인벤토리 — UI를 모르는 슬롯 모델 + 이벤트 구독으로 화면 분리 (4.2)</li>
           <li>아이템 효과를 상속만으로 늘리는 구조. <b>기존 코드 수정 0줄</b>로 확장 (4.3)</li>
           <li>조준 감지(Raycast) · 적 AI 3종(NavMeshAgent) · 그레이박스 맵과 NavMesh 베이크 (4.4)</li>
-          <li>HUD·퀵슬롯·결과 화면 UI · 일시정지 게이트 (4.5)</li>
+          <li>무기·아이템 데이터를 ScriptableObject로 분리 · 히트스톱·플래시·스케일 펀치 타격감 (4.5)</li>
+          <li>HUD·퀵슬롯·결과 화면 UI · 일시정지 게이트 (4.6)</li>
         </ul></td></tr>
       </table>
       <figure>
@@ -804,7 +791,7 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
         <p>
           2인 팀이라 역할을 나눴습니다. 저는 <b>인벤토리·아이템 시스템, 적 AI와 조준 감지, 맵과 UI</b>를 맡았고
           동료가 플레이어 컨트롤러·카메라·무기 발사를 맡았습니다.
-          아이템과 적이 계속 늘어날 것을 알고 있었기 때문에, <b>데이터를 코드에서 떼어내는 일</b>에 시간을 썼습니다.
+          아이템과 적이 계속 늘어날 것을 알고 있었기 때문에 <b>데이터를 코드에서 떼어내는 일</b>과, <b>때리는 감각</b>에 시간을 썼습니다.
         </p>
       </div>
 
@@ -852,7 +839,25 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
         <li><strong>맵과 내비게이션.</strong> 그레이박스 맵을 만들고 NavMesh를 베이크해, 적이 실제로 길을 찾는 상태를 팀에서 가장 먼저 세웠습니다</li>
       </ul>
 
-      <h4>4.5 일시정지 게이트 — 병합 충돌 회피</h4>
+      <h4>4.5 타격감과 부하 차단</h4>
+      <div class="measure">
+        <p>
+          쏘는 느낌이 밋밋했습니다. 데미지 숫자는 들어가는데 <b>맞았다는 감각이 없었습니다.</b>
+          히트스톱(맞는 순간 짧게 멈춤) · 플래시 · 스케일 펀치를 얹어 한 방의 무게를 만들었습니다.
+        </p>
+        <p>
+          그런데 연출을 붙이자 <b>연출 자체가 부하가 됐습니다.</b> 적이 몰리는 웨이브 후반에
+          이펙트가 동시에 수십 개 생성·파괴되면서 프레임이 흔들렸습니다. 세 겹으로 잡았습니다.
+        </p>
+      </div>
+      <div class="ba">
+        <div class="box"><span class="k">기존</span><span class="s">이펙트를 매번 생성·파괴</span><span class="n">동시 개수 제한 없음<br>파티클 maxParticles <b>1,000</b></span></div>
+        <div class="arw">→</div>
+        <div class="box"><span class="k">변경 후</span><span class="s">풀에서 꺼내 쓰고 되돌림</span><span class="n">동시 상한(maxConcurrent) 지정<br>파티클 <b>56~149</b>로 다이어트</span></div>
+      </div>
+      <p class="ba-note">⚠️ Profiler 전후 수치는 측정하지 않았습니다. 그래서 이 절에도 "최적화했다"고 쓰지 않고 <b>풀링과 상한을 적용했다</b>까지만 적습니다. 재고 나서 붙일 문장입니다.</p>
+
+      <h4>4.6 일시정지 게이트 — 병합 충돌 회피</h4>
       <dl class="rr">
         <dt>PROBLEM</dt><dd>일시정지(<code>timeScale = 0</code>) 상태에서도 카메라가 계속 돌고 커서가 풀리지 않았습니다</dd>
         <dt>CONSTRAINT</dt><dd>회전 로직이 동료가 쓰고 있던 파일 안에 있었습니다. 직접 고치면 병합 충돌이 날 자리였습니다</dd>
@@ -862,7 +867,7 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
       </dl>
 
       <div class="specrow">
-        <span>Unity URP</span><span>C#</span><span>ScriptableObject</span><span>NavMesh</span><span>SOLID</span>
+        <span>Unity URP</span><span>C#</span><span>ScriptableObject</span><span>NavMesh</span><span>Cinemachine</span><span>오브젝트 풀링</span>
       </div>
       <p class="plinks"><a href="https://youtu.be/rlZltzKGEIY">플레이 영상 보기</a></p>
     </div>
