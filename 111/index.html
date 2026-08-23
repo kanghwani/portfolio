@@ -136,13 +136,22 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
   @page{size:A4; margin:12mm}
   html,body{background:#fff}
   .rail,.runfoot,#stamp{display:none !important}
-  .board{break-after:page; padding:0 !important; background:#fff !important}
-  /* 장마다 색을 남긴다 — 흑백이면 어느 장인지 구분이 안 된다 */
-  .chap{border-left:6px solid var(--board-c); padding-left:11px !important;
+  /* 화면과 같은 구조로 인쇄한다 — 색판 위에 흰 리프 */
+  .board{break-after:page; padding:0 !important;
+    background:var(--board-c) !important;
     -webkit-print-color-adjust:exact; print-color-adjust:exact}
-  .chap .big{color:var(--board-c) !important; opacity:1 !important}
-  .chap h2{color:var(--board-c) !important}
-  .leaf h4{border-top-color:var(--board-c) !important; border-top-width:2px}
+  .bed{gap:0 14px}
+  .chap{color:var(--head-ink) !important; padding:14px 10px 0 4px !important}
+  .chap .big{opacity:.34 !important; font-size:64px}
+  .chap .no,.chap .ext,.chap .sum{color:var(--head-ink) !important}
+  .chap .sum{font-size:10px; line-height:1.6; max-width:none}
+  .chap .toc{display:block !important; margin:12px 0 0; padding-top:9px;
+    border-top:1px solid var(--head-ink); max-width:none}
+  .chap .toc .tt{font-size:8.5px; margin-bottom:6px}
+  .chap .toc a{font-size:10px; line-height:1.4; padding:2.5px 0;
+    color:var(--head-ink) !important; border-bottom:1px dotted var(--head-ink)}
+  .leaf{background:#fff !important; padding:16px 18px 20px !important; box-shadow:none}
+  .leaf h4{border-top-color:var(--ink) !important}
   .toc2 .pg{font-size:10px; width:20px; margin-right:6px}
   .board::before,.board::after{display:none !important}
   .board:last-of-type{break-after:auto}
@@ -282,22 +291,21 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
       <h4>1.2 목차</h4>
       <table class="toc2">
         <tr><td class="c">제2장<br><b>IDLE CITY</b><br><span>5인 팀 → 솔로 · Unity</span></td><td>
-          <a href="#idle-city-h0"><span class="pg">3</span>2.1 어떤 게임인가</a>
+          <a href="#idle-city-h0"><span class="pg">4</span>2.1 어떤 게임인가</a>
           <a href="#idle-city-h1"><span class="pg">4</span>2.2 통행 배정 알고리즘 설계</a>
           <a href="#idle-city-h2"><span class="pg">6</span>2.3 성능 — 잴 것이 없어서 도구부터</a>
-          <a href="#idle-city-h3"><span class="pg">6</span>2.4 플레이 지표 설계</a>
+          <a href="#idle-city-h3"><span class="pg">7</span>2.4 플레이 지표 설계</a>
           <a href="#idle-city-h4"><span class="pg">7</span>2.5 그 외 담당</a>
-          <a href="#idle-city-h5"><span class="pg">7</span>2.6 경제 어뷰징 차단</a>
-          <a href="#idle-city-h6"><span class="pg">8</span>2.7 솔로 인수 이후 — 주차 겹침 추적</a></td></tr>
+          <a href="#idle-city-h5"><span class="pg">8</span>2.6 경제 어뷰징 차단</a></td></tr>
         <tr><td class="c">제3장<br><b>PARRYWAY</b><br><span>개인 · 웹 · 하루</span></td><td>
-          <a href="#parryway-h0"><span class="pg">10</span>3.1 어떤 게임인가</a>
-          <a href="#parryway-h1"><span class="pg">11</span>3.2 개발 개요</a>
-          <a href="#parryway-h2"><span class="pg">11</span>3.3 방패 판정 설계</a>
-          <a href="#parryway-h3"><span class="pg">12</span>3.4 속도감 튜닝</a>
-          <a href="#parryway-h4"><span class="pg">12</span>3.5 모바일 대응</a></td></tr>
+          <a href="#parryway-h0"><span class="pg">9</span>3.1 어떤 게임인가</a>
+          <a href="#parryway-h1"><span class="pg">10</span>3.2 개발 개요</a>
+          <a href="#parryway-h2"><span class="pg">10</span>3.3 방패 판정 설계</a>
+          <a href="#parryway-h3"><span class="pg">11</span>3.4 속도감 튜닝</a>
+          <a href="#parryway-h4"><span class="pg">11</span>3.5 모바일 대응</a></td></tr>
         <tr><td class="c">제4장<br><b>Molten Arena</b><br><span>2인 팀 · Unity · 1개월</span></td><td>
           <a href="#molten-h0"><span class="pg">13</span>4.1 어떤 게임인가</a>
-          <a href="#molten-h1"><span class="pg">13</span>4.2 인벤토리 — UI를 모르는 모델</a>
+          <a href="#molten-h1"><span class="pg">14</span>4.2 인벤토리 — UI를 모르는 모델</a>
           <a href="#molten-h2"><span class="pg">14</span>4.3 아이템 효과를 상속만으로</a>
           <a href="#molten-h3"><span class="pg">14</span>4.4 적과 감지</a>
           <a href="#molten-h4"><span class="pg">14</span>4.5 타격감과 부하 차단</a>
@@ -338,7 +346,7 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           <li>인게임 기획 — 출퇴근 시간표, 회사 3종, 교통 도구의 구매 대상 정의</li>
           <li>EditMode 벤치마크 툴 직접 제작, 후반 머지 담당 인수(오픈 PR 6건 처리)</li>
           <li>커밋 <b>424 / 752건(56%)</b> · 코어 테스트는 팀 전체 671개(화면 포함 1,204개)이고, 그중 <b>통행 배정·차량 주행 계열이 제 몫</b>입니다</li>
-          <li><b>팀 해산 후 단독 인수 (2026.08~).</b> 스팀 출시를 목표로 씬 13→5개 정리, 라이선스 미증빙 음원 16곡 삭제, 품질 계측 도구 구축 (2.7)</li>
+          <li><b>팀 해산 후 단독 인수 (2026.08~).</b> 스팀 출시를 목표로 씬 13→5개 정리, 라이선스 미증빙 음원 16곡 삭제, 품질 계측 도구 구축</li>
         </ul></td></tr>
         <tr><td class="k">영상</td><td colspan="3"><a href="https://youtu.be/6rCe-v5Aewk"><b>팀 시연 영상 (YouTube · 4분 30초)</b></a> · 소스는 <a href="https://github.com/hjh8874/GreenLight">공개 저장소</a></td></tr>
       </table>
@@ -516,95 +524,6 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
         <div class="box"><span class="k">기존</span><span class="s">대기 차량에도 정산이 누적</span><span class="n">편법 <b>35코인</b> · 정상 <b>24코인</b><br>막을수록 이득</span></div>
         <div class="arw">→</div>
         <div class="box"><span class="k">변경 후</span><span class="s">무이자 정산 + 장부 소각</span><span class="n">순위 역전<br>단언 테스트 <b>3종</b>으로 고정</span></div>
-      </div>
-
-      <h4>2.7 솔로 인수 이후 — 주차 겹침 추적</h4>
-      <div class="measure">
-        <p>
-          팀 프로젝트가 발표로 끝난 뒤 <b>혼자 이어받아 스팀 출시를 준비하고 있습니다.</b>
-          플레이해보니 주차된 차들이 서로 파고들어 있었습니다. 눈에는 보이는데,
-          얼마나 심한지 어디가 원인인지는 알 수 없는 상태였습니다.
-        </p>
-        <p>
-          <b>재기 전에 자를 먼저 만들었습니다.</b> 기존 진단 코드는 1.5초에 한 줄씩 로그만 찍고
-          카운터가 없었습니다. 겹침을 값 타입으로 바꾸고 격자 도시를 돌리는 하네스를 만들었더니
-          두 가지가 드러났습니다. 한 쌍이 N틱 겹쳐 있으면 N번 세고 있었고(<b>13,153 → 66</b>),
-          AABB로 재고 있어서 회전한 차를 과대 보고하고 있었습니다(OBB/SAT로 교체).
-        </p>
-        <p>
-          <b>첫 진단은 틀렸습니다.</b> 슬롯 앞뒤 간격 0.4가 차 길이 0.44보다 좁아서라고 보고 고쳤습니다.
-          사건 수는 47에서 33으로 줄었는데, <b>겹쳐 있던 시간은 249틱에서 16,437틱으로 오히려 늘었습니다.</b>
-          스쳐 지나가던 것이 서 있는 것으로 바뀐 것입니다.
-        </p>
-      </div>
-
-      <div class="diag">
-        <figure>
-          <svg viewBox="0 0 260 150" role="img" aria-label="슬롯 두 칸에 차 두 대가 나란히 서 있어 서로 떨어져 있는 모습">
-            <rect x="24" y="16" width="212" height="118" fill="none" stroke="#191714" stroke-dasharray="4 4" opacity=".45"/>
-            <rect x="52" y="34" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5"/>
-            <rect x="52" y="88" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5"/>
-            <line x1="130" y1="64" x2="130" y2="88" stroke="#191714" stroke-width="1.5"/>
-            <text x="136" y="80" font-family="monospace" font-size="12" fill="#191714">0.31</text>
-            <text x="60" y="54" font-family="monospace" font-size="11" fill="#191714">차 →</text>
-            <text x="60" y="108" font-family="monospace" font-size="11" fill="#191714">차 →</text>
-          </svg>
-          <figcaption><b>의도 — 옆으로 나란히</b>진행축 성분 0.0 · 수직축 0.31</figcaption>
-        </figure>
-        <figure>
-          <svg viewBox="0 0 260 150" role="img" aria-label="같은 두 대가 약 60도 돌아가 서로 파고들어 겹친 모습">
-            <rect x="24" y="16" width="212" height="118" fill="none" stroke="#191714" stroke-dasharray="4 4" opacity=".45"/>
-            <rect x="52" y="34" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5" transform="rotate(-60 130 49)"/>
-            <rect x="52" y="88" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5" transform="rotate(-60 130 103)"/>
-            <text x="150" y="80" font-family="monospace" font-size="12" fill="#191714">겹침</text>
-          </svg>
-          <figcaption><b>실측 — 스퍼 접선 방향 약 60°</b>진행축 성분 <b style="display:inline">0.291</b> · 수직축 0.163</figcaption>
-        </figure>
-      </div>
-
-      <p class="ba-note">간격의 <b>크기</b>는 0.333타일로 의도값과 사실상 같았습니다. 틀린 것은 크기가 아니라 <b>방향</b>이었고, 스칼라만 비교하는 동안은 보이지 않았습니다.</p>
-
-      <div class="measure" style="margin-top:16px">
-        <p>
-          원인은 한 줄이었습니다. 주차 포즈는 위치와 방향을 <b>둘 다</b> 갖는데,
-          경로를 굽는 쪽에서 방향을 <code>out _</code>로 버리고 위치만 받아갔습니다.
-          그래서 접선이 "마지막 도로점 → 앵커" 직선이 되고, 차가 슬롯을 가로질러 비스듬히 섰습니다.
-        </p>
-      </div>
-
-      <details class="code" open>
-        <summary>CarMotion.cs &nbsp;—&nbsp; 버리던 방향을 경로 베이크로 넘긴다 &nbsp;(솔로 인수 후 작업 · 아직 로컬 브랜치)</summary>
-<pre>Vector3 homeAnchor = GetParkingAnchor(
-    car.Home, outboundTiles[0], car.HomeSlot,
-    simEngine.CarSimHomeParkingSlots,
-    out Vector3? homeForward);        // 전에는 out _ 로 버렸다
-
-bakedRoutes[car.RouteIndex] = new BakedRoutePair {
-    // 스퍼가 주차 포즈의 방향으로 시작/종료하게 한다 — 안 넘기면
-    // 앵커까지의 직선 방향이 접선이 되어 차가 슬롯을 가로질러 비스듬히 선다.
-    Outbound = BakeCommuteRoute(
-        outboundTiles, homeAnchor, workParking,
-        homeForward, workParkingForward),</pre>
-        <p class="cap">부호는 강제하지 않고 진행 방향에 맞춰 고릅니다. 집·사무실은 슬롯이 건물 가장자리이고 forward가 건물 안쪽이라(코 박고 주차), 부호를 강제하면 나가는 차가 건물 속으로 먼저 향합니다. `null`이면 종전 동작이라 로터리·버스·앰뷸런스 경로는 바뀌지 않습니다.</p>
-      </details>
-
-      <div class="ba" style="margin-top:18px">
-        <div class="box"><span class="k">수정 전</span><span class="s">주차 포즈의 방향을 버림</span><span class="n">겹친 시간 합 <b>16,437틱</b><br>둘 다 주행 5 · 건물 간 간섭 3,236</span></div>
-        <div class="arw">→</div>
-        <div class="box"><span class="k">수정 후</span><span class="s">접선을 주차 축에 스냅</span><span class="n">겹친 시간 합 <b>28틱</b><br>둘 다 주행 <b>0</b> · 건물 간 간섭 <b>0</b></span></div>
-      </div>
-      <p class="ba-note">같은 조건 40×40에서도 19,385 → 26틱. 남은 24건은 합쳐 28틱이라 건당 1틱짜리 순간 스침입니다.</p>
-
-      <div class="measure" style="margin-top:18px">
-        <p>
-          <b>이 결함을 통과시킨 테스트가 있었습니다.</b> 주차 슬롯 가드가 "쌍 간 거리 0.3 이상"만 봤는데
-          그 자리에 놓이는 차가 0.44였습니다. 기준이 실제 제약보다 느슨하면 결함이 초록으로 통과합니다.
-          <b>느슨한 가드는 없는 가드보다 나쁩니다</b> — 있으면 확인했다고 믿기 때문입니다. 차체 기준으로 다시 썼습니다.
-        </p>
-        <p>
-          <b>아직 못 푼 것.</b> 실제 씬에서는 하네스가 0으로 보고하는 정지 현상이 남아 있습니다.
-          시뮬레이션과 화면이 서로 다른 이유로 차를 세우고 있다고 보고, 정지 사유를 코드로 기록해 확인할 차례입니다.
-        </p>
       </div>
 
       <div class="specrow">
