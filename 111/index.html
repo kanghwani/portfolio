@@ -297,7 +297,7 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           <li>커밋 <b>424 / 752건(56%)</b> · 코어 테스트 671개(화면 포함 1,204개)</li>
           <li><b>팀 해산 후 단독 인수 (2026.08~).</b> 스팀 출시를 목표로 씬 13→5개 정리, 라이선스 미증빙 음원 16곡 삭제, 품질 계측 도구 구축 (2.8)</li>
         </ul></td></tr>
-        <tr><td class="k">영상</td><td colspan="3">🔎 없습니다. 지금 확인하실 수 있는 것은 <b>공개 저장소의 코드와 테스트</b>입니다</td></tr>
+        <tr><td class="k">영상</td><td colspan="3"><a href="https://drive.google.com/file/d/1sdXK0aIcSyl-Qv8ft8DzTx_Dx8Wb6duw/view"><b>팀 시연 영상 (4분 30초)</b></a> · 소스는 <a href="https://github.com/hjh8874/GreenLight">공개 저장소</a></td></tr>
       </table>
       <figure>
         <img src="../assets/idle-city.jpg"
@@ -323,6 +323,13 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           오래 켜두는 게임이니 <b>보고 있지 않을 때도 도시가 스스로 굴러가야</b> 하고,
           그 요구가 뒤의 기술적 선택 대부분을 결정했습니다.
         </p>
+      </div>
+      <figure>
+        <img src="../assets/idle-floating-mode.jpg" alt="브라우저 창 위에 작은 크기로 떠 있는 IDLE CITY 게임 창."
+             width="1280" height="720" loading="lazy" onerror="this.closest('figure').remove()">
+        <figcaption>그림 2-2 · 플로팅 모드. 창을 줄여 다른 작업 위에 얹어둡니다.</figcaption>
+      </figure>
+      <div class="measure">
         <p>
           문제는 <b>길이 막히면 수익이 멈춘다</b>는 것입니다. 회사 3종(사무실·물류창고·공장)의 출퇴근 시각을
           일부러 겹쳐 놨기 때문에 러시아워가 생기고, 플레이어는 그걸 보고 도로를 넓히거나 우회로를 내거나
@@ -350,6 +357,11 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
         <div class="arw">→</div>
         <div class="box"><span class="k">변경 후</span><span class="s">한 대씩 순차 배정<br>확정 경로 타일에 부하 적립</span><span class="n">우회 지시 분기문 <b>0개</b>로 분산<br><code>w=0</code>이면 실패하는 회귀 테스트</span></div>
       </div>
+      <figure>
+        <img src="../assets/idle-traffic-flow.jpg" alt="여러 갈래 도로에 통근 차량이 나뉘어 달리는 IDLE CITY 화면."
+             width="1280" height="720" loading="lazy" onerror="this.closest('figure').remove()">
+        <figcaption>그림 2-3 · 팀 시연 영상 1분 58초 — 「차량이 예상 혼잡을 반영해 여러 경로로 자연스럽게 분산됩니다」</figcaption>
+      </figure>
       <p class="ba-note">⚠️ 분산의 정도는 아직 수치로 재지 않았습니다. 지금 제시할 수 있는 증거는 특성을 고정한 회귀 테스트까지이고, 부하 감소율 측정은 다음 작업입니다. 재지 않은 값을 적지 않으려고 여기에 밝혀둡니다.</p>
 
       <details class="code" open>
@@ -599,7 +611,7 @@ bakedRoutes[car.RouteIndex] = new BakedRoutePair {
       <table class="ov">
         <tr><td class="k">플랫폼</td><td>웹 브라우저 · 모바일 터치</td><td class="k">장르</td><td>리듬 패링 러너 로그라이트</td></tr>
         <tr><td class="k">개발 인원</td><td><b>1명 (개인)</b></td><td class="k">개발 기간</td><td>2026.08.18–19 <b>착수 하루</b> · 08.23 2차 튜닝</td></tr>
-        <tr><td class="k">개발 도구</td><td>TypeScript · Canvas 2D · Web Audio · Vite</td><td class="k">플레이 링크</td><td>itch.io 업로드 예정 (소스 동시 공개)</td></tr>
+        <tr><td class="k">개발 도구</td><td>TypeScript · Canvas 2D · Web Audio · Vite</td><td class="k">플레이 링크</td><td><a href="https://zzangh2.itch.io/parryway"><b>zzangh2.itch.io/parryway</b></a></td></tr>
         <tr><td class="k">요약</td><td colspan="3">공격도 이동도 없이 <b>4방향 방패만</b> 남긴 러너. 왕은 알아서 걷고 플레이어는 막는 것만 책임집니다. 막을 때마다 펜타토닉 음이 나서 잘 막으면 연주가 되고, 1,000m를 걸으면 집에 도착합니다.<br>구현을 AI 워커에 태스크 단위로 분배하고 저는 명세와 판정만 잡는 방식을 처음 써봤습니다.</td></tr>
         <tr><td class="k">담당 내용</td><td colspan="3"><ul>
           <li>기획·구현·튜닝 전부. 판정 규칙(방패 상태 기반)과 리듬 레이어 설계</li>
@@ -728,8 +740,10 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
         </p>
       </div>
 
-      <div class="errata">
-        플레이 링크는 제출 시점 기준으로 이 자리에 들어갑니다. itch.io 업로드 예정 · 소스와 함께 공개합니다.
+      <div class="measure" style="margin-top:16px">
+        <p>
+          <b>플레이 링크</b> — <a href="https://zzangh2.itch.io/parryway">zzangh2.itch.io/parryway</a>
+        </p>
       </div>
 
       <div class="specrow">
