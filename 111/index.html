@@ -87,6 +87,9 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
 .diag figcaption{font-family:var(--mono); font-size:11px; margin-top:6px; color:var(--ink-soft)}
 .diag b{font-family:var(--sans); font-size:12.5px; color:var(--ink); display:block}
 
+.toc2 .pg{display:inline-block; width:24px; font-family:var(--mono); font-size:11px;
+  color:var(--ink-soft); text-align:right; margin-right:9px}
+
 /* 막대 — 표의 숫자를 눈으로 보이게 */
 .bars{margin:16px 0 0; max-width:720px}
 .bars .r{display:grid; grid-template-columns:132px minmax(0,1fr) 92px; align-items:center; gap:0 10px; margin-bottom:7px}
@@ -134,6 +137,13 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
   html,body{background:#fff}
   .rail,.runfoot,#stamp{display:none !important}
   .board{break-after:page; padding:0 !important; background:#fff !important}
+  /* 장마다 색을 남긴다 — 흑백이면 어느 장인지 구분이 안 된다 */
+  .chap{border-left:6px solid var(--board-c); padding-left:11px !important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .chap .big{color:var(--board-c) !important; opacity:1 !important}
+  .chap h2{color:var(--board-c) !important}
+  .leaf h4{border-top-color:var(--board-c) !important; border-top-width:2px}
+  .toc2 .pg{font-size:10px; width:20px; margin-right:6px}
   .board::before,.board::after{display:none !important}
   .board:last-of-type{break-after:auto}
   .bed{max-width:none; padding:0; gap:0 22px; grid-template-columns:150px minmax(0,1fr)}
@@ -272,29 +282,29 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
       <h4>1.2 목차</h4>
       <table class="toc2">
         <tr><td class="c">제2장<br><b>IDLE CITY</b><br><span>5인 팀 → 솔로 · Unity</span></td><td>
-          <a href="#idle-city-h0">2.1 어떤 게임인가</a>
-          <a href="#idle-city-h1">2.2 통행 배정 알고리즘 설계</a>
-          <a href="#idle-city-h2">2.3 성능 — 잴 것이 없어서 도구부터</a>
-          <a href="#idle-city-h3">2.4 플레이 지표 설계</a>
-          <a href="#idle-city-h4">2.5 그 외 담당</a>
-          <a href="#idle-city-h5">2.6 경제 어뷰징 차단</a>
-          <a href="#idle-city-h6">2.7 솔로 인수 이후 — 주차 겹침 추적</a></td></tr>
+          <a href="#idle-city-h0"><span class="pg">3</span>2.1 어떤 게임인가</a>
+          <a href="#idle-city-h1"><span class="pg">4</span>2.2 통행 배정 알고리즘 설계</a>
+          <a href="#idle-city-h2"><span class="pg">6</span>2.3 성능 — 잴 것이 없어서 도구부터</a>
+          <a href="#idle-city-h3"><span class="pg">6</span>2.4 플레이 지표 설계</a>
+          <a href="#idle-city-h4"><span class="pg">7</span>2.5 그 외 담당</a>
+          <a href="#idle-city-h5"><span class="pg">7</span>2.6 경제 어뷰징 차단</a>
+          <a href="#idle-city-h6"><span class="pg">8</span>2.7 솔로 인수 이후 — 주차 겹침 추적</a></td></tr>
         <tr><td class="c">제3장<br><b>PARRYWAY</b><br><span>개인 · 웹 · 하루</span></td><td>
-          <a href="#parryway-h0">3.1 어떤 게임인가</a>
-          <a href="#parryway-h1">3.2 개발 개요</a>
-          <a href="#parryway-h2">3.3 방패 판정 설계</a>
-          <a href="#parryway-h3">3.4 속도감 튜닝</a>
-          <a href="#parryway-h4">3.5 모바일 대응</a></td></tr>
+          <a href="#parryway-h0"><span class="pg">10</span>3.1 어떤 게임인가</a>
+          <a href="#parryway-h1"><span class="pg">11</span>3.2 개발 개요</a>
+          <a href="#parryway-h2"><span class="pg">11</span>3.3 방패 판정 설계</a>
+          <a href="#parryway-h3"><span class="pg">12</span>3.4 속도감 튜닝</a>
+          <a href="#parryway-h4"><span class="pg">12</span>3.5 모바일 대응</a></td></tr>
         <tr><td class="c">제4장<br><b>Molten Arena</b><br><span>2인 팀 · Unity · 1개월</span></td><td>
-          <a href="#molten-h0">4.1 어떤 게임인가</a>
-          <a href="#molten-h1">4.2 인벤토리 — UI를 모르는 모델</a>
-          <a href="#molten-h2">4.3 아이템 효과를 상속만으로</a>
-          <a href="#molten-h3">4.4 적과 감지</a>
-          <a href="#molten-h4">4.5 타격감과 부하 차단</a>
-          <a href="#molten-h5">4.6 일시정지 게이트</a></td></tr>
+          <a href="#molten-h0"><span class="pg">13</span>4.1 어떤 게임인가</a>
+          <a href="#molten-h1"><span class="pg">13</span>4.2 인벤토리 — UI를 모르는 모델</a>
+          <a href="#molten-h2"><span class="pg">14</span>4.3 아이템 효과를 상속만으로</a>
+          <a href="#molten-h3"><span class="pg">14</span>4.4 적과 감지</a>
+          <a href="#molten-h4"><span class="pg">14</span>4.5 타격감과 부하 차단</a>
+          <a href="#molten-h5"><span class="pg">15</span>4.6 일시정지 게이트</a></td></tr>
         <tr><td class="c">제5장<br><b>플레이 기록</b><br><span>120 타이틀 · 1,972시간</span></td><td>
-          <a href="#play-h0">5.1 가장 오래 플레이한 타이틀</a>
-          <a href="#play-h1">5.2 플레이를 글로 남깁니다</a></td></tr>
+          <a href="#play-h0"><span class="pg">16</span>5.1 가장 오래 플레이한 타이틀</a>
+          <a href="#play-h1"><span class="pg">17</span>5.2 플레이를 글로 남깁니다</a></td></tr>
       </table>
 
 
