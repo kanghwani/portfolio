@@ -80,6 +80,22 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
   padding:3px 0; text-decoration:none; border-bottom:1px dotted rgba(25,23,20,.35)}
 .toc2 a:last-child{border-bottom:0}
 .toc2 a:hover{padding-left:6px; transition:padding var(--step)}
+/* 도형 설명 — 각도 문제는 숫자보다 그림이 빠르다 */
+.diag{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0 0; max-width:660px}
+.diag figure{margin:0}
+.diag svg{width:100%; height:auto; border:1.5px solid var(--ink); background:rgba(255,255,255,.5)}
+.diag figcaption{font-family:var(--mono); font-size:11px; margin-top:6px; color:var(--ink-soft)}
+.diag b{font-family:var(--sans); font-size:12.5px; color:var(--ink); display:block}
+
+/* 막대 — 표의 숫자를 눈으로 보이게 */
+.bars{margin:16px 0 0; max-width:720px}
+.bars .r{display:grid; grid-template-columns:132px minmax(0,1fr) 92px; align-items:center; gap:0 10px; margin-bottom:7px}
+.bars .lb{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); text-align:right}
+.bars .tr{display:block; height:15px; background:rgba(25,23,20,.09); border:1px solid rgba(25,23,20,.3); -webkit-print-color-adjust:exact; print-color-adjust:exact}
+.bars .fl{display:block; height:100%; min-width:2px; background:var(--ink); -webkit-print-color-adjust:exact; print-color-adjust:exact}
+.bars .vl{font-family:var(--mono); font-size:11.5px; font-weight:700}
+.bars .cap{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin:10px 0 0}
+
 /* 플레이 기록 */
 .plays{width:100%; border-collapse:collapse; margin-top:16px; max-width:740px; font-size:13.5px}
 .plays td{border-bottom:1px solid rgba(25,23,20,.28); padding:5px 8px}
@@ -131,6 +147,9 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
   .fit{font-size:11.5px} .fit td{padding:4px 8px}
   .ov{font-size:11.5px; break-inside:avoid} .ov td{padding:4px 8px} .ov li{font-size:11px; margin-bottom:3px}
   .hash{font-size:10.5px}
+  .diag{gap:12px; break-inside:avoid} .diag figcaption{font-size:10px}
+  .bars .r{grid-template-columns:112px minmax(0,1fr) 78px; margin-bottom:5px}
+  .bars .tr{height:11px} .bars .lb,.bars .vl{font-size:10px}
   .plays{font-size:11px} .plays td{padding:3px 7px}
   .stat .n{font-size:19px} .stat div{padding:6px 9px}
   .toc2{font-size:11px; break-inside:avoid} .toc2 td{padding:5px 9px}
@@ -243,12 +262,11 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
         <tr><td class="c">제2장<br><b>IDLE CITY</b><br><span>5인 팀 → 솔로 · Unity</span></td><td>
           <a href="#idle-city-h0">2.1 어떤 게임인가</a>
           <a href="#idle-city-h1">2.2 통행 배정 알고리즘 설계</a>
-          <a href="#idle-city-h2">2.3 성능 측정과 한계</a>
+          <a href="#idle-city-h2">2.3 성능 — 잴 것이 없어서 도구부터</a>
           <a href="#idle-city-h3">2.4 플레이 지표 설계</a>
           <a href="#idle-city-h4">2.5 그 외 담당</a>
           <a href="#idle-city-h5">2.6 경제 어뷰징 차단</a>
-          <a href="#idle-city-h6">2.7 벤치마크 툴 제작</a>
-          <a href="#idle-city-h7">2.8 솔로 인수 이후 — 주차 겹침 추적</a></td></tr>
+          <a href="#idle-city-h6">2.7 솔로 인수 이후 — 주차 겹침 추적</a></td></tr>
         <tr><td class="c">제3장<br><b>PARRYWAY</b><br><span>개인 · 웹 · 하루</span></td><td>
           <a href="#parryway-h0">3.1 어떤 게임인가</a>
           <a href="#parryway-h1">3.2 개발 개요</a>
@@ -295,7 +313,7 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           <li>인게임 기획 — 출퇴근 시간표, 회사 3종, 교통 도구의 구매 대상 정의</li>
           <li>EditMode 벤치마크 툴 직접 제작, 후반 머지 담당 인수(오픈 PR 6건 처리)</li>
           <li>커밋 <b>424 / 752건(56%)</b> · 코어 테스트 671개(화면 포함 1,204개)</li>
-          <li><b>팀 해산 후 단독 인수 (2026.08~).</b> 스팀 출시를 목표로 씬 13→5개 정리, 라이선스 미증빙 음원 16곡 삭제, 품질 계측 도구 구축 (2.8)</li>
+          <li><b>팀 해산 후 단독 인수 (2026.08~).</b> 스팀 출시를 목표로 씬 13→5개 정리, 라이선스 미증빙 음원 16곡 삭제, 품질 계측 도구 구축 (2.7)</li>
         </ul></td></tr>
         <tr><td class="k">영상</td><td colspan="3"><a href="https://youtu.be/6rCe-v5Aewk"><b>팀 시연 영상 (YouTube · 4분 30초)</b></a> · 소스는 <a href="https://github.com/hjh8874/GreenLight">공개 저장소</a></td></tr>
       </table>
@@ -394,57 +412,45 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
         </p>
       </div>
 
-      <h4>2.3 성능 측정과 한계</h4>
+      <h4>2.3 성능 — 잴 것이 없어서 도구부터 만들었습니다</h4>
       <div class="measure">
         <p>
-          통행 배정 1회(<code>Plan</code>)의 비용을 재는 EditMode 벤치마크를 직접 만들었습니다.
-          이 함수는 매 프레임이 아니라 도로를 지을 때만 불리기 때문에,
-          기준은 프레임 타임이 아니라 건설 클릭의 체감입니다.
+          "느린 것 같다"는 말은 나왔는데 잴 방법이 없었습니다. 프레임 타임도 맞지 않았습니다.
+          통행 배정은 매 프레임이 아니라 <b>도로를 지을 때만</b> 불리기 때문입니다.
+          그래서 도로망 규모를 인자로 받아 재계획 시간을 뽑는 EditMode 벤치마크를 먼저 만들었습니다
+          (워밍업 3회 버리고 11회 중앙값 · 회귀 상한을 테스트로 고정 · <a href="https://github.com/hjh8874/GreenLight/pull/257">PR #257</a>).
         </p>
         <p>
-          처음엔 이걸 프레임 문제로 봤습니다. 차량이 늘면 느려질 거라고 짐작하고
-          차량 수만 올려가며 쟀는데, 1대당 비용이 거의 안 변했습니다.
-          짐작이 틀렸다는 뜻이라 도로망 크기를 축으로 바꿔 다시 쟀고, 그제서야 벽이 나왔습니다.
-          <b>재기 전에 세운 가설이 틀렸던 것이 이 표의 출발점입니다.</b>
+          <b>처음 세운 가설은 틀렸습니다.</b> 차량이 늘면 느려질 거라 보고 차량 수만 올렸는데
+          1대당 비용이 안 변했습니다. 축을 도로망 크기로 바꿔 다시 재자 그제서야 벽이 나왔습니다.
         </p>
       </div>
-      <div class="spec-box" style="max-width:680px">
-        <table>
-          <tr><td>플레이 구역</td><td>도로 타일</td><td>차량</td><td>재계획</td></tr>
-          <tr><td>20×20 (초기 해금)</td><td>175</td><td>18대</td><td>2.7 ms</td></tr>
-          <tr><td>20×20 (만차)</td><td>175</td><td>82대</td><td>12.1 ms</td></tr>
-          <tr><td>40×40</td><td>700</td><td>96대</td><td>388 ms</td></tr>
-          <tr><td>60×60</td><td>1,575</td><td>96대</td><td>1,106 ms</td></tr>
-          <tr><td>80×80</td><td>2,800</td><td>96대</td><td>1,879 ms</td></tr>
-        </table>
+
+      <div class="bars">
+        <div class="r"><span class="lb">도로 175칸 · 18대</span><span class="tr"><span class="fl" style="width:0.8%"></span></span><span class="vl">0.15 ms</span></div>
+        <div class="r"><span class="lb">도로 175칸 · 82대</span><span class="tr"><span class="fl" style="width:0.8%"></span></span><span class="vl">0.15 ms</span></div>
+        <div class="r"><span class="lb">도로 700칸 · 96대</span><span class="tr"><span class="fl" style="width:20.6%"></span></span><span class="vl">4.04 ms</span></div>
+        <div class="r"><span class="lb">도로 1,575칸 · 96대</span><span class="tr"><span class="fl" style="width:58.9%"></span></span><span class="vl">11.52 ms</span></div>
+        <div class="r"><span class="lb">도로 2,800칸 · 96대</span><span class="tr"><span class="fl" style="width:100%"></span></span><span class="vl">19.57 ms</span></div>
+        <p class="cap">차량 <b>1대당</b> 재계획 비용 · Apple M4 Pro · Unity 6000.5.2f1 · EditMode · 11회 중앙값</p>
       </div>
-      <p class="playnote">
-        측정 조건 — Apple M4 Pro · Unity 6000.5.2f1 · EditMode · 11회 중앙값(워밍업 3회) ·
-        차량 상한 96(SimConfig) · 격자 도로망 자동 생성<br>
-        <a href="https://github.com/hjh8874/GreenLight/blob/develop/Assets/Tests/EditMode/RoutePlannerBenchmarkTests.cs">벤치마크 코드</a> ·
-        <a href="https://github.com/hjh8874/GreenLight/pull/257">PR #257</a>
-      </p>
-      <div class="measure" style="margin-top:20px">
+
+      <div class="measure" style="margin-top:16px">
         <p>
-          <b>차량 수에는 선형입니다.</b> 같은 도로망에서 18대와 82대의 1대당 비용이
-          0.151ms와 0.147ms로 거의 같습니다. 부하를 쌓으며 한 대씩 배정하는 구조가
-          수요 증가에는 예상대로 버틴다는 뜻입니다.
+          <b>차량 수에는 선형입니다.</b> 위 두 줄이 그것입니다. 같은 도로망에서 18대와 82대의
+          1대당 비용이 0.15ms로 같습니다. 부하를 쌓으며 한 대씩 배정하는 구조가 수요 증가에는 버팁니다.
         </p>
         <p>
-          <b>도로망 크기에는 무너집니다.</b> 도로가 175칸에서 700칸으로 4배 늘 때
-          1대당 비용은 27배가 됐습니다. 탐색 구역 한 변을 20으로 두고 배열 스캔 다익스트라를 쓴 선택이
-          그 경계를 넘는 순간 비용으로 돌아온 것입니다.
-          게임이 20×20에서 시작해 청크 단위로 해금되니 현재 플레이 범위에서는 안 보이지만,
+          <b>도로망 크기에는 무너집니다.</b> 도로가 4배(175→700칸) 늘 때 1대당 비용은 <b>27배</b>가 됐습니다.
+          탐색 구역 한 변을 20으로 두고 배열 스캔 다익스트라를 쓴 선택이 그 경계를 넘는 순간 비용으로 돌아온 것입니다.
+          게임이 20×20에서 시작해 청크 단위로 해금되니 <b>지금 플레이 범위에서는 안 보이지만</b>,
           도시가 커지면 건설 순간의 멈춤으로 나타납니다.
         </p>
         <p>
-          <b>LIMITS.</b> 아직 못 고쳤습니다. 우선순위 큐로 탐색을 바꾸고
-          전체 재계획 대신 변경된 구역만 다시 푸는 쪽이 답이라고 보고 있는데, 아직 재보지 않았습니다.
-          다만 벤치마크를 테스트로 남겨뒀으니 고치면 그 자리에서 확인됩니다.
-        </p>
-        <p>
-          <b>여기서 잰 것은 통행 배정 하나뿐입니다.</b> Profiler로 프레임 단위 측정을 해본 적이 없어서,
-          이 문서 어디에도 "메모리를 최적화했다"고 쓰지 않았습니다. 오브젝트 풀링을 적용했다는 것까지가 제가 확인한 범위입니다.
+          <b>아직 못 고쳤습니다.</b> 우선순위 큐와 증분 재계획이 답이라고 보고 있지만 재보지 않았습니다.
+          벤치마크가 테스트로 남아 있으니 고치면 그 자리에서 확인됩니다.
+          다만 <b>이 도구가 재는 것은 통행 배정 하나뿐입니다.</b> Profiler로 프레임 단위 측정을 해본 적이 없어서
+          이 문서 어디에도 "메모리를 최적화했다"고 쓰지 않았습니다.
         </p>
       </div>
 
@@ -501,26 +507,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
         <div class="box"><span class="k">변경 후</span><span class="s">무이자 정산 + 장부 소각</span><span class="n">순위 역전<br>단언 테스트 <b>3종</b>으로 고정</span></div>
       </div>
 
-      <h4>2.7 벤치마크 툴 제작</h4>
-      <div class="measure">
-        <p>
-          성능이 걱정된다는 말은 나왔는데 잴 방법이 없었습니다. 프레임 타임을 보는 것도 맞지 않았습니다.
-          통행 배정은 매 프레임이 아니라 <b>도로를 지을 때만</b> 불리기 때문입니다.
-        </p>
-        <p>
-          그래서 도로망 규모를 인자로 받아 재계획 시간을 표로 뽑는 EditMode 벤치마크를 만들었습니다(<a href="https://github.com/hjh8874/GreenLight/pull/257">PR #257</a>).
-          워밍업 3회를 버리고 11회 중앙값을 쓰며, 회귀 상한을 테스트로 걸어뒀습니다.
-          2.3의 표는 전부 이 도구가 뽑은 값입니다.
-        </p>
-        <p>
-          <b>여기에 시간을 쓴 이유.</b> 개발자가 게임의 재미를 직접 늘리기는 어렵지만,
-          같은 팀이 더 빨리·더 정확히 만들게 하는 것은 개발자 몫이라고 봤습니다.
-          도구를 만들기 전에는 "느린 것 같다"였고, 만든 뒤에는 "700칸에서 388ms"가 됐습니다.
-          <b>다만 이 도구는 통행 배정 하나만 잽니다.</b> 프레임 단위 프로파일링은 아직 못 했습니다.
-        </p>
-      </div>
-
-      <h4>2.8 솔로 인수 이후 — 주차 겹침 추적</h4>
+      <h4>2.7 솔로 인수 이후 — 주차 겹침 추적</h4>
       <div class="measure">
         <p>
           팀 프로젝트가 발표로 끝난 뒤 <b>혼자 이어받아 스팀 출시를 준비하고 있습니다.</b>
@@ -540,12 +527,31 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
         </p>
       </div>
 
-      <div class="ba">
-        <div class="box"><span class="k">의도</span><span class="s">옆으로 나란히 주차</span><span class="n">차 진행축 성분 <b>0.0</b><br>차 수직축 성분 0.31</span></div>
-        <div class="arw">vs</div>
-        <div class="box"><span class="k">실측</span><span class="s">스퍼 접선 방향으로 약 60° 회전</span><span class="n">차 진행축 성분 <b>0.291</b><br>차 수직축 성분 0.163</span></div>
+      <div class="diag">
+        <figure>
+          <svg viewBox="0 0 260 150" role="img" aria-label="슬롯 두 칸에 차 두 대가 나란히 서 있어 서로 떨어져 있는 모습">
+            <rect x="24" y="16" width="212" height="118" fill="none" stroke="#191714" stroke-dasharray="4 4" opacity=".45"/>
+            <rect x="52" y="34" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5"/>
+            <rect x="52" y="88" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5"/>
+            <line x1="130" y1="64" x2="130" y2="88" stroke="#191714" stroke-width="1.5"/>
+            <text x="136" y="80" font-family="monospace" font-size="12" fill="#191714">0.31</text>
+            <text x="60" y="54" font-family="monospace" font-size="11" fill="#191714">차 →</text>
+            <text x="60" y="108" font-family="monospace" font-size="11" fill="#191714">차 →</text>
+          </svg>
+          <figcaption><b>의도 — 옆으로 나란히</b>진행축 성분 0.0 · 수직축 0.31</figcaption>
+        </figure>
+        <figure>
+          <svg viewBox="0 0 260 150" role="img" aria-label="같은 두 대가 약 60도 돌아가 서로 파고들어 겹친 모습">
+            <rect x="24" y="16" width="212" height="118" fill="none" stroke="#191714" stroke-dasharray="4 4" opacity=".45"/>
+            <rect x="52" y="34" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5" transform="rotate(-60 130 49)"/>
+            <rect x="52" y="88" width="156" height="30" rx="4" fill="none" stroke="#191714" stroke-width="2.5" transform="rotate(-60 130 103)"/>
+            <text x="150" y="80" font-family="monospace" font-size="12" fill="#191714">겹침</text>
+          </svg>
+          <figcaption><b>실측 — 스퍼 접선 방향 약 60°</b>진행축 성분 <b style="display:inline">0.291</b> · 수직축 0.163</figcaption>
+        </figure>
       </div>
-      <p class="ba-note">간격의 <b>크기</b>는 0.333타일로 의도값과 사실상 같았습니다. 틀린 것은 크기가 아니라 방향이었고, 스칼라만 비교하는 동안은 보이지 않았습니다.</p>
+
+      <p class="ba-note">간격의 <b>크기</b>는 0.333타일로 의도값과 사실상 같았습니다. 틀린 것은 크기가 아니라 <b>방향</b>이었고, 스칼라만 비교하는 동안은 보이지 않았습니다.</p>
 
       <div class="measure" style="margin-top:16px">
         <p>
