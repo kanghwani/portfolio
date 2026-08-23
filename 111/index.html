@@ -80,6 +80,19 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
   padding:3px 0; text-decoration:none; border-bottom:1px dotted rgba(25,23,20,.35)}
 .toc2 a:last-child{border-bottom:0}
 .toc2 a:hover{padding-left:6px; transition:padding var(--step)}
+/* 플레이 기록 */
+.plays{width:100%; border-collapse:collapse; margin-top:16px; max-width:740px; font-size:13.5px}
+.plays td{border-bottom:1px solid rgba(25,23,20,.28); padding:5px 8px}
+.plays tr:first-child td{border-top:1.5px solid var(--ink); font-family:var(--mono); font-size:11.5px; color:var(--ink-soft)}
+.plays tr:last-child td{border-bottom:1.5px solid var(--ink)}
+.plays td.h{font-family:var(--mono); text-align:right; width:76px; font-weight:700}
+.plays td.p{font-family:var(--mono); font-size:11.5px; width:74px; color:var(--ink-soft)}
+.stat{display:flex; flex-wrap:wrap; gap:0; margin-top:18px; max-width:740px; border:2px solid var(--ink)}
+.stat div{flex:1 1 132px; padding:9px 12px; border-right:1px solid var(--ink)}
+.stat div:last-child{border-right:0}
+.stat .n{font-family:var(--disp); font-size:25px; line-height:1.1; display:block}
+.stat .t{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; color:var(--ink-soft); display:block; margin-top:3px}
+
 /* 프로젝트 개요표 */
 .ov{width:100%; border-collapse:collapse; margin:0 0 22px; max-width:760px; font-size:14px}
 .ov td{border:1.5px solid var(--ink); padding:7px 12px; vertical-align:top}
@@ -118,9 +131,12 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
   .fit{font-size:11.5px} .fit td{padding:4px 8px}
   .ov{font-size:11.5px; break-inside:avoid} .ov td{padding:4px 8px} .ov li{font-size:11px; margin-bottom:3px}
   .hash{font-size:10.5px}
+  .plays{font-size:11px} .plays td{padding:3px 7px}
+  .stat .n{font-size:19px} .stat div{padding:6px 9px}
   .toc2{font-size:11px; break-inside:avoid} .toc2 td{padding:5px 9px}
   .toc2 a{font-size:11.5px; padding:1.5px 0; border-bottom:0}
   .toc2 td.c b{font-size:13px}
+  .rows{display:grid !important; grid-template-columns:104px minmax(0,1fr) !important; gap:6px 14px} .rows dd{font-size:12.5px} .rows dt{font-size:11px}
   .contact{margin:14px 0 16px; padding:7px 0; font-size:12px; gap:4px 14px}
   .creed{margin-bottom:18px !important} .creed li{font-size:12.5px; margin-bottom:4px}                        /* 바코드는 장식 */
   .spec-box td{padding:4px 9px}
@@ -211,9 +227,16 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           <tr><td>가장 최근에 만든 것</td><td>PARRYWAY — 웹 게임, 착수부터 플레이까지 하루. 모바일 대응</td></tr>
           <tr><td>완주 기록</td><td>팀 프로젝트 2건 (6주 · 1개월) 전부 최종 발표까지</td></tr>
           <tr><td>검증 방법</td><td>EditMode 자동 테스트 · 직접 만든 벤치마크</td></tr>
-          <tr><td>동작 환경</td><td>Unity 6 (URP) · C# / TypeScript · Canvas 2D</td></tr>
+          
         </table>
       </div>
+      <dl class="rows" style="margin-top:20px">
+        <dt>주력</dt><dd>Unity 6 (URP) · C# — 게임플레이 · 시뮬레이션 · 경로 탐색 · 타격감 · UI</dd>
+        <dt>서브</dt><dd>웹 게임 (TypeScript · Canvas 2D · Web Audio) — 프로토타입을 빨리 띄우는 용도</dd>
+        <dt>설계</dt><dd>ScriptableObject 데이터 주도 · 이벤트 구독 · 시뮬과 화면의 권한 분리</dd>
+        <dt>협업</dt><dd>Git 브랜치·PR 리뷰·머지 · 개발 로그 문서화 · AI 워커 오케스트레이션</dd>
+        <dt>학력</dt><dd>한국방송통신대 컴퓨터공학과 <b>2027.03 졸업 예정</b><br>오즈코딩스쿨 게임 개발 부트캠프 (2026.03–08)</dd>
+      </dl>
 
       <h4>1.2 목차</h4>
       <table class="toc2">
@@ -236,13 +259,9 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
         <tr><td class="c">제4장<br><b>Molten Arena</b><br><span>2인 팀 · Unity · 1개월</span></td><td>
           <a href="#molten-h0">4.1 어떤 게임인가</a>
           <a href="#molten-h1">4.2 일시정지 게이트 — 병합 충돌 회피</a></td></tr>
-        <tr><td class="c">제5장<br><b>접은 것</b></td><td>
-          <a href="#dropped-h0">5.1 타코야끼 — 접은 이유</a>
-          <a href="#dropped-h1">5.2 아직 못 넘은 벽</a></td></tr>
-        <tr><td class="c">부록 A<br><b>일하는 방식</b></td><td>
-          <a href="#how-h0">A.1 피드백 처리</a>
-          <a href="#how-h1">A.2 시키지 않았는데 집은 일</a>
-          <a href="#how-h2">A.3 기술 사양</a></td></tr>
+        <tr><td class="c">제5장<br><b>플레이 기록</b><br><span>120 타이틀 · 1,972시간</span></td><td>
+          <a href="#play-h0">5.1 가장 오래 플레이한 타이틀</a>
+          <a href="#play-h1">5.2 플레이를 글로 남깁니다</a></td></tr>
       </table>
 
 
@@ -410,6 +429,10 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
           <b>LIMITS.</b> 아직 못 고쳤습니다. 우선순위 큐로 탐색을 바꾸고
           전체 재계획 대신 변경된 구역만 다시 푸는 쪽이 답이라고 보고 있는데, 아직 재보지 않았습니다.
           다만 벤치마크를 테스트로 남겨뒀으니 고치면 그 자리에서 확인됩니다.
+        </p>
+        <p>
+          <b>여기서 잰 것은 통행 배정 하나뿐입니다.</b> Profiler로 프레임 단위 측정을 해본 적이 없어서,
+          이 문서 어디에도 "메모리를 최적화했다"고 쓰지 않았습니다. 오브젝트 풀링을 적용했다는 것까지가 제가 확인한 범위입니다.
         </p>
       </div>
 
@@ -604,13 +627,13 @@ bakedRoutes[car.RouteIndex] = new BakedRoutePair {
 
       <h4>3.2 개발 개요</h4>
       <dl class="rr">
-        <dt>CONTEXT</dt><dd>Unity로 만들던 패링 게임이 아트에서 막혀 멈춰 있었습니다. 도형과 CC0 에셋만 쓰는 웹으로 다시 짜면 아트를 우회할 수 있다고 봤습니다</dd>
+        <dt>CONTEXT</dt><dd>그 전에 만들던 리듬 게임을 접은 직후였습니다. 한 바퀴가 도는 상태까지 만들어놓고 직접 해봤는데 반복이 단조롭고 성장이 없었습니다. 붙여서 살릴지 정해야 했고, 문제가 연출이 아니라 코어에 있다고 판단해 <b>붙이지 않고 접었습니다.</b> 남은 시간을 이 게임에 넣었습니다<br>동시에 Unity로 만들던 패링 게임이 아트에서 막혀 멈춰 있었습니다. 도형과 CC0 에셋만 쓰는 웹으로 다시 짜면 아트를 우회할 수 있다고 봤습니다</dd>
         <dt>PROBLEM</dt><dd>같은 코어를 다시 세우는 데 며칠을 쓸 수는 없었습니다. 하루 안에 <b>플레이해서 판단할 수 있는 상태</b>까지 가는 것이 목표였습니다</dd>
         <dt>CONSTRAINT</dt><dd>런타임 의존성 0 · 이미지 파일 없이 도형과 무료 에셋만 · 브라우저에서 링크 하나로 실행. 제약을 먼저 못 박고 시작했습니다</dd>
         <dt>DECISION</dt><dd>구현을 AI 워커 여럿에게 태스크 단위로 나눠 맡기고, 저는 명세와 판정 기준만 잡았습니다. 처음 해보는 방식이었습니다</dd>
         <dt>BUILD</dt><dd>태스크 7개를 배치 A~D로 흘려보내고, 손맛이 안 나온 시점에 <b>3레인 근접에서 4방향 전원거리로 코어를 갈아엎었습니다</b>(리워크 1회)</dd>
         <dt>MEASURE</dt><dd>착수 하루 만에 플레이 가능한 빌드. 이후 2차 튜닝까지 포함해 테스트 <b>56개</b> · strict TypeScript 클린 · 런타임 의존성 0 · 빌드 gzip 20KB</dd>
-        <dt>LIMITS</dt><dd>무료 에셋 티가 남아 있는 게 지금 최대 약점입니다. 아트 후처리를 한 겹 더 올려야 한다고 보고 있고, 리듬 시계를 통일한 뒤의 박자 체감은 아직 제 손으로 풀런해보지 못했습니다</dd>
+        <dt>LIMITS</dt><dd>무료 에셋 티가 남아 있는 게 지금 최대 약점입니다. 아트 후처리를 한 겹 더 올려야 한다고 보고 있고, 리듬 시계를 통일한 뒤의 박자 체감은 아직 제 손으로 풀런해보지 못했습니다<br>Unity로 만든 두 프로젝트는 발표까지이고 <b>출시한 게임은 아직 없습니다.</b> 이 게임이 처음으로 링크를 눌러 바로 플레이되는 산출물이 됩니다</dd>
       </dl>
 
       <h4>3.3 방패 판정 설계</h4>
@@ -683,6 +706,12 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
         <p>
           경제가 무너진 것도 이때 드러났습니다. 풀업까지 2.6런이면 끝나던 것을
           거리 보상과 가격 곡선(×1.8^lv)을 다시 잡아 <b>27런</b>으로 늘리고, 그 값을 테스트로 고정했습니다.
+        </p>
+        <p>
+          <b>다만 지적을 다 받아 삼키지는 않습니다.</b> 얼마 전 이력서 피드백을 반영하면서
+          개선안에 섞여 있던 <b>사실과 다른 8건은 걸러냈습니다</b> — 쓴 적 없는 알고리즘 이름,
+          하지 않은 출시, 재본 적 없는 최적화 같은 것들이었습니다.
+          지적의 방향은 전부 맞았으니 형식은 그대로 받고, 숫자만 원본 기록과 대조해 고쳤습니다.
         </p>
       </div>
       <div class="ba">
@@ -773,105 +802,82 @@ return judged(activeAgeMs &lt;= parryFreshMs ? 'parry' : 'guard');</pre>
   </div>
 </section>
 
-<!-- 제5장 접은 것 -->
-<section class="board" id="dropped" data-sum="만들어놓고 접은 판단과, 아직 넘지 못한 한계를 그대로 적었습니다." data-c="5" data-title="제5장 접은 것">
+
+
+
+<!-- 제5장 플레이 기록 -->
+<section class="board" id="play" data-sum="장르의 기준이 된 게임들을 골라 플레이하고, 그 이해를 글로 남깁니다." data-c="5" data-title="제5장 플레이 기록">
   <div class="bed">
     <div class="chap">
       <span class="no">MANUAL 05</span>
-      <h2>접은 것</h2>
-      <span class="ext">판단 기록</span>
+      <h2>플레이 기록</h2>
+      <span class="ext">실측 데이터</span>
     </div>
     <div class="leaf">
-      <h3>접은 것과 못 넘은 벽</h3>
-      <div class="measure">
+      <p class="hash"><b>#플레이라이브러리 #역기획 #게임분석블로그</b></p>
+      <h3>무엇을 하며 배웠는가</h3>
+
+      <div class="stat">
+        <div><span class="n">120</span><span class="t">타이틀</span></div>
+        <div><span class="n">1,972</span><span class="t">시간</span></div>
+        <div><span class="n">5</span><span class="t">플랫폼</span></div>
+        <div><span class="n">18</span><span class="t">오픈월드·RPG 클리어</span></div>
+        <div><span class="n">69</span><span class="t">분석 글</span></div>
+      </div>
+
+      <div class="measure" style="margin-top:20px">
         <p>
-          빨리 만드는 것보다 어려운 건 빨리 접는 쪽이라고 생각합니다.
-          아래는 실제로 만들어놓고 접은 것과, 지금도 못 넘고 있는 것입니다.
+          창세기전과 악튜러스, 파이널판타지와 드래곤퀘스트 같은 고전부터
+          발더스 게이트 3와 메타포까지 <b>장르의 기준이 된 게임들</b>을 골라 플레이해 왔습니다.
+          많이 하는 것보다, 이 재미가 <b>어떤 시스템에서 나오는지</b> 뜯어보며 하는 편입니다.
+        </p>
+        <p>
+          방치형을 기획할 때 「보고 있지 않아도 굴러가야 한다」를 요구로 세운 것도,
+          통행 배정을 길찾기가 아니라 배분 문제로 본 것도 이 습관에서 나왔습니다.
+          플레이어로서 무엇이 지루하고 무엇이 손에 붙는지를 먼저 알고 코드를 짭니다.
         </p>
       </div>
 
-      <h4>5.1 타코야끼 — 접은 이유</h4>
-      <div class="measure">
-        <p>
-          브라우저에서 바로 돌아가는 리듬 게임을 만들었습니다. 소재는 제가 3년 9개월 운영한 매장이었고,
-          타이틀부터 결과 화면까지 한 바퀴가 도는 상태까지 갔습니다.
-        </p>
-        <p>
-          그런데 직접 플레이해 보니 <b>반복이 단조롭고 성장이 없었습니다.</b>
-          입력이 늘 같은 모양이라 2분이 지나면 더 볼 게 없었습니다.
-          여기서 붙여서 살릴지 접을지를 정해야 했는데, 문제가 연출이 아니라 코어에 있다고 판단해서
-          <b>붙이지 않고 접었습니다.</b> 대신 남은 시간을 PARRYWAY에 넣었고, 그건 하루 만에 나왔습니다.
-        </p>
-        <p>
-          접은 이유를 적어둔 건, 다음에 같은 냄새가 나는 프로토를 만들었을 때 더 빨리 알아보려는 목적입니다.
-          솔직히 이번엔 완결까지 만들고 나서야 알았습니다.
-        </p>
+      <div class="lineage">
+        <span>창세기전 시리즈</span><span>악튜러스</span><span>화이트데이</span>
+        <span>파이널판타지 시리즈</span><span>드래곤퀘스트 시리즈</span>
+        <span>삼국지 조조전</span><span>랑그릿사</span><span>프린세스메이커 2</span>
+        <span>스타크래프트</span><span>임진록 조선의 반격</span>
       </div>
+      <p class="playnote" style="margin-top:10px">위는 자동 기록이 남지 않는 고전 PC·콘솔 구간입니다. 아래 표는 API로 수집한 실측 기록입니다.</p>
 
-      <h4>5.2 아직 못 넘은 벽</h4>
-      <ul>
-        <li><strong>통행 배정이 도로망 크기에 초선형으로 무너집니다.</strong> 2.3에 측정값이 있습니다. 고칠 방향은 잡았지만 아직 재보지 않았습니다</li>
-        <li><strong>Profiler로 프레임 단위 측정을 해본 적이 없습니다.</strong> 그래서 이 문서 어디에도 "메모리를 최적화했다"고 쓰지 않았습니다. 오브젝트 풀링을 적용했다는 것까지가 제가 확인한 범위입니다</li>
-        <li><strong>Unity로 만든 두 프로젝트는 발표까지입니다. 출시한 게임은 아직 없습니다.</strong> PARRYWAY가 처음으로 링크를 눌러 바로 플레이되는 산출물이 됩니다</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 부록 A 일하는 방식 -->
-<section class="board" id="how" data-sum="피드백을 처리하는 방식과, 맡지 않았지만 처리한 일입니다." data-c="6" data-title="부록 A 일하는 방식">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">APPENDIX A</span>
-      <h2>일하는 방식</h2>
-      <span class="ext">태도와 사양</span>
-    </div>
-    <div class="leaf">
-      <h3>일하는 방식</h3>
-
-      <h4>A.1 피드백 처리</h4>
-      <div class="spec-box" style="max-width:720px">
-        <table>
-          <tr><td>팀원 코드리뷰</td><td>연출 오브젝트 GC 스파이크 → 풀 재사용으로 전환</td></tr>
-          <tr><td>팀 리뷰</td><td>SO와 코드의 기본값 불일치 → 수정 + 체크리스트로 재발 봉쇄</td></tr>
-          <tr><td>플레이테스터</td><td>"뭘 하는지 모르겠다" → 단일 지표 신설 (2.4)</td></tr>
-          <tr><td>AI 심사 3인</td><td>교차 지적 10건 → 전량 수정 후 배포 (3.5)</td></tr>
-          <tr><td>강사</td><td>이력서 3개 항목 → 당일 전량 반영, 포트폴리오 재배포</td></tr>
-        </table>
-      </div>
-      <div class="measure" style="margin-top:18px">
-        <p>
-          다만 다 받아 삼키지는 않는 편입니다. 마지막 항목을 반영하면서
-          개선안에 섞여 있던 <b>사실과 다른 8건은 걸러냈습니다.</b>
-          쓴 적 없는 알고리즘 이름, 하지 않은 출시, 재본 적 없는 최적화 같은 것들이었습니다.
-          지적의 방향은 전부 맞았으니 형식은 그대로 받고, 숫자만 원본 기록과 대조해 고쳤습니다.
-        </p>
-      </div>
-
-      <h4>A.2 시키지 않았는데 집은 일</h4>
-      <ul>
-        <li><strong>머지 담당.</strong> 후반에 PR이 밀리는 걸 보고 인수해서 오픈 6건을 전부 처리했습니다. 프리팹 스냅샷 회귀도 그때 같이 막았습니다</li>
-        <li><strong>벤치마크 도구.</strong> 성능 얘기를 하려면 잴 게 필요해서 EditMode 벤치마크를 만들고 회귀 상한을 테스트로 걸었습니다(PR #257)</li>
-        <li><strong>블로그 파이프라인.</strong> 게임 분석 글의 소재 선정부터 발행까지를 반자동으로 묶어 18일에 69편을 냈습니다. 어디를 자동으로 돌리고 어디에 사람 판단을 남길지 정한 게 결과물입니다</li>
-      </ul>
-
-      <h4>A.3 기술 사양</h4>
-      <dl class="rows">
-        <dt>주력</dt>       <dd>Unity 6 (URP) · C# — 게임플레이, 시뮬레이션, 경로 탐색, 타격감, UI·HUD</dd>
-        <dt>서브</dt>       <dd>웹 게임 (TypeScript · Canvas 2D · Web Audio) — 프로토타입을 빨리 띄우는 용도</dd>
-        <dt>설계</dt>       <dd>ScriptableObject 데이터 주도 · 이벤트 구독 · 시뮬과 화면의 권한 분리</dd>
-        <dt>검증</dt>       <dd>EditMode·NUnit 회귀 테스트 · 직접 만든 벤치마크</dd>
-        <dt>협업</dt>       <dd>Git 브랜치·PR 리뷰·머지 · 개발 로그 문서화 · AI 워커 오케스트레이션</dd>
-        <dt>학력</dt>       <dd>한국방송통신대 컴퓨터공학과 <b>2027.03 졸업 예정</b><br>오즈코딩스쿨 게임 개발 부트캠프 (2026.03–08)</dd>
-      </dl>
+      <h4>5.1 가장 오래 플레이한 타이틀</h4>
+      <table class="plays">
+        <tr><td>타이틀</td><td class="p">플랫폼</td><td class="h">시간</td></tr>
+        <tr><td>디아블로 IV</td><td class="p">PS5</td><td class="h">156.1h</td></tr>
+        <tr><td>페르소나5 더 로열</td><td class="p">PS5</td><td class="h">96.1h</td></tr>
+        <tr><td>젤다의 전설 야생의 숨결</td><td class="p">Switch</td><td class="h">80.0h</td></tr>
+        <tr><td>Baldur's Gate 3</td><td class="p">PS5</td><td class="h">78.9h</td></tr>
+        <tr><td>메타포: 리판타지오</td><td class="p">PS5</td><td class="h">77.9h</td></tr>
+        <tr><td>Red Dead Redemption 2</td><td class="p">PS4</td><td class="h">71.3h</td></tr>
+        <tr><td>파이어 엠블렘 인게이지</td><td class="p">Switch</td><td class="h">70.0h</td></tr>
+        <tr><td>Stardew Valley</td><td class="p">Steam</td><td class="h">63.7h</td></tr>
+        <tr><td>Ghost of Yōtei</td><td class="p">PS5</td><td class="h">57.7h</td></tr>
+        <tr><td>Slay the Spire 2</td><td class="p">Steam</td><td class="h">53.3h</td></tr>
+      </table>
       <p class="playnote">
-        위 목록에는 실제로 프로젝트에서 써서 결과를 낸 것만 적었습니다.
-        만져만 본 것은 넣지 않았습니다.
+        50시간 이상 <b>14개</b> · 20시간 이상 <b>28개</b> · PS5 76 · PS4 30 · Switch 7 · Steam 6 · Xbox 1<br>
+        PSN·Steam API 1회 덤프(2026-08-19). Xbox·Switch는 조회 API가 없어 본체 기록을 보고 <b>수기 8건</b>을 직접 등재했습니다.
+        2회차까지 끝낸 것은 고스트 오브 요테이와 더 라스트 오브 어스 파트 1 둘입니다.
       </p>
+
+      <h4>5.2 플레이를 글로 남깁니다</h4>
+      <div class="measure">
+        <p>
+          화제작과 신작을 개발자 관점에서 역기획하는 글을 <b>69편</b> 발행했습니다.
+          소재 선정부터 발행까지를 <b>반자동 파이프라인</b>으로 묶어 <b>18일</b>에 낸 분량입니다.
+          어느 단계를 자동으로 돌리고 어느 단계에 제 판단을 남길지 정한 것이 그 작업의 결과물입니다.
+        </p>
+      </div>
+      <p class="plinks"><a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91</a></p>
     </div>
   </div>
 </section>
-
 
 <nav class="rail" id="rail" aria-label="장 바로가기"></nav>
 <script src="../assets/manual.js"></script>
