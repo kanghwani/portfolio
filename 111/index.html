@@ -327,7 +327,7 @@ details.code .cap{font-family:var(--sans); font-size:12.5px; line-height:1.65; c
           <li>차량 주행 · 교차로 점유 · 워치독, 시뮬레이션과 화면의 권한 분리 (2.5)</li>
           <li>인게임 기획 — 출퇴근 시간표, 회사 3종, 교통 도구의 구매 대상 정의</li>
           <li>EditMode 벤치마크 툴 직접 제작, 후반 머지 담당 인수(오픈 PR 6건 처리)</li>
-          <li>커밋 <b>424 / 752건(56%)</b> · 코어 테스트 671개(화면 포함 1,204개)</li>
+          <li>커밋 <b>424 / 752건(56%)</b> · 코어 테스트는 팀 전체 671개(화면 포함 1,204개)이고, 그중 <b>통행 배정·차량 주행 계열이 제 몫</b>입니다</li>
           <li><b>팀 해산 후 단독 인수 (2026.08~).</b> 스팀 출시를 목표로 씬 13→5개 정리, 라이선스 미증빙 음원 16곡 삭제, 품질 계측 도구 구축 (2.7)</li>
         </ul></td></tr>
         <tr><td class="k">영상</td><td colspan="3"><a href="https://youtu.be/6rCe-v5Aewk"><b>팀 시연 영상 (YouTube · 4분 30초)</b></a> · 소스는 <a href="https://github.com/hjh8874/GreenLight">공개 저장소</a></td></tr>
@@ -436,8 +436,9 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
           (워밍업 3회 버리고 11회 중앙값 · 회귀 상한을 테스트로 고정 · <a href="https://github.com/hjh8874/GreenLight/pull/257">PR #257</a>).
         </p>
         <p>
-          <b>처음 세운 가설은 틀렸습니다.</b> 차량이 늘면 느려질 거라 보고 차량 수만 올렸는데
-          1대당 비용이 안 변했습니다. 축을 도로망 크기로 바꿔 다시 재자 그제서야 벽이 나왔습니다.
+          <b>처음엔 차량 수를 축으로 잡았습니다.</b> 차량이 늘면 느려질 거라 보고 차량 수만 올렸는데
+          1대당 비용이 안 변했습니다. 총 비용이 차량 수에 <b>선형</b>이라는 뜻이라 여기엔 벽이 없었습니다.
+          축을 도로망 크기로 바꿔 다시 재자 그제서야 벽이 나왔습니다.
         </p>
       </div>
 
@@ -456,7 +457,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
           1대당 비용이 0.15ms로 같습니다. 부하를 쌓으며 한 대씩 배정하는 구조가 수요 증가에는 버팁니다.
         </p>
         <p>
-          <b>도로망 크기에는 무너집니다.</b> 도로가 4배(175→700칸) 늘 때 1대당 비용은 <b>27배</b>가 됐습니다.
+          <b>도로망 크기에는 무너집니다.</b> 도로가 4배(175→700칸) 늘 때 1대당 비용은 <b>27배</b>가 됐습니다(차량은 82→96대라 완전한 통제 비교는 아닙니다).
           탐색 구역 한 변을 20으로 두고 배열 스캔 다익스트라를 쓴 선택이 그 경계를 넘는 순간 비용으로 돌아온 것입니다.
           게임이 20×20에서 시작해 청크 단위로 해금되니 <b>지금 플레이 범위에서는 안 보이지만</b>,
           도시가 커지면 건설 순간의 멈춤으로 나타납니다.
@@ -491,7 +492,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
       <ul>
         <li><strong>출퇴근 시간표.</strong> 사무실·물류창고·공장의 정원과 출퇴근 시각을 분리하고 시간대를 일부러 겹쳐 러시아워를 데이터로 만들었습니다. 자정을 넘는 교대도 판정에 들어갑니다</li>
         <li><strong>차량 주행.</strong> 개별 속도와 트럭 차급, 교차로 점유·연속 대기열. 멈춘 차를 되살리는 워치독을 두어(재라우팅 3회 → 재시작 6회) 한 대가 막혀 도시 전체가 굳는 것을 막았습니다</li>
-        <li><strong>시뮬과 화면의 권한 분리.</strong> 위치·점유 판정을 시뮬레이션으로 단일화하고 화면은 보간만 하게 재설계했습니다(PR 5건). 차선 오프셋 검증 80/80, 차간 위반 0</li>
+        <li><strong>시뮬과 화면의 권한 분리.</strong> 위치·점유 판정을 시뮬레이션으로 단일화했습니다(PR 5건). 차선 오프셋 검증 80/80, 차간 위반 0<br>다만 <b>주차 포즈와 경로 베이크는 아직 화면 쪽에 남아 있고</b>, 2.7이 그 잔재를 쫓은 기록입니다</li>
       </ul>
 
       <h4>2.6 경제 어뷰징 차단</h4>
@@ -562,7 +563,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
       </div>
 
       <details class="code" open>
-        <summary>CarMotion.cs &nbsp;—&nbsp; 버리던 방향을 경로 베이크로 넘긴다</summary>
+        <summary>CarMotion.cs &nbsp;—&nbsp; 버리던 방향을 경로 베이크로 넘긴다 &nbsp;(솔로 인수 후 작업 · 아직 로컬 브랜치)</summary>
 <pre>Vector3 homeAnchor = GetParkingAnchor(
     car.Home, outboundTiles[0], car.HomeSlot,
     simEngine.CarSimHomeParkingSlots,
@@ -626,7 +627,7 @@ bakedRoutes[car.RouteIndex] = new BakedRoutePair {
         <tr><td class="k">담당 내용</td><td colspan="3"><ul>
           <li>기획·구현·튜닝 전부. 판정 규칙(방패 상태 기반)과 리듬 레이어 설계</li>
           <li>AI 워커 오케스트레이션 — 태스크 7개 분배, 손맛 게이트에서 코어 리워크 1회 결정</li>
-          <li>AI 심사 3인 패널 운영 → 교차 지적 10건 전량 수정 후 배포</li>
+          <li>성향을 다르게 준 <b>AI 심사자 3개</b>를 돌려 교차 지적 10건 전량 수정 후 배포</li>
         </ul></td></tr>
       </table>
 
