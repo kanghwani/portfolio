@@ -29,6 +29,8 @@ strong{color:var(--accent);font-weight:700}
 #city-hero .role{color:var(--dim);margin-top:6px;font-size:19px}
 #city-hero .slogan{margin-top:16px;font-size:21px;color:var(--accent);font-weight:700}
 #city-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#city-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,21,38,0) 32%,rgba(14,21,38,.92) 100%);pointer-events:none}
+#city-hero .inner{position:relative;z-index:1}
 section{margin-top:72px}
 h2{font-size:26px;letter-spacing:-.01em;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:26px}
 h3{font-size:19px;margin:34px 0 12px;color:var(--accent)}
@@ -309,7 +311,7 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
   <button class="playmore" id="playmore" type="button"></button>
   <p class="note">
     PSN·Steam API 1회 덤프 정적 데이터. Xbox·Switch는 조회 API가 없어 본체 기록을 보고
-    직접 등재했습니다(수기 8건 · 카드에 표시).
+    직접 등재했습니다.
   </p>
 </section>
 
@@ -345,6 +347,7 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
 
 </main>
 
+<script src="city.js"></script>
 <script src="../assets/play-data.js"></script>
 <script>
 (function(){
@@ -362,10 +365,10 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
   function card(g){
     var art=g.image
       ? '<img src="'+g.image+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=noart>NO RECORD ART</div>\'">'
-      : '<div class="manual-art"><span class="t">'+g.name+'</span><span>'+g.platform.toUpperCase()+' · 수기 기록</span></div>';
+      : '<div class="manual-art"><span class="t">'+g.name+'</span><span>'+g.platform.toUpperCase()+'</span></div>';
     return '<div class="gcard"><div class="art">'+art+'</div><div class="txt">'+
       '<div class="nm">'+g.name+'</div>'+
-      '<div class="pf">'+g.platform+(g.manual?' · 수기':'')+'</div>'+
+      '<div class="pf">'+g.platform+'</div>'+
       '<div class="dt">'+fmtD(g)+'</div></div></div>';
   }
   function render(){
