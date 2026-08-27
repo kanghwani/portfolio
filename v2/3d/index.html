@@ -183,25 +183,123 @@ crt.add(screen);
 const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.08, 20), shellMat);
 stand.position.y = -0.3;
 crt.add(stand);
+
+/* CRT 디테일 — 후면 벌지·통풍구·전원 LED·버튼·브랜드·받침발·화면 스캔라인 */
+const bulge = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.38, 0.22), shellMat);
+bulge.position.z = -0.33; bulge.castShadow = true;
+crt.add(bulge);
+const ventMat = new THREE.MeshStandardMaterial({ color: 0x8f8877, roughness: 0.8 });
+for (let i = 0; i < 6; i++) {
+  const v = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.004, 0.02), ventMat);
+  v.position.set(0, 0.262, -0.16 + i * 0.045);
+  crt.add(v);
+}
+const led = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.014, 0.006),
+  new THREE.MeshBasicMaterial({ color: 0x6dff8a }));
+led.position.set(0.24, -0.195, 0.288);
+crt.add(led);
+const btnMat = new THREE.MeshStandardMaterial({ color: 0xa79f8c, roughness: 0.6 });
+for (let i = 0; i < 3; i++) {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.012, 0.01), btnMat);
+  b.position.set(0.12 + i * 0.045, -0.195, 0.288);
+  crt.add(b);
+}
+/* 브랜드 플레이트 — 캔버스 텍스처 */
+const bc = document.createElement("canvas"); bc.width = 256; bc.height = 48;
+const bg2d = bc.getContext("2d");
+bg2d.fillStyle = "#bfb7a4"; bg2d.fillRect(0, 0, 256, 48);
+bg2d.fillStyle = "#5a5344"; bg2d.font = "bold 26px monospace"; bg2d.textAlign = "center";
+bg2d.fillText("SECOND LAYER", 128, 33);
+const brand = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 0.028),
+  new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(bc) }));
+brand.position.set(-0.16, -0.195, 0.2865);
+crt.add(brand);
+for (const fx of [-0.22, 0.22]) {
+  const foot = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.03, 0.36), ventMat);
+  foot.position.set(fx, -0.275, 0.02);
+  crt.add(foot);
+}
+/* 화면 위 스캔라인 */
+const sc = document.createElement("canvas"); sc.width = 4; sc.height = 4;
+const s2d = sc.getContext("2d");
+s2d.fillStyle = "rgba(0,0,0,0.55)"; s2d.fillRect(0, 0, 4, 1);
+const scanTex = new THREE.CanvasTexture(sc);
+scanTex.wrapS = scanTex.wrapT = THREE.RepeatWrapping;
+scanTex.repeat.set(1, 110); scanTex.magFilter = THREE.NearestFilter;
+const scan = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN.w, SCREEN.h),
+  new THREE.MeshBasicMaterial({ map: scanTex, transparent: true, opacity: 0.35, depthWrite: false }));
+scan.position.z = SCREEN.z + 0.0015;
+crt.add(scan);
 crt.position.set(0, 1.08, -0.12);
 scene.add(crt);
 const screenWorld = new THREE.Vector3(0, 1.08, -0.12 + SCREEN.z);
 
 /* ── 소품: 키보드·머그·책더미 ── */
-const kb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.03, 0.16),
+/* 키보드 — 베이스 + 키캡 그리드(인스턴싱) + 스페이스바 + 케이블 */
+const kbGroup = new THREE.Group();
+const kb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.028, 0.17),
   new THREE.MeshStandardMaterial({ color: 0x2b3350, roughness: 0.8 }));
-kb.position.set(0, 0.79, 0.33); kb.rotation.y = -0.04; kb.castShadow = true;
-scene.add(kb);
-const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.04, 0.1, 18),
-  new THREE.MeshStandardMaterial({ color: 0xF4D35E, roughness: 0.4 }));
+kb.castShadow = kb.receiveShadow = true;
+kbGroup.add(kb);
+const keyGeo = new THREE.BoxGeometry(0.03, 0.012, 0.028);
+const keyMat = new THREE.MeshStandardMaterial({ color: 0xcfd6e4, roughness: 0.55 });
+const ROWS = 4, COLS = 13;
+const keys = new THREE.InstancedMesh(keyGeo, keyMat, ROWS * COLS - 5);
+const m4 = new THREE.Matrix4();
+let ki = 0;
+for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+  if (r === 3 && c >= 3 && c <= 7) continue;              // 스페이스바 자리
+  m4.setPosition(-0.222 + c * 0.037 + r * 0.004, 0.021, -0.058 + r * 0.038);
+  keys.setMatrixAt(ki++, m4);
+}
+keys.castShadow = true;
+kbGroup.add(keys);
+const space = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.012, 0.028), keyMat);
+space.position.set(-0.02, 0.021, -0.058 + 3 * 0.038);
+kbGroup.add(space);
+kbGroup.position.set(0, 0.79, 0.33); kbGroup.rotation.y = -0.04;
+scene.add(kbGroup);
+/* 케이블 — 키보드 뒤에서 모니터 뒤로 늘어지는 곡선 */
+const cable = new THREE.Mesh(
+  new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.2, 0.795, 0.24),
+    new THREE.Vector3(0.3, 0.782, 0.05),
+    new THREE.Vector3(0.24, 0.79, -0.2),
+    new THREE.Vector3(0.1, 0.86, -0.42)
+  ]), 24, 0.006, 6),
+  new THREE.MeshStandardMaterial({ color: 0x1a2033, roughness: 0.9 }));
+scene.add(cable);
+/* 머그 — 손잡이 + 김이 아니라 연필 하나 */
+const mugMat = new THREE.MeshStandardMaterial({ color: 0xF4D35E, roughness: 0.4 });
+const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.04, 0.1, 18), mugMat);
 mug.position.set(0.55, 0.83, 0.25); mug.castShadow = true;
 scene.add(mug);
+const handle = new THREE.Mesh(new THREE.TorusGeometry(0.028, 0.008, 8, 16, Math.PI), mugMat);
+handle.position.set(0.598, 0.835, 0.25); handle.rotation.z = -Math.PI / 2;
+scene.add(handle);
+const pencil = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.13, 6),
+  new THREE.MeshStandardMaterial({ color: 0xFF9E6E, roughness: 0.6 }));
+pencil.position.set(0.545, 0.9, 0.24); pencil.rotation.z = 0.28;
+scene.add(pencil);
+/* 책 — 커버 + 페이지 블록 + 띠지, 각기 다른 크기 */
 const books = new THREE.Group();
-[[0x7FB3FF, 0.26], [0xFF9E6E, 0.22], [0x8EE3A2, 0.24]].forEach(([c, w], i) => {
-  const b = new THREE.Mesh(new THREE.BoxGeometry(w, 0.035, 0.17),
+[[0x7FB3FF, 0.26, 0xE8ECF4], [0xFF9E6E, 0.22, 0x9AA6BD], [0x8EE3A2, 0.24, 0xE8ECF4]].forEach(([c, w, bandC], i) => {
+  const bk = new THREE.Group();
+  const cover = new THREE.Mesh(new THREE.BoxGeometry(w, 0.036, 0.17),
     new THREE.MeshStandardMaterial({ color: c, roughness: 0.7 }));
-  b.position.y = 0.795 + i * 0.037; b.rotation.y = (i - 1) * 0.18; b.castShadow = true;
-  books.add(b);
+  cover.castShadow = true;
+  bk.add(cover);
+  const pages = new THREE.Mesh(new THREE.BoxGeometry(w - 0.02, 0.026, 0.16),
+    new THREE.MeshStandardMaterial({ color: 0xEae4d4, roughness: 0.9 }));
+  pages.position.set(0.012, 0, 0.008);
+  bk.add(pages);
+  const band = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.038, 0.172),
+    new THREE.MeshStandardMaterial({ color: bandC, roughness: 0.7 }));
+  band.position.x = -w / 2 + 0.045;
+  bk.add(band);
+  bk.position.y = 0.796 + i * 0.038;
+  bk.rotation.y = (i - 1) * 0.18;
+  books.add(bk);
 });
 books.position.set(-0.72, 0, 0.18);
 scene.add(books);
