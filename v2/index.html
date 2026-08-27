@@ -21,17 +21,35 @@ main{max-width:820px;margin:0 auto;padding:0 22px 96px}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 strong{color:var(--accent);font-weight:700}
-/* 히어로 — P1에서 이 자리가 살아있는 도시 캔버스가 된다 */
-#city-hero{position:relative;height:52vh;min-height:340px;display:flex;align-items:flex-end;
-  background:linear-gradient(180deg,#22345E 0%,#0E1526 90%);border-bottom:1px solid var(--line)}
-#city-hero .inner{max-width:820px;margin:0 auto;width:100%;padding:0 22px 42px}
+/* 히어로 스크롤 줌 — 게임 화면 속으로 들어가면 이력서가 나온다 */
+#hero-scroll{height:240vh}
+#city-hero{position:sticky;top:0;height:100vh;display:flex;align-items:flex-end;overflow:hidden;
+  background:var(--bg);border-bottom:1px solid var(--line)}
+#city-hero .inner{max-width:820px;margin:0 auto;width:100%;padding:0 22px 9vh;will-change:opacity,transform}
 #city-hero h1{font-size:44px;letter-spacing:-.02em;line-height:1.15}
 #city-hero .role{color:var(--dim);margin-top:6px;font-size:19px}
 #city-hero .slogan{margin-top:16px;font-size:21px;color:var(--accent);font-weight:700}
-#hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.62) saturate(.92)}
+#hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 68%;
+  filter:brightness(.62) saturate(.92);will-change:transform,filter;transform-origin:50% 55%}
 #city-hero .hint{margin-top:12px;font-size:14px;color:var(--dim)}
+#city-hero .scrolldown{position:absolute;left:50%;bottom:3vh;transform:translateX(-50%);
+  color:var(--dim);font-size:13px;letter-spacing:.12em;z-index:1;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,7px)}}
 #city-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,21,38,.08) 30%,rgba(14,21,38,.94) 100%);pointer-events:none}
 #city-hero .inner{position:relative;z-index:1}
+/* 줌 끝에 떠오르는 이력서 요약 */
+#hero-reveal{position:absolute;inset:0;z-index:2;display:flex;align-items:center;
+  opacity:0;pointer-events:none;will-change:opacity,transform}
+#hero-reveal .sheet{max-width:680px;margin:0 auto;width:100%;padding:0 22px}
+#hero-reveal h2{border:0;margin:0 0 6px;padding:0;font-size:34px}
+#hero-reveal .sub{color:var(--dim);margin-bottom:22px}
+#hero-reveal table{background:rgba(14,21,38,.55);backdrop-filter:blur(3px)}
+@media(prefers-reduced-motion:reduce){
+  #hero-scroll{height:auto}
+  #city-hero{position:relative;height:62vh}
+  #hero-reveal{display:none}
+  #city-hero .scrolldown{display:none}
+}
 section{margin-top:72px}
 h2{font-size:26px;letter-spacing:-.01em;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:26px}
 h3{font-size:19px;margin:34px 0 12px;color:var(--accent)}
@@ -83,7 +101,8 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
 
 <span class="wip">v2 작업 중 · 현행판은 <a href="../">여기</a></span>
 
-<!-- 히어로: 실제 PARRYWAY 플레이 영상 (무음 루프) — 완성된 게임 화면이 가장 확실한 비주얼 훅 -->
+<!-- 히어로: 실제 PARRYWAY 플레이 영상 — 스크롤하면 화면 속으로 줌인되며 이력서 요약이 떠오른다 -->
+<div id="hero-scroll">
 <header id="city-hero">
   <video id="hero-video" autoplay muted loop playsinline preload="metadata"
     poster="hero-poster.jpg" aria-hidden="true">
@@ -95,7 +114,27 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
     <p class="slogan">규칙을 수식으로, 수식을 테스트로.</p>
     <p class="hint">배경은 직접 만든 PARRYWAY 플레이 화면입니다 — <a href="https://zzangh2.itch.io/parryway">플레이하기</a></p>
   </div>
+  <div id="hero-reveal" aria-hidden="true">
+    <div class="sheet">
+      <h2>김강환</h2>
+      <p class="sub">게임을 만드는 개발자 — 규칙을 수식으로, 수식을 테스트로.</p>
+      <table>
+        <tr><th>플레이 라이브러리</th><td>120개 타이틀 · PS · Steam · Switch · Xbox</td></tr>
+        <tr><th>대표작</th><td>IDLE CITY — 수백 대 차량 교통 시뮬 코어 설계·구현 / PARRYWAY — AI 네이티브 방식으로 제작·공모전 제출</td></tr>
+        <tr><th>검증 습관</th><td>자동 테스트로 코어 고정(IDLE CITY 671개 · PARRYWAY 160개) · 성능은 벤치마크로 실측</td></tr>
+        <tr><th>동작 환경</th><td>Unity 6 (URP) · C# · TypeScript(웹)</td></tr>
+      </table>
+      <p class="links" style="margin-top:16px">
+        <a href="https://github.com/kanghwani">GitHub</a>
+        <a href="https://youtu.be/FNGmbfAQ0nI">데모 영상</a>
+        <a href="https://blog.naver.com/zzangh91">블로그</a>
+        <a href="mailto:zzangh91@naver.com">메일</a>
+      </p>
+    </div>
+  </div>
+  <span class="scrolldown">SCROLL ▼</span>
 </header>
+</div>
 
 <main>
 
@@ -105,12 +144,6 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
     플레이어로서 쌓은 시스템 이해를 코드로 옮기고, 구현한 규칙은 감이 아니라
     <strong>수치로 검증하고 테스트로 고정</strong>합니다.
   </p>
-  <table>
-    <tr><th>플레이 라이브러리</th><td>120개 타이틀 · PS · Steam · Switch · Xbox</td></tr>
-    <tr><th>대표작</th><td>IDLE CITY — 수백 대 차량 교통 시뮬 코어 설계·구현 / PARRYWAY — AI 네이티브 방식으로 제작·공모전 제출</td></tr>
-    <tr><th>검증 습관</th><td>자동 테스트로 코어 고정(IDLE CITY 671개 · PARRYWAY 160개) · 성능은 벤치마크로 실측</td></tr>
-    <tr><th>동작 환경</th><td>Unity 6 (URP) · C# · TypeScript(웹)</td></tr>
-  </table>
 </section>
 
 <section id="ai">
@@ -353,11 +386,42 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
 </main>
 
 <script>
-/* 모션 최소화 설정이면 영상 대신 포스터 정지화면 */
-if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  var hv = document.getElementById("hero-video");
-  hv.removeAttribute("autoplay"); hv.pause();
-}
+(function () {
+  "use strict";
+  var video = document.getElementById("hero-video");
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    video.removeAttribute("autoplay"); video.pause();
+    return; /* 모션 최소화: 줌 연출 없이 정지 히어로 */
+  }
+  /* 스크롤 줌 — 게임 화면 속으로 들어가면 이력서 요약이 떠오른다 */
+  var wrap = document.getElementById("hero-scroll");
+  var inner = document.querySelector("#city-hero .inner");
+  var reveal = document.getElementById("hero-reveal");
+  var down = document.querySelector("#city-hero .scrolldown");
+  var ticking = false;
+  function apply() {
+    ticking = false;
+    var vh = innerHeight;
+    var range = wrap.offsetHeight - vh;
+    var p = Math.min(1, Math.max(0, -wrap.getBoundingClientRect().top / range));
+    video.style.transform = "scale(" + (1 + p * 1.9) + ")";
+    video.style.filter = "brightness(" + (0.62 - p * 0.34) + ") saturate(.92)";
+    var t = Math.min(1, p / 0.25);
+    inner.style.opacity = 1 - t;
+    inner.style.transform = "translateY(" + (t * -28) + "px)";
+    var r = Math.max(0, Math.min(1, (p - 0.32) / 0.4));
+    reveal.style.opacity = r;
+    reveal.style.transform = "translateY(" + ((1 - r) * 46) + "px)";
+    reveal.style.pointerEvents = r > 0.6 ? "auto" : "none";
+    reveal.setAttribute("aria-hidden", r > 0.6 ? "false" : "true");
+    down.style.opacity = p > 0.04 ? 0 : 1;
+  }
+  addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(apply); }
+  }, { passive: true });
+  addEventListener("resize", apply);
+  apply();
+})();
 </script>
 <script src="../assets/play-data.js"></script>
 <script>
