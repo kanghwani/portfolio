@@ -28,10 +28,9 @@ strong{color:var(--accent);font-weight:700}
 #city-hero h1{font-size:44px;letter-spacing:-.02em;line-height:1.15}
 #city-hero .role{color:var(--dim);margin-top:6px;font-size:19px}
 #city-hero .slogan{margin-top:16px;font-size:21px;color:var(--accent);font-weight:700}
-#city-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.62) saturate(.92)}
 #city-hero .hint{margin-top:12px;font-size:14px;color:var(--dim)}
-#city-hero{cursor:crosshair}
-#city-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,21,38,0) 32%,rgba(14,21,38,.92) 100%);pointer-events:none}
+#city-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,21,38,.08) 30%,rgba(14,21,38,.94) 100%);pointer-events:none}
 #city-hero .inner{position:relative;z-index:1}
 section{margin-top:72px}
 h2{font-size:26px;letter-spacing:-.01em;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:26px}
@@ -84,14 +83,17 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
 
 <span class="wip">v2 작업 중 · 현행판은 <a href="../">여기</a></span>
 
-<!-- P1-B: PARRYWAY 플레이어블 인트로 — 왕이 스스로 패링하고, 클릭하면 직접 막는다 -->
+<!-- 히어로: 실제 PARRYWAY 플레이 영상 (무음 루프) — 완성된 게임 화면이 가장 확실한 비주얼 훅 -->
 <header id="city-hero">
-  <canvas id="city-canvas" aria-hidden="true"></canvas>
+  <video id="hero-video" autoplay muted loop playsinline preload="metadata"
+    poster="hero-poster.jpg" aria-hidden="true">
+    <source src="hero-loop.mp4" type="video/mp4">
+  </video>
   <div class="inner">
     <h1>김강환</h1>
     <p class="role">게임을 만드는 개발자 — Unity · C# · TypeScript</p>
     <p class="slogan">규칙을 수식으로, 수식을 테스트로.</p>
-    <p class="hint">사방을 클릭해 포탄을 막아보세요 — 방향마다 음이 다릅니다</p>
+    <p class="hint">배경은 직접 만든 PARRYWAY 플레이 화면입니다 — <a href="https://zzangh2.itch.io/parryway">플레이하기</a></p>
   </div>
 </header>
 
@@ -350,8 +352,13 @@ dl.rows dt{color:var(--dim);font-size:14px;letter-spacing:.04em;padding-top:2px}
 
 </main>
 
-<script src="zdog.dist.min.js"></script>
-<script src="parry3d.js"></script>
+<script>
+/* 모션 최소화 설정이면 영상 대신 포스터 정지화면 */
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  var hv = document.getElementById("hero-video");
+  hv.removeAttribute("autoplay"); hv.pause();
+}
+</script>
 <script src="../assets/play-data.js"></script>
 <script>
 (function(){
