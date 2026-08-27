@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>김강환 — 3D 포트폴리오 (테스트)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230E1526'/><text x='16' y='23' font-size='17' font-family='sans-serif' font-weight='800' fill='%23F4D35E' text-anchor='middle'>K</text></svg>">
+<style>
+:root{--bg:#0A101F;--ink:#E8ECF4;--dim:#9AA6BD;--accent:#F4D35E;--line:#26314D;--card:#182240}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;line-height:1.75;font-size:17px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--accent);font-weight:700}
+#scroll3d{height:320vh}
+#stage{position:sticky;top:0;height:100vh;overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#title{position:absolute;left:0;right:0;bottom:9vh;z-index:2;will-change:opacity,transform}
+#title .wrap{max-width:820px;margin:0 auto;padding:0 22px}
+#title h1{font-size:44px;letter-spacing:-.02em}
+#title .role{color:var(--dim);margin-top:6px;font-size:19px}
+#title .slogan{margin-top:14px;font-size:21px;color:var(--accent);font-weight:700}
+#title .hint{margin-top:10px;font-size:14px;color:var(--dim)}
+#reveal{position:absolute;inset:0;z-index:3;display:flex;align-items:center;opacity:0;pointer-events:none;will-change:opacity,transform}
+#reveal .sheet{max-width:680px;margin:0 auto;width:100%;padding:0 22px}
+#reveal h2{font-size:34px;margin-bottom:4px}
+#reveal .sub{color:var(--dim);margin-bottom:22px}
+#reveal table{width:100%;border-collapse:collapse;font-size:15.5px;background:rgba(10,16,31,.6);backdrop-filter:blur(3px)}
+#reveal td,#reveal th{border:1px solid var(--line);padding:9px 12px;text-align:left}
+#reveal th{background:rgba(20,29,51,.8);color:var(--dim);font-weight:600}
+#reveal .links{margin-top:16px}
+#reveal .links a{margin-right:18px}
+.scrolldown{position:absolute;left:50%;bottom:3vh;transform:translateX(-50%);z-index:2;
+  color:var(--dim);font-size:13px;letter-spacing:.12em;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,7px)}}
+#after{max-width:820px;margin:0 auto;padding:64px 22px 120px}
+.wip{position:fixed;right:14px;bottom:14px;background:var(--card);border:1px solid var(--line);
+  color:var(--dim);font-size:12.5px;padding:6px 12px;border-radius:999px;z-index:9}
+@media(prefers-reduced-motion:reduce){#scroll3d{height:100vh}.scrolldown{display:none}}
+</style>
+</head>
+<body>
+
+<span class="wip">3D 테스트 · <a href="../">v2로</a></span>
+
+<div id="scroll3d">
+  <div id="stage">
+    <canvas id="gl"></canvas>
+    <div id="title">
+      <div class="wrap">
+        <h1>김강환</h1>
+        <p class="role">게임을 만드는 개발자 — Unity · C# · TypeScript</p>
+        <p class="slogan">규칙을 수식으로, 수식을 테스트로.</p>
+        <p class="hint">모니터 속 화면은 직접 만든 PARRYWAY입니다 — 스크롤해서 들어가 보세요</p>
+      </div>
+    </div>
+    <div id="reveal" aria-hidden="true">
+      <div class="sheet">
+        <h2>김강환</h2>
+        <p class="sub">게임을 만드는 개발자 — 규칙을 수식으로, 수식을 테스트로.</p>
+        <table>
+          <tr><th>플레이 라이브러리</th><td>120개 타이틀 · PS · Steam · Switch · Xbox</td></tr>
+          <tr><th>대표작</th><td>IDLE CITY — 교통 시뮬 코어 설계·구현 / PARRYWAY — AI 네이티브 방식으로 제작·공모전 제출</td></tr>
+          <tr><th>검증 습관</th><td>자동 테스트로 코어 고정(671 + 160개) · 성능은 벤치마크로 실측</td></tr>
+          <tr><th>동작 환경</th><td>Unity 6 (URP) · C# · TypeScript(웹)</td></tr>
+        </table>
+        <p class="links">
+          <a href="https://github.com/kanghwani">GitHub</a>
+          <a href="https://youtu.be/FNGmbfAQ0nI">데모 영상</a>
+          <a href="https://zzangh2.itch.io/parryway">PARRYWAY 플레이</a>
+          <a href="mailto:zzangh91@naver.com">메일</a>
+        </p>
+      </div>
+    </div>
+    <span class="scrolldown">SCROLL ▼</span>
+  </div>
+</div>
+
+<div id="after">
+  <p class="dim" style="color:var(--dim)">— 여기부터 본문(AI와 일하는 방식 · IDLE CITY · PARRYWAY)이 이어집니다. 이 페이지는 히어로 테스트입니다. <a href="../">전체 내용은 v2에서</a></p>
+</div>
+
+<!-- display:none이면 프레임 디코딩이 멈춘다 — 화면 밖 고정 배치 -->
+<video id="vid" src="../hero-loop.mp4" muted loop playsinline autoplay
+  style="position:fixed;left:-9999px;top:0;width:4px;height:4px" aria-hidden="true"></video>
+
+<script type="importmap">{"imports":{"three":"./three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from "three";
+
+const canvas = document.getElementById("gl");
+const video = document.getElementById("vid");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduced) { video.removeAttribute("autoplay"); video.pause(); }
+else video.play().catch(function(){});
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a101f);
+scene.fog = new THREE.FogExp2(0x0a101f, 0.14);
+
+const camera = new THREE.PerspectiveCamera(50, 2, 0.05, 40);
+
+/* ── 방: 바닥 + 뒷벽 ── */
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(14, 14),
+  new THREE.MeshStandardMaterial({ color: 0x111a30, roughness: 0.95 }));
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+const wall = new THREE.Mesh(
+  new THREE.PlaneGeometry(14, 6),
+  new THREE.MeshStandardMaterial({ color: 0x0e1526, roughness: 1 }));
+wall.position.set(0, 3, -1.6);
+wall.receiveShadow = true;
+scene.add(wall);
+
+/* ── 책상 ── */
+const deskMat = new THREE.MeshStandardMaterial({ color: 0x4a3826, roughness: 0.7 });
+const deskTop = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.07, 1.1), deskMat);
+deskTop.position.set(0, 0.74, 0);
+deskTop.castShadow = deskTop.receiveShadow = true;
+scene.add(deskTop);
+for (const [lx, lz] of [[-1.1, -0.45], [1.1, -0.45], [-1.1, 0.45], [1.1, 0.45]]) {
+  const leg = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.74, 0.08), deskMat);
+  leg.position.set(lx, 0.37, lz);
+  leg.castShadow = true;
+  scene.add(leg);
+}
+
+/* ── CRT 모니터 ── */
+const crt = new THREE.Group();
+const shellMat = new THREE.MeshStandardMaterial({ color: 0xd6cfbe, roughness: 0.55 });
+const body = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.52, 0.5), shellMat);
+body.castShadow = body.receiveShadow = true;
+crt.add(body);
+const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.46, 0.05), new THREE.MeshStandardMaterial({ color: 0xbfb7a4, roughness: 0.6 }));
+bezel.position.z = 0.26;
+crt.add(bezel);
+/* 화면 = 실제 PARRYWAY 영상 (16:9 → 4:3 크롭). 포스터 먼저, 재생 시작되면 영상으로 교체 */
+function crop43(t) { t.colorSpace = THREE.SRGBColorSpace; t.repeat.set(0.75, 1); t.offset.set(0.125, 0); return t; }
+const posterTex = crop43(new THREE.TextureLoader().load("../hero-poster.jpg"));
+const vtex = crop43(new THREE.VideoTexture(video));
+const SCREEN = { w: 0.5, h: 0.375, z: 0.287 };
+const screenMat = new THREE.MeshBasicMaterial({ map: posterTex, toneMapped: false });
+video.addEventListener("playing", () => { screenMat.map = vtex; screenMat.needsUpdate = true; });
+const screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN.w, SCREEN.h), screenMat);
+screen.position.z = SCREEN.z;
+crt.add(screen);
+const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.08, 20), shellMat);
+stand.position.y = -0.3;
+crt.add(stand);
+crt.position.set(0, 1.08, -0.12);
+scene.add(crt);
+const screenWorld = new THREE.Vector3(0, 1.08, -0.12 + SCREEN.z);
+
+/* ── 소품: 키보드·머그·책더미 ── */
+const kb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.03, 0.16),
+  new THREE.MeshStandardMaterial({ color: 0x2b3350, roughness: 0.8 }));
+kb.position.set(0, 0.79, 0.33); kb.rotation.y = -0.04; kb.castShadow = true;
+scene.add(kb);
+const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.04, 0.1, 18),
+  new THREE.MeshStandardMaterial({ color: 0xF4D35E, roughness: 0.4 }));
+mug.position.set(0.55, 0.83, 0.25); mug.castShadow = true;
+scene.add(mug);
+const books = new THREE.Group();
+[[0x7FB3FF, 0.26], [0xFF9E6E, 0.22], [0x8EE3A2, 0.24]].forEach(([c, w], i) => {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(w, 0.035, 0.17),
+    new THREE.MeshStandardMaterial({ color: c, roughness: 0.7 }));
+  b.position.y = 0.795 + i * 0.037; b.rotation.y = (i - 1) * 0.18; b.castShadow = true;
+  books.add(b);
+});
+books.position.set(-0.72, 0, 0.18);
+scene.add(books);
+
+/* ── 조명: 앰버 램프 + 블루 림 + 화면 글로우 ── */
+scene.add(new THREE.AmbientLight(0x223048, 0.7));
+const lamp = new THREE.PointLight(0xF4D35E, 6, 8, 1.8);
+lamp.position.set(-1.3, 1.9, 0.9);
+lamp.castShadow = true;
+lamp.shadow.mapSize.set(1024, 1024);
+scene.add(lamp);
+const rim = new THREE.PointLight(0x3b6bd6, 5, 9, 1.8);
+rim.position.set(1.8, 1.4, -1.0);
+scene.add(rim);
+const glow = new THREE.PointLight(0x9db8ff, 1.6, 2.4, 2);
+glow.position.copy(screenWorld).add(new THREE.Vector3(0, 0, 0.25));
+scene.add(glow);
+
+/* ── 먼지 입자 ── */
+const dustGeo = new THREE.BufferGeometry();
+const N = 140, pos = new Float32Array(N * 3), seed = new Float32Array(N);
+for (let i = 0; i < N; i++) {
+  pos[i*3] = (Math.random() - 0.5) * 5;
+  pos[i*3+1] = Math.random() * 2.4 + 0.2;
+  pos[i*3+2] = (Math.random() - 0.5) * 3.4;
+  seed[i] = Math.random() * 100;
+}
+dustGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
+  color: 0xE8ECF4, size: 0.012, transparent: true, opacity: 0.5,
+  blending: THREE.AdditiveBlending, depthWrite: false }));
+scene.add(dust);
+
+/* ── 카메라 경로: 방 전경 → 화면 속으로 ── */
+const CAM_A = new THREE.Vector3(1.45, 1.5, 2.3);
+const CAM_B = new THREE.Vector3(0, 1.08, screenWorld.z + 0.4);
+const wrapEl = document.getElementById("scroll3d");
+const titleEl = document.getElementById("title");
+const revealEl = document.getElementById("reveal");
+const downEl = document.querySelector(".scrolldown");
+let mouseX = 0, mouseY = 0, p = 0;
+
+function smooth(t) { return t * t * (3 - 2 * t); }
+
+function layout() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+
+function updateScroll() {
+  if (reduced) { p = 0; return; }
+  const range = wrapEl.offsetHeight - innerHeight;
+  p = Math.min(1, Math.max(0, -wrapEl.getBoundingClientRect().top / range));
+}
+
+function render(tms) {
+  const t = tms / 1000;
+  const e = smooth(p);
+  camera.position.lerpVectors(CAM_A, CAM_B, e);
+  /* 마우스 패럴랙스는 초반에만, 줌인될수록 잠긴다 */
+  camera.position.x += mouseX * 0.1 * (1 - e);
+  camera.position.y += mouseY * 0.06 * (1 - e);
+  camera.lookAt(screenWorld);
+  glow.intensity = 1.4 + Math.sin(t * 9) * 0.15 + Math.sin(t * 23) * 0.08; /* CRT 깜빡임 */
+  dust.rotation.y = t * 0.014;
+  renderer.render(scene, camera);
+
+  const tt = Math.min(1, p / 0.25);
+  titleEl.style.opacity = 1 - tt;
+  titleEl.style.transform = "translateY(" + tt * -26 + "px)";
+  const r = Math.max(0, Math.min(1, (p - 0.62) / 0.3));
+  revealEl.style.opacity = r;
+  revealEl.style.transform = "translateY(" + (1 - r) * 44 + "px)";
+  revealEl.style.pointerEvents = r > 0.6 ? "auto" : "none";
+  downEl.style.opacity = p > 0.04 ? 0 : 1;
+}
+
+addEventListener("scroll", updateScroll, { passive: true });
+addEventListener("resize", () => { layout(); updateScroll(); }, { passive: true });
+addEventListener("pointermove", e => {
+  mouseX = (e.clientX / innerWidth - 0.5) * 2;
+  mouseY = (e.clientY / innerHeight - 0.5) * 2;
+}, { passive: true });
+
+layout(); updateScroll();
+if (reduced) { render(0); }
+else renderer.setAnimationLoop(render);
+window.__setP = v => { p = v; render(performance.now()); }; /* 검증용 수동 진행 */
+</script>
+</body>
+</html>
