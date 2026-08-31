@@ -881,7 +881,8 @@ function noteTex(bg, ink, lines, size) {
   { bg: "#8EE3A2", ink: "#1e4028", lines: ["테스트", "340", "GREEN"], x: -0.285, y: 0.005, r: -0.05 },
   { bg: "#ffb26b", ink: "#5a3413", lines: ["스팀 데모", "2/22 🚀"], x: -0.285, y: -0.125, r: 0.04 },
   { bg: "#f2a0b5", ink: "#5a2433", lines: ["w=2", "잊지말기!"], x: 0.285, y: 0.1, r: 0.08 },
-  { bg: "#a8d8f0", ink: "#1e3a50", lines: ["세이브", "먼저 백업", "!!"], x: 0.285, y: -0.04, r: -0.07 }
+  { bg: "#a8d8f0", ink: "#1e3a50", lines: ["세이브", "먼저 백업", "!!"], x: 0.285, y: -0.04, r: -0.07 },
+  { bg: "#E8ECF4", ink: "#33302a", lines: ["면접 Q:", "왜 SO로?", "→ OCP"], x: 0.285, y: -0.175, r: 0.05 }
 ].forEach(n => {
   const note = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.068),
     new THREE.MeshBasicMaterial({ map: noteTex(n.bg, n.ink, n.lines) }));
@@ -899,6 +900,17 @@ const deskNote = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.075),
 deskNote.rotation.x = -Math.PI / 2; deskNote.rotation.z = 0.35;
 deskNote.position.set(0.33, 0.7825, 0.49);
 scene.add(deskNote);
+const deskNote2 = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.07),
+  new THREE.MeshBasicMaterial({ map: noteTex("#ffb26b", "#5a3413", ["블로그", "69편", "→ 100"]) }));
+deskNote2.rotation.x = -Math.PI / 2; deskNote2.rotation.z = -0.22;
+deskNote2.position.set(-0.28, 0.7825, 0.5);
+scene.add(deskNote2);
+/* CRT 옆면 — 검증 규율 메모 */
+const sideNote = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.07),
+  new THREE.MeshBasicMaterial({ map: noteTex("#f2e06b", "#4a4128", ["테스트는", "일부러", "망가뜨려", "본다"], 15) }));
+sideNote.position.set(0.331, 0.16, -0.02);
+sideNote.rotation.y = Math.PI / 2; sideNote.rotation.z = 0.08;
+crt.add(sideNote);
 
 /* 캐릭터 스티커 — 유령·슬라임·별·물고기 (전작들의 낌새) */
 function stickerTex(draw) {
