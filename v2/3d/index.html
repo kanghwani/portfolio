@@ -539,19 +539,92 @@ scene.fog = new THREE.FogExp2(0x0a101f, 0.14);
 
 const camera = new THREE.PerspectiveCamera(50, 2, 0.05, 40);
 
-/* ── 방: 바닥 + 뒷벽 ── */
-const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(14, 14),
-  new THREE.MeshStandardMaterial({ color: 0x111a30, roughness: 0.95 }));
-floor.rotation.x = -Math.PI / 2;
-floor.receiveShadow = true;
-scene.add(floor);
-const wall = new THREE.Mesh(
-  new THREE.PlaneGeometry(14, 6),
-  new THREE.MeshStandardMaterial({ color: 0x0e1526, roughness: 1 }));
-wall.position.set(0, 3, -1.6);
-wall.receiveShadow = true;
-scene.add(wall);
+/* ── 우주에 뜬 플랫폼 — 방이 아니라 우주 한가운데의 작업실 ── */
+const platform = new THREE.Mesh(new THREE.CylinderGeometry(2.7, 2.4, 0.22, 48),
+  new THREE.MeshStandardMaterial({ color: 0x151d33, roughness: 0.9 }));
+platform.position.y = -0.11;
+platform.receiveShadow = true;
+scene.add(platform);
+const rimGlow = new THREE.Mesh(new THREE.TorusGeometry(2.71, 0.018, 8, 72),
+  new THREE.MeshBasicMaterial({ color: 0x3b6bd6 }));
+rimGlow.rotation.x = Math.PI / 2; rimGlow.position.y = -0.03;
+scene.add(rimGlow);
+const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 0.012, 40),
+  new THREE.MeshStandardMaterial({ color: 0x2a2440, roughness: 1 }));
+rug.position.set(0.15, 0.006, 0.55);
+rug.receiveShadow = true;
+scene.add(rug);
+
+/* 별 — 2층 구면 셸 (원경 잔별 + 근경 밝은 별). 우주 소재는 fog 제외 */
+function starField(n, size, color, opacity) {
+  const g = new THREE.BufferGeometry();
+  const a = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const th = Math.random() * Math.PI * 2, ph = Math.acos(Math.random() * 2 - 1);
+    const r = 15 + Math.random() * 6;
+    a[i*3] = r * Math.sin(ph) * Math.cos(th);
+    a[i*3+1] = r * Math.cos(ph);
+    a[i*3+2] = r * Math.sin(ph) * Math.sin(th);
+  }
+  g.setAttribute("position", new THREE.BufferAttribute(a, 3));
+  const pts = new THREE.Points(g, new THREE.PointsMaterial({ color, size, transparent: true,
+    opacity, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+  scene.add(pts);
+  return pts;
+}
+starField(isTouch ? 700 : 1400, 0.05, 0xcfd8ff, 0.7);
+const starsNear = starField(isTouch ? 150 : 320, 0.1, 0xffffff, 0.9);
+
+/* 네뷸라 돔 — 캔버스 라디얼 그라디언트 5방울 */
+const nc = document.createElement("canvas"); nc.width = 512; nc.height = 512;
+const n2d = nc.getContext("2d");
+n2d.fillStyle = "#070b18"; n2d.fillRect(0, 0, 512, 512);
+[[150, 190, "106,74,143", 210], [370, 120, "59,107,214", 170], [400, 360, "94,196,176", 150],
+ [110, 400, "199,80,26", 110], [260, 280, "157,184,255", 90]].forEach(([x, y, rgb, r]) => {
+  const g = n2d.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, "rgba(" + rgb + ",0.32)"); g.addColorStop(1, "rgba(" + rgb + ",0)");
+  n2d.fillStyle = g; n2d.fillRect(0, 0, 512, 512);
+});
+const nebTex = new THREE.CanvasTexture(nc);
+nebTex.colorSpace = THREE.SRGBColorSpace;
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(24, 32, 24),
+  new THREE.MeshBasicMaterial({ map: nebTex, side: THREE.BackSide, fog: false })));
+
+/* 링 행성 + 달 */
+const planet = new THREE.Group();
+const planetBall = new THREE.Mesh(new THREE.SphereGeometry(1.05, 32, 24),
+  new THREE.MeshStandardMaterial({ color: 0x5ec4b0, roughness: 0.85,
+    emissive: 0x0e2a3a, emissiveIntensity: 0.6, fog: false }));
+planet.add(planetBall);
+const pring = new THREE.Mesh(new THREE.RingGeometry(1.4, 2.1, 48),
+  new THREE.MeshBasicMaterial({ color: 0xF4D35E, transparent: true, opacity: 0.4,
+    side: THREE.DoubleSide, fog: false }));
+pring.rotation.x = 1.25;
+planet.add(pring);
+planet.position.set(-7.5, 4.8, -10);
+planet.rotation.z = 0.25;
+scene.add(planet);
+const moon = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 12),
+  new THREE.MeshStandardMaterial({ color: 0x9AA6BD, roughness: 1, fog: false }));
+moon.position.set(6.5, 3.2, -9);
+scene.add(moon);
+
+/* 플로어 램프 실체 — 앰버 포인트라이트의 몸 */
+const lampMetal = new THREE.MeshStandardMaterial({ color: 0x20242e, roughness: 0.55 });
+const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.03, 20), lampMetal);
+lampBase.position.set(-1.3, 0.015, 0.9); lampBase.castShadow = true;
+scene.add(lampBase);
+const lampPole = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.75, 10), lampMetal);
+lampPole.position.set(-1.3, 0.9, 0.9);
+scene.add(lampPole);
+const lampShade = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.26, 24, 1, true),
+  new THREE.MeshStandardMaterial({ color: 0xC7501A, roughness: 0.6, side: THREE.DoubleSide }));
+lampShade.position.set(-1.3, 1.86, 0.9);
+scene.add(lampShade);
+const lampBulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 10),
+  new THREE.MeshBasicMaterial({ color: 0xF4D35E }));
+lampBulb.position.set(-1.3, 1.77, 0.9);
+scene.add(lampBulb);
 
 /* ── 책상 ── */
 const deskMat = new THREE.MeshStandardMaterial({ color: 0x4a3826, roughness: 0.7 });
@@ -730,6 +803,7 @@ scene.add(deskPad);
 /* 흰 스피커 한 쌍 — 우퍼·트위터·캐릭터 스티커, 살짝 토인 */
 const spkMat = new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 });
 const spkDrv = new THREE.MeshStandardMaterial({ color: 0x20242e, roughness: 0.4 });
+const spGroups = [];
 [[-0.56, 1], [0.56, -1]].forEach(([sx, sgn]) => {
   const sp = new THREE.Group();
   const box = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.22, 0.14), spkMat);
@@ -747,6 +821,7 @@ const spkDrv = new THREE.MeshStandardMaterial({ color: 0x20242e, roughness: 0.4 
   sp.add(sticker);
   sp.position.set(sx, 0.885, -0.05); sp.rotation.y = -sx * 0.35;
   scene.add(sp);
+  spGroups.push(sp);
 });
 
 /* 모니터 위 피규어 — 흰 뿔 둘 달린 작은 친구 */
@@ -769,23 +844,6 @@ for (const ex of [-1, 1]) {
 }
 fig.position.set(0.2, 0.288, -0.05);
 crt.add(fig);
-
-/* 미니 선풍기 — 헤드가 라이브에서 천천히 돈다 */
-const fanMat = new THREE.MeshStandardMaterial({ color: 0xEDE4CF, roughness: 0.6 });
-const fanBase = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.02, 16), fanMat);
-fanBase.position.set(0.92, 0.786, 0.18); fanBase.castShadow = true;
-scene.add(fanBase);
-const fanPole = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.13, 8), fanMat);
-fanPole.position.set(0.92, 0.86, 0.18);
-scene.add(fanPole);
-const fanRing = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.012, 8, 20), fanMat);
-fanRing.position.set(0.92, 0.99, 0.18); fanRing.rotation.y = -0.5;
-fanRing.castShadow = true;
-scene.add(fanRing);
-const fanBlade = new THREE.Mesh(new THREE.CircleGeometry(0.058, 3),
-  new THREE.MeshStandardMaterial({ color: 0xd9cfb4, roughness: 0.5, side: THREE.DoubleSide }));
-fanBlade.position.copy(fanRing.position); fanBlade.rotation.y = -0.5;
-scene.add(fanBlade);
 
 /* 타이머 큐브 — 빨간 다이얼 */
 const timer = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.055, 0.055),
@@ -810,6 +868,7 @@ for (const px of [-0.26, 0.26]) {
   side.position.set(px, 0.33, 0); side.castShadow = true;
   shelf.add(side);
 }
+const caseMeshes = [];
 [0x7FB3FF, 0xE8ECF4, 0xFF9E6E, 0x8EE3A2, 0x9AA6BD, 0xF4D35E, 0x6dff8a].forEach((c, i) => {
   const gcase = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.19, 0.15),
     new THREE.MeshStandardMaterial({ color: c, roughness: 0.6 }));
@@ -817,9 +876,52 @@ for (const px of [-0.26, 0.26]) {
   gcase.rotation.y = (i % 3 - 1) * 0.04;
   gcase.castShadow = true;
   shelf.add(gcase);
+  caseMeshes.push(gcase);
 });
 shelf.position.set(-1.85, 0, 0.35); shelf.rotation.y = 0.5;
 scene.add(shelf);
+
+/* ── 상호작용 — 라이브 페이즈에서 소품을 클릭하면 반응한다 ── */
+const fx = [];
+const hitRoots = [];
+function addHit(obj, act) { hitRoots.push({ obj, act }); }
+addHit(fig, () => fx.push({ type: "jump", o: fig, t0: performance.now(), y0: 0.288 }));
+spGroups.forEach(sp => addHit(sp, () => fx.push({ type: "pulse", o: sp, t0: performance.now() })));
+addHit(books, () => {
+  if (fx.some(f => f.type === "redrop")) return;
+  bookRefs.forEach((bk, i) =>
+    fx.push({ type: "redrop", o: bk, t0: performance.now() + i * 130, puffed: false }));
+});
+addHit(timer, () => fx.push({ type: "spin", o: dial, t0: performance.now() }));
+addHit(mug, () => spawnPuff(0.55, 0.95, 0.25));
+addHit(handle, () => spawnPuff(0.55, 0.95, 0.25));
+caseMeshes.forEach(gc =>
+  addHit(gc, () => fx.push({ type: "pop", o: gc, t0: performance.now(), y0: 0.73 })));
+const ray = new THREE.Raycaster();
+const ndcV = new THREE.Vector2();
+function pickRoot(e) {
+  const r = canvas.getBoundingClientRect();
+  ndcV.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndcV, camera);
+  const hit = ray.intersectObjects(hitRoots.map(h => h.obj), true)[0];
+  if (!hit) return null;
+  let n = hit.object;
+  while (n) {
+    const found = hitRoots.find(h => h.obj === n);
+    if (found) return found;
+    n = n.parent;
+  }
+  return null;
+}
+canvas.addEventListener("pointerdown", e => {
+  if (phase !== "live" || p > 0.5) return;
+  const h = pickRoot(e);
+  if (h) h.act();
+});
+canvas.addEventListener("pointermove", e => {
+  if (phase !== "live" || p > 0.5) { canvas.style.cursor = ""; return; }
+  canvas.style.cursor = pickRoot(e) ? "pointer" : "";
+});
 
 /* ── 조명: 앰버 램프 + 블루 림 + 화면 글로우 ── */
 scene.add(new THREE.AmbientLight(0x223048, 0.7));
@@ -1049,7 +1151,39 @@ function render(tms) {
   camera.lookAt(screenWorld);
   glow.intensity = 1.4 + Math.sin(t * 9) * 0.15 + Math.sin(t * 23) * 0.08; /* CRT 깜빡임 */
   dust.rotation.y = t * 0.014;
-  fanBlade.rotation.z = t * 5;                            /* 선풍기 날 */
+  planetBall.rotation.y = t * 0.04;                       /* 행성 자전 */
+  starsNear.rotation.y = t * 0.0035;                      /* 근경 별 미세 드리프트 */
+  /* 소품 상호작용 애니메이션 */
+  for (let i = fx.length - 1; i >= 0; i--) {
+    const f = fx[i], k = (tms - f.t0) / (f.type === "redrop" ? 700 : 550);
+    if (k < 0) continue;
+    if (k >= 1) {
+      if (f.type === "jump") { f.o.position.y = f.y0; f.o.scale.set(1, 1, 1); }
+      else if (f.type === "pulse") f.o.scale.set(1, 1, 1);
+      else if (f.type === "spin") f.o.rotation.z = 0;
+      else if (f.type === "pop") f.o.position.y = f.y0;
+      else if (f.type === "redrop") f.o.position.y = f.o.userData.finalY;
+      fx.splice(i, 1); continue;
+    }
+    if (f.type === "jump") {
+      f.o.position.y = f.y0 + Math.sin(Math.PI * k) * 0.11;
+      const sq = 1 + Math.sin(Math.PI * k) * 0.12;
+      f.o.scale.set(1 / sq, sq, 1 / sq);
+    } else if (f.type === "pulse") {
+      const s = 1 + Math.sin(Math.PI * k) * 0.09;
+      f.o.scale.set(s, s, s);
+    } else if (f.type === "spin") {
+      f.o.rotation.z = -smooth(k) * Math.PI * 4;
+    } else if (f.type === "pop") {
+      f.o.position.y = f.y0 + Math.sin(Math.PI * k) * 0.06;
+    } else if (f.type === "redrop") {
+      f.o.position.y = f.o.userData.finalY + (1 - smooth(k)) * 0.9;
+      if (k > 0.9 && !f.puffed) {
+        f.puffed = true;
+        spawnPuff(books.position.x, f.o.userData.finalY - 0.01, books.position.z);
+      }
+    }
+  }
   renderer.render(scene, camera);
 
   const introK = phase === "live" ? 1 : (phase === "pullback" ? pbK : 0);
