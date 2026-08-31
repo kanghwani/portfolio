@@ -551,7 +551,7 @@ if (!bloomOff) {
       c.setSize(canvas.clientWidth, canvas.clientHeight);
       c.addPass(new rp.RenderPass(scene, camera));
       c.addPass(new ub.UnrealBloomPass(
-        new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.5, 0.4, 0.65));
+        new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.25, 0.3, 0.8));
       c.addPass(new op.OutputPass()); /* r170: 톤매핑+sRGB를 체인 끝에서 1회 */
       composer = c;
       if (reduced) render(performance.now());
