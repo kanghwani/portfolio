@@ -590,20 +590,34 @@ nebTex.colorSpace = THREE.SRGBColorSpace;
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(24, 32, 24),
   new THREE.MeshBasicMaterial({ map: nebTex, side: THREE.BackSide, fog: false })));
 
-/* 플랫폼 상판 — 포스포 그린 레트로 그리드 */
+/* 플랫폼 상판 — 원목 마루 (우주 한가운데의 아늑한 방) */
 const gc2 = document.createElement("canvas"); gc2.width = gc2.height = 512;
 const g2 = gc2.getContext("2d");
-g2.fillStyle = "#131b30"; g2.fillRect(0, 0, 512, 512);
-g2.strokeStyle = "rgba(109,255,138,0.13)"; g2.lineWidth = 2;
-for (let i = 0; i <= 16; i++) {
-  g2.beginPath(); g2.moveTo(i * 32, 0); g2.lineTo(i * 32, 512); g2.stroke();
-  g2.beginPath(); g2.moveTo(0, i * 32); g2.lineTo(512, i * 32); g2.stroke();
+const plankCols = ["#33261c", "#2e221a", "#382a1f", "#302319"];
+for (let row = 0; row < 8; row++) {
+  const off = (row % 2) * 128;
+  for (let px = -1; px < 5; px++) {
+    g2.fillStyle = plankCols[(row * 3 + px + 7) % 4];
+    g2.fillRect(px * 128 + off, row * 64, 126, 62);
+  }
+  g2.fillStyle = "rgba(0,0,0,0.4)";
+  g2.fillRect(0, row * 64 + 62, 512, 2);
 }
-const gridTop = new THREE.Mesh(new THREE.CircleGeometry(2.68, 48),
-  new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(gc2), roughness: 0.9 }));
-gridTop.rotation.x = -Math.PI / 2; gridTop.position.y = 0.001;
-gridTop.receiveShadow = true;
-scene.add(gridTop);
+g2.strokeStyle = "rgba(255,235,200,0.045)"; g2.lineWidth = 1;
+for (let i = 0; i < 40; i++) {
+  const gy = Math.random() * 512;
+  g2.beginPath(); g2.moveTo(Math.random() * 200, gy);
+  g2.lineTo(Math.random() * 200 + 300, gy + Math.random() * 4 - 2); g2.stroke();
+}
+const woodTex = new THREE.CanvasTexture(gc2);
+woodTex.colorSpace = THREE.SRGBColorSpace;
+woodTex.wrapS = woodTex.wrapT = THREE.RepeatWrapping;
+woodTex.repeat.set(2, 2);
+const woodTop = new THREE.Mesh(new THREE.CircleGeometry(2.68, 48),
+  new THREE.MeshStandardMaterial({ map: woodTex, roughness: 0.85 }));
+woodTop.rotation.x = -Math.PI / 2; woodTop.position.y = 0.001;
+woodTop.receiveShadow = true;
+scene.add(woodTop);
 
 /* 플로어 램프 실체 — 앰버 포인트라이트의 몸 */
 const lampMetal = new THREE.MeshStandardMaterial({ color: 0x20242e, roughness: 0.55 });
@@ -846,6 +860,76 @@ for (const ex of [-1, 1]) {
 fig.position.set(0.2, 0.288, -0.05);
 crt.add(fig);
 
+/* 포스트잇 — 개발 메모가 붙은 모니터 */
+function noteTex(bg, ink, lines, size) {
+  const c = document.createElement("canvas"); c.width = c.height = 128;
+  const x = c.getContext("2d");
+  x.fillStyle = bg; x.fillRect(0, 0, 128, 128);
+  x.fillStyle = ink; x.font = "bold " + (size || 17) + "px 'Galmuri9',monospace";
+  lines.forEach((L, i) => x.fillText(L, 9, 30 + i * 24));
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+[
+  { bg: "#f2e06b", ink: "#4a4128", lines: ["버그:", "차 뒷걸음", "→ FIX ✓"], x: -0.285, y: 0.13, r: 0.06 },
+  { bg: "#8EE3A2", ink: "#1e4028", lines: ["테스트", "340", "GREEN"], x: -0.285, y: 0.0, r: -0.05 },
+  { bg: "#f2a0b5", ink: "#5a2433", lines: ["w=2", "잊지말기!"], x: 0.285, y: 0.1, r: 0.08 }
+].forEach(n => {
+  const note = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.068),
+    new THREE.MeshBasicMaterial({ map: noteTex(n.bg, n.ink, n.lines) }));
+  note.position.set(n.x, n.y, 0.2865);
+  note.rotation.z = n.r;
+  crt.add(note);
+});
+
+/* 캐릭터 스티커 — 유령·슬라임·별·물고기 (전작들의 낌새) */
+function stickerTex(draw) {
+  const c = document.createElement("canvas"); c.width = c.height = 64;
+  draw(c.getContext("2d"));
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  t.magFilter = THREE.NearestFilter;
+  return t;
+}
+const stickers = [
+  stickerTex(x => {                                       // 유령
+    x.fillStyle = "#f4f1ea";
+    x.beginPath(); x.arc(32, 26, 18, Math.PI, 0); x.rect(14, 26, 36, 22); x.fill();
+    x.fillStyle = "#1c2233"; x.fillRect(24, 22, 6, 9); x.fillRect(36, 22, 6, 9);
+  }),
+  stickerTex(x => {                                       // 슬라임 (Unhallow Slime)
+    x.fillStyle = "#8EE3A2";
+    x.beginPath(); x.arc(32, 36, 20, Math.PI, 0); x.rect(12, 36, 40, 12); x.fill();
+    x.fillStyle = "#1e4028"; x.fillRect(24, 32, 5, 8); x.fillRect(37, 32, 5, 8);
+  }),
+  stickerTex(x => {                                       // 별
+    x.fillStyle = "#F4D35E"; x.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const rr = i % 2 ? 11 : 26, a = i * Math.PI / 5 - Math.PI / 2;
+      x[i ? "lineTo" : "moveTo"](32 + Math.cos(a) * rr, 32 + Math.sin(a) * rr);
+    }
+    x.fill();
+    x.fillStyle = "#5a4a18"; x.fillRect(26, 30, 4, 6); x.fillRect(35, 30, 4, 6);
+  }),
+  stickerTex(x => {                                       // 물고기 (Fish FPS)
+    x.fillStyle = "#FF9E6E";
+    x.beginPath(); x.ellipse(28, 32, 17, 11, 0, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.moveTo(44, 32); x.lineTo(56, 22); x.lineTo(56, 42); x.fill();
+    x.fillStyle = "#4a2413"; x.beginPath(); x.arc(21, 29, 3, 0, Math.PI * 2); x.fill();
+  })
+];
+[
+  { i: 0, x: -0.24, y: -0.19, z: 0.289, ry: 0, s: 0.042, rz: 0.15 },
+  { i: 2, x: 0.26, y: 0.2, z: 0.289, ry: 0, s: 0.038, rz: -0.2 },
+  { i: 1, x: 0.331, y: 0.05, z: 0.08, ry: Math.PI / 2, s: 0.05, rz: 0.1 },
+  { i: 3, x: 0.331, y: -0.08, z: 0.14, ry: Math.PI / 2, s: 0.055, rz: -0.12 }
+].forEach(st => {
+  const sm = new THREE.Mesh(new THREE.PlaneGeometry(st.s, st.s),
+    new THREE.MeshBasicMaterial({ map: stickers[st.i], transparent: true }));
+  sm.position.set(st.x, st.y, st.z);
+  sm.rotation.set(0, st.ry, st.rz);
+  crt.add(sm);
+});
+
 /* 타이머 큐브 — 빨간 다이얼 */
 const timer = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.055, 0.055),
   new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 }));
@@ -882,6 +966,89 @@ const caseMeshes = [];
 shelf.position.set(-1.85, 0, 0.35); shelf.rotation.y = 0.5;
 scene.add(shelf);
 
+/* ── 생활감: 먹다 남은 것들 ── */
+/* 컵라면 — 반쯤 열린 뚜껑 + 나무젓가락 */
+const cupG = new THREE.Group();
+const cupBody = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.038, 0.075, 16),
+  new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.6 }));
+cupBody.position.y = 0.0375; cupBody.castShadow = true;
+cupG.add(cupBody);
+const cupBand = new THREE.Mesh(new THREE.CylinderGeometry(0.0505, 0.047, 0.022, 16),
+  new THREE.MeshStandardMaterial({ color: 0xd0433a, roughness: 0.6 }));
+cupBand.position.y = 0.055;
+cupG.add(cupBand);
+const lid = new THREE.Mesh(new THREE.CircleGeometry(0.05, 16),
+  new THREE.MeshStandardMaterial({ color: 0xEae4d4, roughness: 0.7, side: THREE.DoubleSide }));
+lid.position.set(0, 0.095, -0.035); lid.rotation.x = -2.5;
+cupG.add(lid);
+const stickMat = new THREE.MeshStandardMaterial({ color: 0xC9A66B, roughness: 0.8 });
+for (const sxo of [-0.006, 0.007]) {
+  const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.16, 6), stickMat);
+  stick.position.set(sxo + 0.015, 0.11, 0.01);
+  stick.rotation.z = 0.45; stick.rotation.x = -0.1;
+  cupG.add(stick);
+}
+cupG.position.set(0.82, 0.775, 0.44);
+scene.add(cupG);
+/* 아이스 커피 — 반쯤 남은 컵 + 빨대 */
+const iceG = new THREE.Group();
+const iceCup = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.026, 0.09, 14),
+  new THREE.MeshStandardMaterial({ color: 0x6f4e37, transparent: true, opacity: 0.72, roughness: 0.25 }));
+iceCup.position.y = 0.045; iceCup.castShadow = true;
+iceG.add(iceCup);
+const iceLid = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.034, 0.008, 14),
+  new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 }));
+iceLid.position.y = 0.094;
+iceG.add(iceLid);
+const straw = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.1, 8),
+  new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 }));
+straw.position.set(0.012, 0.135, 0); straw.rotation.z = 0.18;
+iceG.add(straw);
+iceG.position.set(-0.62, 0.775, 0.47);
+scene.add(iceG);
+/* 과자 부스러기 */
+for (let i = 0; i < 4; i++) {
+  const crumb = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.005, 0.01),
+    new THREE.MeshStandardMaterial({ color: 0xC9A66B, roughness: 0.9 }));
+  crumb.position.set(0.62 + Math.sin(i * 4.7) * 0.06, 0.784, 0.4 + Math.cos(i * 2.9) * 0.05);
+  crumb.rotation.y = i * 1.3;
+  scene.add(crumb);
+}
+
+/* ── 책 표지 — 맨 위 책 타이틀 + 기대 세운 기획노트 ── */
+function coverTex(bg, ink, lines, accent) {
+  const c = document.createElement("canvas"); c.width = 128; c.height = 160;
+  const x = c.getContext("2d");
+  x.fillStyle = bg; x.fillRect(0, 0, 128, 160);
+  x.fillStyle = accent; x.fillRect(0, 0, 128, 14);
+  x.fillStyle = ink; x.font = "bold 19px 'Galmuri11',monospace";
+  lines.forEach((L, i) => x.fillText(L, 10, 48 + i * 26));
+  x.strokeStyle = accent; x.lineWidth = 2; x.strokeRect(8, 118, 112, 30);
+  x.font = "11px 'Galmuri9',monospace";
+  x.fillText("SECOND LAYER", 18, 137);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+/* 맨 위 책(초록) 표지 타이틀 — 위에서 내려다보면 읽힌다 */
+const topLabel = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.145),
+  new THREE.MeshBasicMaterial({ map: coverTex("#8EE3A2", "#1e4028", ["게임", "수학"], "#1e4028") }));
+topLabel.rotation.x = -Math.PI / 2; topLabel.rotation.z = -Math.PI / 2;
+topLabel.position.y = 0.0185;
+bookRefs[2].add(topLabel);
+/* 기대 세워 둔 기획노트 — 표지가 카메라 쪽을 본다 */
+const leanG = new THREE.Group();
+const leanBody = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.23, 0.16),
+  new THREE.MeshStandardMaterial({ color: 0x2b3350, roughness: 0.7 }));
+leanBody.castShadow = true;
+leanG.add(leanBody);
+const leanCover = new THREE.Mesh(new THREE.PlaneGeometry(0.145, 0.21),
+  new THREE.MeshBasicMaterial({ map: coverTex("#2b3350", "#E8ECF4", ["IDLE", "CITY", "기획노트"], "#6dff8a") }));
+leanCover.position.x = 0.0179; leanCover.rotation.y = Math.PI / 2;
+leanG.add(leanCover);
+leanG.position.set(-0.5, 0.892, 0.14);
+leanG.rotation.set(0.02, 0.85, -0.16);
+scene.add(leanG);
+
 /* ── 상호작용 — 라이브 페이즈에서 소품을 클릭하면 반응한다 ── */
 const fx = [];
 const hitRoots = [];
@@ -898,6 +1065,8 @@ addHit(mug, () => spawnPuff(0.55, 0.95, 0.25));
 addHit(handle, () => spawnPuff(0.55, 0.95, 0.25));
 caseMeshes.forEach(gc =>
   addHit(gc, () => fx.push({ type: "pop", o: gc, t0: performance.now(), y0: 0.73 })));
+addHit(cupG, () => spawnPuff(0.82, 0.9, 0.44));
+addHit(leanG, () => fx.push({ type: "pop", o: leanG, t0: performance.now(), y0: 0.892 }));
 const ray = new THREE.Raycaster();
 const ndcV = new THREE.Vector2();
 function pickRoot(e) {
