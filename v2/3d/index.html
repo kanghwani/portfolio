@@ -1157,7 +1157,20 @@ function drawBoot(el) {
     bctx.fillText(L.t, 46, y);
     y += L.big ? 58 : 32;
   }
-  if (Math.floor(el * 2.4) % 2 === 0) { bctx.fillStyle = "#8EE3A2"; bctx.fillRect(46, y - 14, 13, 19); }
+  if (el > BOOT_DUR) {
+    /* 시작 대기 — 깜빡이는 프롬프트 (스페이스/탭을 기다린다) */
+    if (Math.floor(el * 1.6) % 2 === 0) {
+      bctx.font = '26px "Galmuri11","Galmuri9",monospace';
+      bctx.fillStyle = "#E8ECF4"; bctx.shadowColor = "#E8ECF4"; bctx.shadowBlur = 12;
+      bctx.fillText(isTouch ? "▶ TAP TO START" : "▶ PRESS SPACE TO START", 46, y + 22);
+    }
+    bctx.shadowBlur = 0;
+    bctx.font = '14px "Galmuri9",monospace';
+    bctx.fillStyle = "#44536e";
+    bctx.fillText("© 2026 SECOND LAYER GAMES", 46, 470);
+  } else if (Math.floor(el * 2.4) % 2 === 0) {
+    bctx.fillStyle = "#8EE3A2"; bctx.fillRect(46, y - 14, 13, 19);
+  }
   bctx.shadowBlur = 0;
   bootTex.needsUpdate = true;
 }
@@ -1180,6 +1193,33 @@ if (!reduced && document.hidden) {
     removeEventListener("visibilitychange", onVis);
   });
 }
+/* 시작 입력 — 스페이스/클릭/탭. 로그 출력 중이면 스킵, 프롬프트 상태면 시작 */
+function startBlip() {
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const mk = (f, t0, d) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = "square"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.07, ac.currentTime + t0);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + t0 + d);
+      o.connect(g); g.connect(ac.destination);
+      o.start(ac.currentTime + t0); o.stop(ac.currentTime + t0 + d);
+    };
+    mk(660, 0, 0.09); mk(990, 0.09, 0.13);               /* 8비트 시작음 */
+  } catch (e) {}
+}
+function tryStart() {
+  if (phase !== "boot") return;
+  const el = (performance.now() - bootT0) / 1000;
+  if (el <= BOOT_DUR) { bootT0 = performance.now() - BOOT_DUR * 1000 - 1; return; } /* 로그 스킵 */
+  startBlip();
+  startPullback();
+}
+addEventListener("keydown", e => {
+  if (phase === "boot" && (e.code === "Space" || e.key === " ")) { e.preventDefault(); tryStart(); }
+});
+canvas.addEventListener("pointerdown", tryStart);
+
 function startPullback() {
   if (phase !== "boot") return;
   phase = "pullback"; pbT0 = performance.now();
@@ -1223,8 +1263,7 @@ function updateIntro(now, dt) {
   /* 부팅 로그 — CRT 텍스처에 직접 그린다 */
   if (phase === "boot") {
     const el = (now - bootT0) / 1000;
-    drawBoot(el);
-    if (el > BOOT_DUR) startPullback();
+    drawBoot(el);                                        /* 진행은 tryStart(스페이스/탭)가 한다 */
   }
   /* CRT 전원 온 — 가로선이 펴진다 */
   if (screenOnT >= 0) {
