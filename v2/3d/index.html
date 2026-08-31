@@ -546,7 +546,7 @@ platform.position.y = -0.11;
 platform.receiveShadow = true;
 scene.add(platform);
 const rimGlow = new THREE.Mesh(new THREE.TorusGeometry(2.71, 0.018, 8, 72),
-  new THREE.MeshBasicMaterial({ color: 0x3b6bd6 }));
+  new THREE.MeshBasicMaterial({ color: 0x6dff8a }));
 rimGlow.rotation.x = Math.PI / 2; rimGlow.position.y = -0.03;
 scene.add(rimGlow);
 const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 0.012, 40),
@@ -579,10 +579,10 @@ const starsNear = starField(isTouch ? 150 : 320, 0.1, 0xffffff, 0.9);
 const nc = document.createElement("canvas"); nc.width = 512; nc.height = 512;
 const n2d = nc.getContext("2d");
 n2d.fillStyle = "#070b18"; n2d.fillRect(0, 0, 512, 512);
-[[150, 190, "106,74,143", 210], [370, 120, "59,107,214", 170], [400, 360, "94,196,176", 150],
- [110, 400, "199,80,26", 110], [260, 280, "157,184,255", 90]].forEach(([x, y, rgb, r]) => {
+[[150, 180, "88,64,140", 230, 0.30], [370, 130, "59,107,214", 190, 0.26],
+ [260, 330, "109,255,138", 90, 0.10], [400, 390, "157,184,255", 120, 0.16]].forEach(([x, y, rgb, r, a]) => {
   const g = n2d.createRadialGradient(x, y, 0, x, y, r);
-  g.addColorStop(0, "rgba(" + rgb + ",0.32)"); g.addColorStop(1, "rgba(" + rgb + ",0)");
+  g.addColorStop(0, "rgba(" + rgb + "," + a + ")"); g.addColorStop(1, "rgba(" + rgb + ",0)");
   n2d.fillStyle = g; n2d.fillRect(0, 0, 512, 512);
 });
 const nebTex = new THREE.CanvasTexture(nc);
@@ -590,24 +590,20 @@ nebTex.colorSpace = THREE.SRGBColorSpace;
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(24, 32, 24),
   new THREE.MeshBasicMaterial({ map: nebTex, side: THREE.BackSide, fog: false })));
 
-/* 링 행성 + 달 */
-const planet = new THREE.Group();
-const planetBall = new THREE.Mesh(new THREE.SphereGeometry(1.05, 32, 24),
-  new THREE.MeshStandardMaterial({ color: 0x5ec4b0, roughness: 0.85,
-    emissive: 0x0e2a3a, emissiveIntensity: 0.6, fog: false }));
-planet.add(planetBall);
-const pring = new THREE.Mesh(new THREE.RingGeometry(1.4, 2.1, 48),
-  new THREE.MeshBasicMaterial({ color: 0xF4D35E, transparent: true, opacity: 0.4,
-    side: THREE.DoubleSide, fog: false }));
-pring.rotation.x = 1.25;
-planet.add(pring);
-planet.position.set(-7.5, 4.8, -10);
-planet.rotation.z = 0.25;
-scene.add(planet);
-const moon = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 12),
-  new THREE.MeshStandardMaterial({ color: 0x9AA6BD, roughness: 1, fog: false }));
-moon.position.set(6.5, 3.2, -9);
-scene.add(moon);
+/* 플랫폼 상판 — 포스포 그린 레트로 그리드 */
+const gc2 = document.createElement("canvas"); gc2.width = gc2.height = 512;
+const g2 = gc2.getContext("2d");
+g2.fillStyle = "#131b30"; g2.fillRect(0, 0, 512, 512);
+g2.strokeStyle = "rgba(109,255,138,0.13)"; g2.lineWidth = 2;
+for (let i = 0; i <= 16; i++) {
+  g2.beginPath(); g2.moveTo(i * 32, 0); g2.lineTo(i * 32, 512); g2.stroke();
+  g2.beginPath(); g2.moveTo(0, i * 32); g2.lineTo(512, i * 32); g2.stroke();
+}
+const gridTop = new THREE.Mesh(new THREE.CircleGeometry(2.68, 48),
+  new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(gc2), roughness: 0.9 }));
+gridTop.rotation.x = -Math.PI / 2; gridTop.position.y = 0.001;
+gridTop.receiveShadow = true;
+scene.add(gridTop);
 
 /* 플로어 램프 실체 — 앰버 포인트라이트의 몸 */
 const lampMetal = new THREE.MeshStandardMaterial({ color: 0x20242e, roughness: 0.55 });
@@ -733,10 +729,13 @@ const keyMat = new THREE.MeshStandardMaterial({ color: 0xcfd6e4, roughness: 0.55
 const ROWS = 4, COLS = 13;
 const keys = new THREE.InstancedMesh(keyGeo, keyMat, ROWS * COLS - 5);
 const m4 = new THREE.Matrix4();
+const keyPos = [];
 let ki = 0;
 for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
   if (r === 3 && c >= 3 && c <= 7) continue;              // 스페이스바 자리
-  m4.setPosition(-0.222 + c * 0.037 + r * 0.004, 0.021, -0.058 + r * 0.038);
+  const kx = -0.222 + c * 0.037 + r * 0.004, kz = -0.058 + r * 0.038;
+  m4.setPosition(kx, 0.021, kz);
+  keyPos.push([kx, kz]);
   keys.setMatrixAt(ki++, m4);
 }
 keys.castShadow = true;
@@ -837,10 +836,12 @@ for (const hx of [-1, 1]) {
   fig.add(horn);
 }
 const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0c101c });
+const figEyes = [];
 for (const ex of [-1, 1]) {
   const eye = new THREE.Mesh(new THREE.SphereGeometry(0.006, 8, 8), eyeMat);
   eye.position.set(ex * 0.011, 0.002, 0.022);
   fig.add(eye);
+  figEyes.push(eye);
 }
 fig.position.set(0.2, 0.288, -0.05);
 crt.add(fig);
@@ -856,7 +857,7 @@ dial.position.set(-0.4093, 0.8085, 0.4455); dial.rotation.y = 0.4;
 scene.add(dial);
 
 /* 빨간 게임 선반 — 플레이 이력의 물성 */
-const shelfMat = new THREE.MeshStandardMaterial({ color: 0xB03A2E, roughness: 0.6 });
+const shelfMat = new THREE.MeshStandardMaterial({ color: 0x8f2f24, roughness: 0.6 });
 const shelf = new THREE.Group();
 for (const sy of [0.32, 0.62]) {
   const plank = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.03, 0.24), shelfMat);
@@ -918,9 +919,12 @@ canvas.addEventListener("pointerdown", e => {
   const h = pickRoot(e);
   if (h) h.act();
 });
+let hoveredRoot = null, lastKeyT = 0;
+const keyPresses = [];
 canvas.addEventListener("pointermove", e => {
-  if (phase !== "live" || p > 0.5) { canvas.style.cursor = ""; return; }
-  canvas.style.cursor = pickRoot(e) ? "pointer" : "";
+  if (phase !== "live" || p > 0.5) { canvas.style.cursor = ""; hoveredRoot = null; return; }
+  hoveredRoot = pickRoot(e);
+  canvas.style.cursor = hoveredRoot ? "pointer" : "";
 });
 
 /* ── 조명: 앰버 램프 + 블루 림 + 화면 글로우 ── */
@@ -1151,8 +1155,32 @@ function render(tms) {
   camera.lookAt(screenWorld);
   glow.intensity = 1.4 + Math.sin(t * 9) * 0.15 + Math.sin(t * 23) * 0.08; /* CRT 깜빡임 */
   dust.rotation.y = t * 0.014;
-  planetBall.rotation.y = t * 0.04;                       /* 행성 자전 */
   starsNear.rotation.y = t * 0.0035;                      /* 근경 별 미세 드리프트 */
+  /* 키보드 유령 타이핑 — 누가 치는 것처럼 키가 살짝 눌린다 */
+  if (phase === "live" && p < 0.6 && t - lastKeyT > 0.13) {
+    lastKeyT = t;
+    keyPresses.push({ i: Math.floor(Math.random() * keyPos.length), t0: tms });
+  }
+  if (keyPresses.length) {
+    for (let i = keyPresses.length - 1; i >= 0; i--) {
+      const kp = keyPresses[i], kk = (tms - kp.t0) / 170;
+      const dip = kk >= 1 ? 0 : Math.sin(Math.PI * Math.min(1, kk)) * 0.007;
+      m4.setPosition(keyPos[kp.i][0], 0.021 - dip, keyPos[kp.i][1]);
+      keys.setMatrixAt(kp.i, m4);
+      if (kk >= 1) keyPresses.splice(i, 1);
+    }
+    keys.instanceMatrix.needsUpdate = true;
+  }
+  /* 피규어 아이들 — 숨쉬듯 까딱 + 눈 깜빡임 */
+  if (!fx.some(f => f.type === "jump")) fig.position.y = 0.288 + Math.sin(t * 2.2) * 0.005;
+  const blink = (t % 3.4) < 0.12 ? 0.12 : 1;
+  figEyes.forEach(ey => { ey.scale.y = blink; });
+  /* 호버 펄스 — 클릭 가능한 것은 몸으로 말한다 */
+  hitRoots.forEach(h => {
+    if (h.obj === fig || fx.some(f => f.o === h.obj)) return;
+    const s = (hoveredRoot === h) ? 1 + 0.045 * (Math.sin(t * 7) * 0.5 + 0.5) : 1;
+    h.obj.scale.setScalar(s);
+  });
   /* 소품 상호작용 애니메이션 */
   for (let i = fx.length - 1; i >= 0; i--) {
     const f = fx[i], k = (tms - f.t0) / (f.type === "redrop" ? 700 : 550);
