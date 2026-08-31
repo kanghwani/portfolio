@@ -671,7 +671,7 @@ kbGroup.add(keys);
 const space = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.012, 0.028), keyMat);
 space.position.set(-0.02, 0.021, -0.058 + 3 * 0.038);
 kbGroup.add(space);
-kbGroup.position.set(0, 0.79, 0.33); kbGroup.rotation.y = -0.04;
+kbGroup.position.set(0, 0.797, 0.33); kbGroup.rotation.y = -0.04;
 scene.add(kbGroup);
 /* 케이블 — 키보드 뒤에서 모니터 뒤로 늘어지는 곡선 */
 const cable = new THREE.Mesh(
@@ -684,7 +684,7 @@ const cable = new THREE.Mesh(
   new THREE.MeshStandardMaterial({ color: 0x1a2033, roughness: 0.9 }));
 scene.add(cable);
 /* 머그 — 손잡이 + 김이 아니라 연필 하나 */
-const mugMat = new THREE.MeshStandardMaterial({ color: 0xF4D35E, roughness: 0.4 });
+const mugMat = new THREE.MeshStandardMaterial({ color: 0x6b8f5e, roughness: 0.4 });
 const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.04, 0.1, 18), mugMat);
 mug.position.set(0.55, 0.83, 0.25); mug.castShadow = true;
 scene.add(mug);
@@ -719,6 +719,107 @@ const books = new THREE.Group();
 books.position.set(-0.72, 0, 0.18);
 scene.add(books);
 const bookRefs = books.children;
+
+/* ── 실사 소품 (2026-08-31, 실제 책상 사진 기반) — 매트·스피커·피규어·선풍기·타이머·게임 선반 ── */
+/* 올리브 데스크 매트 */
+const deskPad = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.006, 0.44),
+  new THREE.MeshStandardMaterial({ color: 0x4f5d3a, roughness: 0.95 }));
+deskPad.position.set(0, 0.778, 0.31); deskPad.receiveShadow = true;
+scene.add(deskPad);
+
+/* 흰 스피커 한 쌍 — 우퍼·트위터·캐릭터 스티커, 살짝 토인 */
+const spkMat = new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 });
+const spkDrv = new THREE.MeshStandardMaterial({ color: 0x20242e, roughness: 0.4 });
+[[-0.56, 1], [0.56, -1]].forEach(([sx, sgn]) => {
+  const sp = new THREE.Group();
+  const box = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.22, 0.14), spkMat);
+  box.castShadow = box.receiveShadow = true;
+  sp.add(box);
+  const drv = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.008, 20), spkDrv);
+  drv.rotation.x = Math.PI / 2; drv.position.set(0, -0.02, 0.071);
+  sp.add(drv);
+  const tw = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.008, 12), spkDrv);
+  tw.rotation.x = Math.PI / 2; tw.position.set(0, 0.062, 0.071);
+  sp.add(tw);
+  const sticker = new THREE.Mesh(new THREE.PlaneGeometry(0.035, 0.035),
+    new THREE.MeshBasicMaterial({ color: sgn > 0 ? 0xFF9E6E : 0x8EE3A2 }));
+  sticker.position.set(sgn * 0.028, -0.075, 0.0715); sticker.rotation.z = sgn * 0.3;
+  sp.add(sticker);
+  sp.position.set(sx, 0.885, -0.05); sp.rotation.y = -sx * 0.35;
+  scene.add(sp);
+});
+
+/* 모니터 위 피규어 — 흰 뿔 둘 달린 작은 친구 */
+const figMat = new THREE.MeshStandardMaterial({ color: 0xe8ecf4, roughness: 0.5 });
+const fig = new THREE.Group();
+const figHead = new THREE.Mesh(new THREE.SphereGeometry(0.026, 14, 12), figMat);
+figHead.castShadow = true;
+fig.add(figHead);
+for (const hx of [-1, 1]) {
+  const horn = new THREE.Mesh(new THREE.ConeGeometry(0.007, 0.045, 8), figMat);
+  horn.position.set(hx * 0.02, 0.032, 0);
+  horn.rotation.z = -hx * 0.5;
+  fig.add(horn);
+}
+const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0c101c });
+for (const ex of [-1, 1]) {
+  const eye = new THREE.Mesh(new THREE.SphereGeometry(0.006, 8, 8), eyeMat);
+  eye.position.set(ex * 0.011, 0.002, 0.022);
+  fig.add(eye);
+}
+fig.position.set(0.2, 0.288, -0.05);
+crt.add(fig);
+
+/* 미니 선풍기 — 헤드가 라이브에서 천천히 돈다 */
+const fanMat = new THREE.MeshStandardMaterial({ color: 0xEDE4CF, roughness: 0.6 });
+const fanBase = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.02, 16), fanMat);
+fanBase.position.set(0.92, 0.786, 0.18); fanBase.castShadow = true;
+scene.add(fanBase);
+const fanPole = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.13, 8), fanMat);
+fanPole.position.set(0.92, 0.86, 0.18);
+scene.add(fanPole);
+const fanRing = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.012, 8, 20), fanMat);
+fanRing.position.set(0.92, 0.99, 0.18); fanRing.rotation.y = -0.5;
+fanRing.castShadow = true;
+scene.add(fanRing);
+const fanBlade = new THREE.Mesh(new THREE.CircleGeometry(0.058, 3),
+  new THREE.MeshStandardMaterial({ color: 0xd9cfb4, roughness: 0.5, side: THREE.DoubleSide }));
+fanBlade.position.copy(fanRing.position); fanBlade.rotation.y = -0.5;
+scene.add(fanBlade);
+
+/* 타이머 큐브 — 빨간 다이얼 */
+const timer = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.055, 0.055),
+  new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 }));
+timer.position.set(-0.42, 0.8085, 0.42); timer.rotation.y = 0.4; timer.castShadow = true;
+scene.add(timer);
+const dial = new THREE.Mesh(new THREE.CircleGeometry(0.018, 16),
+  new THREE.MeshBasicMaterial({ color: 0xd0433a }));
+dial.position.set(-0.4093, 0.8085, 0.4455); dial.rotation.y = 0.4;
+scene.add(dial);
+
+/* 빨간 게임 선반 — 플레이 이력의 물성 */
+const shelfMat = new THREE.MeshStandardMaterial({ color: 0xB03A2E, roughness: 0.6 });
+const shelf = new THREE.Group();
+for (const sy of [0.32, 0.62]) {
+  const plank = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.03, 0.24), shelfMat);
+  plank.position.y = sy; plank.castShadow = plank.receiveShadow = true;
+  shelf.add(plank);
+}
+for (const px of [-0.26, 0.26]) {
+  const side = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.66, 0.24), shelfMat);
+  side.position.set(px, 0.33, 0); side.castShadow = true;
+  shelf.add(side);
+}
+[0x7FB3FF, 0xE8ECF4, 0xFF9E6E, 0x8EE3A2, 0x9AA6BD, 0xF4D35E, 0x6dff8a].forEach((c, i) => {
+  const gcase = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.19, 0.15),
+    new THREE.MeshStandardMaterial({ color: c, roughness: 0.6 }));
+  gcase.position.set(-0.2 + i * 0.028, 0.73, 0.01);
+  gcase.rotation.y = (i % 3 - 1) * 0.04;
+  gcase.castShadow = true;
+  shelf.add(gcase);
+});
+shelf.position.set(-1.85, 0, 0.35); shelf.rotation.y = 0.5;
+scene.add(shelf);
 
 /* ── 조명: 앰버 램프 + 블루 림 + 화면 글로우 ── */
 scene.add(new THREE.AmbientLight(0x223048, 0.7));
@@ -948,6 +1049,7 @@ function render(tms) {
   camera.lookAt(screenWorld);
   glow.intensity = 1.4 + Math.sin(t * 9) * 0.15 + Math.sin(t * 23) * 0.08; /* CRT 깜빡임 */
   dust.rotation.y = t * 0.014;
+  fanBlade.rotation.z = t * 5;                            /* 선풍기 날 */
   renderer.render(scene, camera);
 
   const introK = phase === "live" ? 1 : (phase === "pullback" ? pbK : 0);
