@@ -113,9 +113,11 @@ strong{color:var(--accent);font-weight:700}
   font-size:13px;line-height:1.7;overflow-x:auto;color:#c9d4e8}
 #content section{margin-top:72px}
 /* 섹션 상단 아스키 구분선 */
-#content section::before{content:"────────────────────────────────";display:block;
-  font-family:"Galmuri9",monospace;font-size:12px;color:var(--line);
+#content section::before{content:"C:\\SECONDLAYER> RUN " attr(data-cmd) " ... OK";display:block;
+  font-family:"Galmuri9",monospace;font-size:12.5px;color:#4a5a78;
   overflow:hidden;white-space:nowrap;margin-bottom:26px}
+html.jsanim #content section.on::before{animation:typeIn 1s steps(24) both}
+@keyframes typeIn{from{max-width:0}to{max-width:100%}}
 #content h2{font-family:"Galmuri11","Galmuri14",Pretendard,monospace;font-weight:400;
   font-size:22px;letter-spacing:0;color:var(--accent);
   border-bottom:1px dashed var(--line);padding-bottom:12px;margin-bottom:26px;
@@ -178,6 +180,34 @@ strong{color:var(--accent);font-weight:700}
   border-radius:0;color:#8EE3A2;padding:9px 22px;
   font-family:"Galmuri9",Pretendard,monospace;font-size:13px;cursor:pointer}
 #content .playmore:hover{background:var(--bg)}
+/* ── 화면 속 세계 강화 — 섹션 부팅·DOS 선택줄·상태바·잔광 (2026-08-31) ── */
+html.jsanim #content section{opacity:0}
+html.jsanim #content section.on{animation:crtOn .45s steps(4) both}
+@keyframes crtOn{0%{opacity:0}45%{opacity:.75}60%{opacity:.25}100%{opacity:1}}
+#content th{background:rgba(109,255,138,.12)}
+#content tr:hover td{background:rgba(109,255,138,.08)}
+#content .links a:hover{background:#8EE3A2;color:#07131f;border-color:#8EE3A2;text-decoration:none}
+#content .gcard:hover{border-color:#8EE3A2}
+#content .chips span:hover{border-color:#8EE3A2;color:#8EE3A2}
+#content .case{padding:0 22px 18px}
+#content .case h4{background:rgba(109,255,138,.08);margin:0 -22px 12px;padding:9px 22px;
+  border-bottom:1px dashed var(--line)}
+#content .case h4::before{content:"▸ "}
+#content .codeblock{position:relative;padding-top:36px}
+#content .codeblock::before{content:attr(data-file);position:absolute;top:0;left:0;right:0;
+  padding:5px 14px;font-family:"Galmuri9",monospace;font-size:11px;letter-spacing:.04em;
+  color:#07131f;background:#8EE3A2}
+#crtfx2{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .8s;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.09) 0 1px,transparent 1px 3px)}
+#crtfx2::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 42%,transparent 58%,rgba(4,8,18,.42) 100%)}
+html.incontent #crtfx2{opacity:1}
+#statusbar{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:space-between;
+  gap:14px;padding:5px 14px;font-family:"Galmuri9",monospace;font-size:11.5px;
+  background:#07101e;border-top:1px solid var(--line);color:#8EE3A2;
+  opacity:0;transform:translateY(100%);transition:.4s;pointer-events:none;white-space:nowrap;overflow:hidden}
+html.incontent #statusbar{opacity:1;transform:none}
+#statusbar .r{color:#4a5a78}
 @media(max-width:640px){
   #content dl.rows{grid-template-columns:1fr}
   #content table{display:block;overflow-x:auto}
@@ -187,7 +217,7 @@ strong{color:var(--accent);font-weight:700}
 
 <main id="content">
 
-<section id="ai">
+<section id="ai" data-cmd="AI_WORKFLOW.EXE">
   <h2>AI와 일하는 방식</h2>
   <p>
     AI가 코드를 짜는 시대에 개발자의 일은 <strong>무엇을 만들지 정하고, 결과가 맞는지
@@ -233,7 +263,7 @@ strong{color:var(--accent);font-weight:700}
   </p>
 </section>
 
-<section id="idle-city">
+<section id="idle-city" data-cmd="IDLECITY.SIM">
   <h2>IDLE CITY — 교통 시뮬레이션 코어</h2>
   <p class="dim">방치형 도시건설 시뮬레이션 · 기획 선정작 (Second Layer Games)</p>
   <table>
@@ -280,7 +310,7 @@ strong{color:var(--accent);font-weight:700}
     <p><strong>분석.</strong> 이것은 길찾기가 아니라 통행 배정(traffic assignment) 문제입니다. 부하는 배정하면서 생기는 중이므로 혼잡 휴리스틱은 순환 의존이 됩니다.</p>
     <p><strong>해결.</strong> 수요를 한 대씩 순차 배정하며 확정 경로의 타일에 부하를 쌓고, 다음 차량이 그 부하를 비용으로 읽게 했습니다. <code>step = 1 + w × (부하 / 수용량)</code></p>
     <p><strong>결과.</strong> 우회를 지시하는 분기문 없이 통행량이 분산됩니다. <code>w=0</code>이면 실패하는 회귀 테스트로 고정했고, 구현 후 대조하니 교통공학의 점증 통행배정과 같은 구조였습니다.</p>
-    <pre class="codeblock">// ① 배정이 끝난 차량의 경로를 부하로 적립한다 (Plan)
+    <pre class="codeblock" data-file="ROUTEPLANNER.CS — READ ONLY">// ① 배정이 끝난 차량의 경로를 부하로 적립한다 (Plan)
 for (int i = 0; i &lt; demands.Count; i++) {
     var carPath = Search(grid, demands[i].SourceRoad, demands[i].SinkRoad, ...);
     if (carPath == null) continue;
@@ -333,7 +363,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   </p>
 </section>
 
-<section id="parryway">
+<section id="parryway" data-cmd="PARRYWAY.EXE">
   <h2>PARRYWAY — AI 네이티브 방식으로 빠르게 제작</h2>
   <p class="dim">4방향 리듬 패링 러너 · HTML5 · 2026.08.14–26 · OpenAI Game Builders Seoul 제출 (Second Layer Games)</p>
   <p>
@@ -377,7 +407,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   </p>
 </section>
 
-<section id="molten-arena">
+<section id="molten-arena" data-cmd="MOLTEN.EXE">
   <h2>MOLTEN ARENA — 1개월 완주</h2>
   <p class="dim">3인칭 웨이브 생존 로그라이트 · 2026.05–06 (1개월) · 2인 팀 · <strong>클라이언트 담당</strong>(인벤토리·아이템·적 AI·UI — 동료: 컨트롤러·카메라·무기 발사)</p>
   <div class="video">
@@ -398,7 +428,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   <div class="chips"><span>Unity URP</span><span>C#</span><span>ScriptableObject</span><span>NavMesh</span><span>Cinemachine</span></div>
 </section>
 
-<section id="play">
+<section id="play" data-cmd="PLAYLOG.DAT">
   <h2>플레이 기록 — 고전에서 현대 명작까지</h2>
   <p>
     창세기전과 악튜러스, 파이널판타지와 드래곤퀘스트 같은 고전 명작부터 발더스 게이트 3와
@@ -428,7 +458,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   </p>
 </section>
 
-<section id="skills">
+<section id="skills" data-cmd="SPECS.CFG">
   <h2>기술 사양</h2>
   <dl class="rows">
     <dt>ENGINE</dt>      <dd>Unity 6 (URP, 3D) · 웹(Canvas 2D)</dd>
@@ -448,7 +478,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   <p class="links"><a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91</a></p>
 </section>
 
-<section id="contact">
+<section id="contact" data-cmd="CONTACT.SYS">
   <h2>연락처</h2>
   <p>서류 단계에서 궁금한 점은 어느 채널이든 하루 안에 답변드립니다.</p>
   <p class="links">
@@ -1692,6 +1722,26 @@ layout(); updateScroll();
 if (reduced) { render(0); }
 else renderer.setAnimationLoop(render);
 window.__setP = v => { p = v; render(performance.now()); }; /* 검증용 수동 진행 */
+
+/* ── 화면 속 세계 — 섹션이 프로그램처럼 부팅되고, DOS 상태바가 현재 위치를 말한다 ── */
+const fx2 = document.createElement("div"); fx2.id = "crtfx2"; document.body.appendChild(fx2);
+const sbar = document.createElement("div"); sbar.id = "statusbar";
+sbar.innerHTML = '<span class="l">A:\\SECONDLAYER</span><span class="r">640K RAM · 78,412 BYTES FREE</span>';
+document.body.appendChild(sbar);
+const sbL = sbar.querySelector(".l");
+if (!reduced) document.documentElement.classList.add("jsanim");
+const io = new IntersectionObserver(es => {
+  es.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add("on");
+    const h2t = en.target.querySelector("h2");
+    sbL.textContent = "A:\\> RUN " + (en.target.dataset.cmd || "") + (h2t ? "  \u2502  " + h2t.textContent : "");
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll("#content section").forEach(sec => io.observe(sec));
+addEventListener("scroll", () => {
+  document.documentElement.classList.toggle("incontent", scrollY > wrapEl.offsetHeight - innerHeight * 1.02);
+}, { passive: true });
 </script>
 </body>
 </html>
