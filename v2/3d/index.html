@@ -651,11 +651,11 @@ for (const [lx, lz] of [[-1.1, -0.45], [1.1, -0.45], [-1.1, 0.45], [1.1, 0.45]])
 
 /* ── CRT 모니터 ── */
 const crt = new THREE.Group();
-const shellMat = new THREE.MeshStandardMaterial({ color: 0xd6cfbe, roughness: 0.55 });
+const shellMat = new THREE.MeshStandardMaterial({ color: 0xc2bfb9, roughness: 0.55 }); /* NES 라이트 그레이 */
 const body = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.52, 0.5), shellMat);
 body.castShadow = body.receiveShadow = true;
 crt.add(body);
-const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.46, 0.05), new THREE.MeshStandardMaterial({ color: 0xbfb7a4, roughness: 0.6 }));
+const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.46, 0.05), new THREE.MeshStandardMaterial({ color: 0x8a8781, roughness: 0.6 })); /* NES 다크 그레이 전면 */
 bezel.position.z = 0.26;
 crt.add(bezel);
 /* 화면 = 실제 PARRYWAY 영상 (16:9 → 4:3 크롭). 포스터 먼저, 재생 시작되면 영상으로 교체 */
@@ -685,7 +685,7 @@ crt.add(stand);
 const bulge = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.38, 0.22), shellMat);
 bulge.position.z = -0.33; bulge.castShadow = true;
 crt.add(bulge);
-const ventMat = new THREE.MeshStandardMaterial({ color: 0x8f8877, roughness: 0.8 });
+const ventMat = new THREE.MeshStandardMaterial({ color: 0x6e6b64, roughness: 0.8 });
 for (let i = 0; i < 6; i++) {
   const v = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.004, 0.02), ventMat);
   v.position.set(0, 0.262, -0.16 + i * 0.045);
@@ -695,17 +695,18 @@ const led = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.014, 0.006),
   new THREE.MeshBasicMaterial({ color: 0x6dff8a }));
 led.position.set(0.24, -0.195, 0.288);
 crt.add(led);
-const btnMat = new THREE.MeshStandardMaterial({ color: 0xa79f8c, roughness: 0.6 });
+const btnMat = new THREE.MeshStandardMaterial({ color: 0x55524c, roughness: 0.6 });
 for (let i = 0; i < 3; i++) {
-  const b = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.012, 0.01), btnMat);
+  const b = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.012, 0.01),
+    i === 0 ? new THREE.MeshStandardMaterial({ color: 0xd0433a, roughness: 0.6 }) : btnMat); /* 파워=패미컴 레드 */
   b.position.set(0.12 + i * 0.045, -0.195, 0.288);
   crt.add(b);
 }
 /* 브랜드 플레이트 — 캔버스 텍스처 */
 const bc = document.createElement("canvas"); bc.width = 256; bc.height = 48;
 const bg2d = bc.getContext("2d");
-bg2d.fillStyle = "#bfb7a4"; bg2d.fillRect(0, 0, 256, 48);
-bg2d.fillStyle = "#5a5344"; bg2d.font = "bold 26px monospace"; bg2d.textAlign = "center";
+bg2d.fillStyle = "#8a8781"; bg2d.fillRect(0, 0, 256, 48);
+bg2d.fillStyle = "#26241f"; bg2d.font = "bold 26px monospace"; bg2d.textAlign = "center";
 bg2d.fillText("SECOND LAYER", 128, 33);
 const brand = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 0.028),
   new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(bc) }));
@@ -735,11 +736,11 @@ const screenWorld = new THREE.Vector3(0, 1.08, -0.12 + SCREEN.z);
 /* 키보드 — 베이스 + 키캡 그리드(인스턴싱) + 스페이스바 + 케이블 */
 const kbGroup = new THREE.Group();
 const kb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.028, 0.17),
-  new THREE.MeshStandardMaterial({ color: 0x2b3350, roughness: 0.8 }));
+  new THREE.MeshStandardMaterial({ color: 0xa5a29b, roughness: 0.8 })); /* NES 그레이 바디 */
 kb.castShadow = kb.receiveShadow = true;
 kbGroup.add(kb);
 const keyGeo = new THREE.BoxGeometry(0.03, 0.012, 0.028);
-const keyMat = new THREE.MeshStandardMaterial({ color: 0xcfd6e4, roughness: 0.55 });
+const keyMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.55 }); /* 인스턴스 색 사용 */
 const ROWS = 4, COLS = 13;
 const keys = new THREE.InstancedMesh(keyGeo, keyMat, ROWS * COLS - 5);
 const m4 = new THREE.Matrix4();
@@ -753,8 +754,13 @@ for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
   keys.setMatrixAt(ki++, m4);
 }
 keys.castShadow = true;
+const keyCol = new THREE.Color();
+for (let i = 0; i < ki; i++)
+  keys.setColorAt(i, keyCol.setHex(i === 7 || i === 33 ? 0xd0433a : 0x55524c)); /* 다크 그레이 + 레드 키 2개 */
+keys.instanceColor.needsUpdate = true;
 kbGroup.add(keys);
-const space = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.012, 0.028), keyMat);
+const space = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.012, 0.028),
+  new THREE.MeshStandardMaterial({ color: 0x55524c, roughness: 0.55 }));
 space.position.set(-0.02, 0.021, -0.058 + 3 * 0.038);
 kbGroup.add(space);
 kbGroup.position.set(0, 0.797, 0.33); kbGroup.rotation.y = -0.04;
@@ -871,9 +877,11 @@ function noteTex(bg, ink, lines, size) {
   return t;
 }
 [
-  { bg: "#f2e06b", ink: "#4a4128", lines: ["버그:", "차 뒷걸음", "→ FIX ✓"], x: -0.285, y: 0.13, r: 0.06 },
-  { bg: "#8EE3A2", ink: "#1e4028", lines: ["테스트", "340", "GREEN"], x: -0.285, y: 0.0, r: -0.05 },
-  { bg: "#f2a0b5", ink: "#5a2433", lines: ["w=2", "잊지말기!"], x: 0.285, y: 0.1, r: 0.08 }
+  { bg: "#f2e06b", ink: "#4a4128", lines: ["버그:", "차 뒷걸음", "→ FIX ✓"], x: -0.285, y: 0.135, r: 0.06 },
+  { bg: "#8EE3A2", ink: "#1e4028", lines: ["테스트", "340", "GREEN"], x: -0.285, y: 0.005, r: -0.05 },
+  { bg: "#ffb26b", ink: "#5a3413", lines: ["스팀 데모", "2/22 🚀"], x: -0.285, y: -0.125, r: 0.04 },
+  { bg: "#f2a0b5", ink: "#5a2433", lines: ["w=2", "잊지말기!"], x: 0.285, y: 0.1, r: 0.08 },
+  { bg: "#a8d8f0", ink: "#1e3a50", lines: ["세이브", "먼저 백업", "!!"], x: 0.285, y: -0.04, r: -0.07 }
 ].forEach(n => {
   const note = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.068),
     new THREE.MeshBasicMaterial({ map: noteTex(n.bg, n.ink, n.lines) }));
@@ -881,6 +889,16 @@ function noteTex(bg, ink, lines, size) {
   note.rotation.z = n.r;
   crt.add(note);
 });
+/* 스피커 옆면 + 책상 바닥 포스트잇 */
+const spNote = new THREE.Mesh(new THREE.PlaneGeometry(0.06, 0.06),
+  new THREE.MeshBasicMaterial({ map: noteTex("#f2e06b", "#4a4128", ["오늘:", "와우포인트", "찾기"]) }));
+spNote.position.set(0.066, 0.01, 0.01); spNote.rotation.y = Math.PI / 2; spNote.rotation.z = -0.06;
+spGroups[1].add(spNote);
+const deskNote = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.075),
+  new THREE.MeshBasicMaterial({ map: noteTex("#8EE3A2", "#1e4028", ["K=7", "홀드 ON", "실증 ✓"]) }));
+deskNote.rotation.x = -Math.PI / 2; deskNote.rotation.z = 0.35;
+deskNote.position.set(0.33, 0.7825, 0.49);
+scene.add(deskNote);
 
 /* 캐릭터 스티커 — 유령·슬라임·별·물고기 (전작들의 낌새) */
 function stickerTex(draw) {
@@ -981,13 +999,6 @@ const lid = new THREE.Mesh(new THREE.CircleGeometry(0.05, 16),
   new THREE.MeshStandardMaterial({ color: 0xEae4d4, roughness: 0.7, side: THREE.DoubleSide }));
 lid.position.set(0, 0.095, -0.035); lid.rotation.x = -2.5;
 cupG.add(lid);
-const stickMat = new THREE.MeshStandardMaterial({ color: 0xC9A66B, roughness: 0.8 });
-for (const sxo of [-0.006, 0.007]) {
-  const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.16, 6), stickMat);
-  stick.position.set(sxo + 0.015, 0.11, 0.01);
-  stick.rotation.z = 0.45; stick.rotation.x = -0.1;
-  cupG.add(stick);
-}
 cupG.position.set(0.82, 0.775, 0.44);
 scene.add(cupG);
 /* 아이스 커피 — 반쯤 남은 컵 + 빨대 */
@@ -1014,6 +1025,86 @@ for (let i = 0; i < 4; i++) {
   crumb.rotation.y = i * 1.3;
   scene.add(crumb);
 }
+
+/* ── 모니터 라이트바 — 실제 책상의 그것 ── */
+const barMat = new THREE.MeshStandardMaterial({ color: 0x1c1f26, roughness: 0.5 });
+const lightBar = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.024, 0.045), barMat);
+lightBar.position.set(-0.05, 0.272, 0.2); lightBar.castShadow = true;
+crt.add(lightBar);
+const barGlow = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.03),
+  new THREE.MeshBasicMaterial({ color: 0xF4D35E }));
+barGlow.rotation.x = Math.PI / 2;
+barGlow.position.set(-0.05, 0.259, 0.21);
+crt.add(barGlow);
+
+/* ── 헤드셋 스탠드 ── */
+const hsG = new THREE.Group();
+const hsMat = new THREE.MeshStandardMaterial({ color: 0x2a2d36, roughness: 0.6 });
+const hsBase = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.014, 16), hsMat);
+hsBase.position.y = 0.007; hsBase.castShadow = true;
+hsG.add(hsBase);
+const hsPole = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.17, 8), hsMat);
+hsPole.position.y = 0.09;
+hsG.add(hsPole);
+/* 헤드밴드 — 위에 걸쳐진 아치 */
+const band2 = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.009, 8, 20, Math.PI), hsMat);
+band2.position.y = 0.175;
+band2.castShadow = true;
+hsG.add(band2);
+/* 이어컵 한 쌍 — 쿠션은 패미컴 레드 */
+for (const cx of [-1, 1]) {
+  const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.022, 14), hsMat);
+  cup.rotation.z = Math.PI / 2;
+  cup.position.set(cx * 0.055, 0.14, 0);
+  cup.castShadow = true;
+  hsG.add(cup);
+  const cushion = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.008, 14),
+    new THREE.MeshStandardMaterial({ color: 0xd0433a, roughness: 0.7 }));
+  cushion.rotation.z = Math.PI / 2;
+  cushion.position.set(cx * 0.042, 0.14, 0);
+  hsG.add(cushion);
+}
+hsG.position.set(0.98, 0.775, -0.14);
+hsG.rotation.y = -0.55;
+scene.add(hsG);
+
+/* ── 게임 패키지 더미 — 빅박스 3개 (전작들) ── */
+function boxCoverTex(bg, title, sub) {
+  const c = document.createElement("canvas"); c.width = 160; c.height = 128;
+  const x = c.getContext("2d");
+  x.fillStyle = bg; x.fillRect(0, 0, 160, 128);
+  x.fillStyle = "rgba(255,255,255,0.12)"; x.fillRect(0, 0, 160, 30);
+  x.fillStyle = "#f4f1ea"; x.font = "bold 24px 'Galmuri14','Galmuri11',monospace";
+  x.fillText(title, 10, 60);
+  /* 4방향 화살표 도상 */
+  x.fillStyle = "#f4f1ea";
+  [[130, 82, 0], [130, 106, Math.PI], [118, 94, -Math.PI / 2], [142, 94, Math.PI / 2]].forEach(([ax, ay, ar]) => {
+    x.save(); x.translate(ax, ay); x.rotate(ar);
+    x.beginPath(); x.moveTo(0, -7); x.lineTo(6, 3); x.lineTo(-6, 3); x.fill(); x.restore();
+  });
+  x.font = "11px 'Galmuri9',monospace"; x.fillText(sub, 10, 112);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+const gameBoxes = new THREE.Group();
+[[0xd0433a, "PARRYWAY", "SECOND LAYER GAMES"], [0x3b6bd6, "MOLTEN", "ARENA — 2P TEAM"], [0x55524c, "FISH FPS", "BOOTCAMP CLASSIC"]].forEach(([bc, title, sub], i) => {
+  const gb = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.052, 0.22),
+    new THREE.MeshStandardMaterial({ color: bc, roughness: 0.65 }));
+  gb.position.y = 0.026 + i * 0.053;
+  gb.rotation.y = (i - 1) * 0.14;
+  gb.castShadow = gb.receiveShadow = true;
+  gameBoxes.add(gb);
+  if (i === 2) {                                          /* 맨 위 상자만 커버 아트 */
+    const cover = new THREE.Mesh(new THREE.PlaneGeometry(0.27, 0.19),
+      new THREE.MeshBasicMaterial({ map: boxCoverTex("#55524c", "FISH FPS", "BOOTCAMP CLASSIC") }));
+    cover.rotation.x = -Math.PI / 2;
+    cover.position.y = 0.0265;
+    gb.add(cover);
+  }
+});
+gameBoxes.position.set(-0.98, 0.775, -0.18);
+gameBoxes.rotation.y = 0.35;
+scene.add(gameBoxes);
 
 /* ── 책 표지 — 맨 위 책 타이틀 + 기대 세운 기획노트 ── */
 function coverTex(bg, ink, lines, accent) {
@@ -1067,6 +1158,8 @@ caseMeshes.forEach(gc =>
   addHit(gc, () => fx.push({ type: "pop", o: gc, t0: performance.now(), y0: 0.73 })));
 addHit(cupG, () => spawnPuff(0.82, 0.9, 0.44));
 addHit(leanG, () => fx.push({ type: "pop", o: leanG, t0: performance.now(), y0: 0.892 }));
+addHit(hsG, () => fx.push({ type: "pop", o: hsG, t0: performance.now(), y0: 0.775 }));
+addHit(gameBoxes, () => fx.push({ type: "pop", o: gameBoxes, t0: performance.now(), y0: 0.775 }));
 const ray = new THREE.Raycaster();
 const ndcV = new THREE.Vector2();
 function pickRoot(e) {
