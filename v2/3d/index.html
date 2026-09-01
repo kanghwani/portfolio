@@ -790,22 +790,48 @@ const deskTop = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.07, 1.1), deskMat);
 deskTop.position.set(0, 0.74, 0);
 deskTop.castShadow = deskTop.receiveShadow = true;
 scene.add(deskTop);
+/* 상판 전면 엣지·하부 프레임 — 한 덩어리 박스처럼 보이지 않게 층을 나눈다 */
+const deskEdgeMat = new THREE.MeshStandardMaterial({ color: 0x2b2119, roughness: 0.58, metalness: 0.08 });
+const deskFrontEdge = new THREE.Mesh(new THREE.BoxGeometry(2.42, 0.055, 0.035), deskEdgeMat);
+deskFrontEdge.position.set(0, 0.715, 0.548); deskFrontEdge.castShadow = true; scene.add(deskFrontEdge);
+const deskRail = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.055, 0.055), deskEdgeMat);
+deskRail.position.set(0, 0.665, -0.39); deskRail.castShadow = true; scene.add(deskRail);
 for (const [lx, lz] of [[-1.1, -0.45], [1.1, -0.45], [-1.1, 0.45], [1.1, 0.45]]) {
   const leg = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.74, 0.08), deskMat);
   leg.position.set(lx, 0.37, lz);
   leg.castShadow = true;
   scene.add(leg);
 }
+const bracketMat = new THREE.MeshStandardMaterial({ color: 0x3c424b, roughness: 0.45, metalness: 0.35 });
+for (const lx of [-1.1, 1.1]) {
+  const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.06, 0.12), bracketMat);
+  bracket.position.set(lx, 0.685, 0.41); bracket.castShadow = true; scene.add(bracket);
+}
 
 /* ── CRT 모니터 ── */
 const crt = new THREE.Group();
-const shellMat = new THREE.MeshStandardMaterial({ color: 0xc2bfb9, roughness: 0.55 }); /* NES 라이트 그레이 */
+const shellMat = new THREE.MeshStandardMaterial({ color: 0x9da3ad, roughness: 0.48, metalness: 0.05 });
 const body = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.52, 0.5), shellMat);
 body.castShadow = body.receiveShadow = true;
 crt.add(body);
-const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.46, 0.05), new THREE.MeshStandardMaterial({ color: 0x8a8781, roughness: 0.6 })); /* NES 다크 그레이 전면 */
+const monitorTrimMat = new THREE.MeshStandardMaterial({ color: 0x505762, roughness: 0.4, metalness: 0.16 });
+const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.46, 0.05), monitorTrimMat);
 bezel.position.z = 0.26;
 crt.add(bezel);
+/* 이중 프레임·패널 심·나사 — CRT 외장 마감 */
+const innerBezel = new THREE.Mesh(new THREE.BoxGeometry(0.535, 0.41, 0.018),
+  new THREE.MeshStandardMaterial({ color: 0x2e343e, roughness: 0.38, metalness: 0.12 }));
+innerBezel.position.z = 0.272; crt.add(innerBezel);
+const seamMat = new THREE.MeshBasicMaterial({ color: 0x737b87 });
+for (const sy of [-0.245, 0.245]) {
+  const seam = new THREE.Mesh(new THREE.BoxGeometry(0.61, 0.006, 0.008), seamMat);
+  seam.position.set(0, sy, 0.19); crt.add(seam);
+}
+const screwMat = new THREE.MeshStandardMaterial({ color: 0x252a32, roughness: 0.3, metalness: 0.65 });
+for (const [sx, sy] of [[-0.282, -0.208], [0.282, -0.208], [-0.282, 0.208], [0.282, 0.208]]) {
+  const screw = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.005, 12), screwMat);
+  screw.rotation.x = Math.PI / 2; screw.position.set(sx, sy, 0.289); crt.add(screw);
+}
 /* 화면 = 게임 결과물이 아니라, 실제로 게임을 만드는 Unity/C# 작업 화면 */
 const SCREEN = { w: 0.5, h: 0.375, z: 0.287 };
 const codeCv = document.createElement("canvas"); codeCv.width = 640; codeCv.height = 480;
@@ -830,6 +856,9 @@ const CODE = [
   [["  }", "#e8ecf4"]],
   [["}", "#e8ecf4"]]
 ];
+const CODE_LENGTHS = CODE.map(line => line.reduce((n, [txt]) => n + txt.length, 0));
+const CODE_TOTAL = CODE_LENGTHS.reduce((n, len) => n + len + 1, 0);
+const TYPE_CPS = 34;
 function drawCodeEditor(t) {
   const x = codeCtx;
   x.fillStyle = "#080d18"; x.fillRect(0, 0, 640, 480);
@@ -847,25 +876,48 @@ function drawCodeEditor(t) {
     x.strokeStyle = i === 0 ? "#6dff8a" : "#60708d"; x.lineWidth = 3;
     x.strokeRect(17, y - 18, 23, 24);
   });
-  const active = Math.floor(t * 1.3) % CODE.length;
+  const typingDuration = CODE_TOTAL / TYPE_CPS;
+  const cycle = typingDuration + 4.6;
+  const cycleT = t % cycle;
+  const typed = Math.min(CODE_TOTAL, Math.floor(cycleT * TYPE_CPS));
+  let left = typed, active = CODE.length - 1;
+  const visible = CODE_LENGTHS.map((len, i) => {
+    if (left > len) { left -= len + 1; return len; }
+    if (left >= 0 && active === CODE.length - 1) active = i;
+    const shown = Math.min(len, Math.max(0, left)); left = -1; return shown;
+  });
   const top = 75, gap = 20;
   x.font = "15px monospace"; x.textBaseline = "middle";
   CODE.forEach((line, i) => {
     const y = top + i * gap;
-    if (i === active) { x.fillStyle = "rgba(109,255,138,.07)"; x.fillRect(56, y - 10, 584, 20); }
+    if (i === active && typed < CODE_TOTAL) { x.fillStyle = "rgba(109,255,138,.07)"; x.fillRect(56, y - 10, 584, 20); }
     x.fillStyle = "#43516a"; x.textAlign = "right"; x.fillText(String(i + 1), 86, y);
     x.textAlign = "left";
-    let px = 102;
-    line.forEach(([txt, color]) => { x.fillStyle = color; x.fillText(txt, px, y); px += x.measureText(txt).width; });
-    if (i === active && Math.floor(t * 3) % 2 === 0) {
+    let px = 102, chars = visible[i];
+    line.forEach(([txt, color]) => {
+      const part = txt.slice(0, Math.max(0, chars));
+      x.fillStyle = color; x.fillText(part, px, y); px += x.measureText(part).width;
+      chars -= part.length;
+    });
+    if (i === active && typed < CODE_TOTAL && Math.floor(t * 4) % 2 === 0) {
       x.fillStyle = "#e8ecf4"; x.fillRect(px + 2, y - 8, 7, 16);
     }
   });
   /* 테스트 러너 — 코드를 쓰는 것과 검증하는 것을 한 화면에 */
   x.fillStyle = "#0b1220"; x.fillRect(0, 398, 640, 82);
   x.fillStyle = "#24324a"; x.fillRect(0, 398, 640, 2);
-  x.font = "bold 14px monospace"; x.fillStyle = "#8ee3a2";
-  x.fillText("✓ TEST RUNNER  340 / 340 PASSED", 20, 423);
+  const testT = cycleT - typingDuration;
+  x.font = "bold 14px monospace";
+  if (typed < CODE_TOTAL) {
+    x.fillStyle = "#f4d35e";
+    x.fillText("● EDITING  RoutePlanner.cs", 20, 423);
+  } else if (testT < 1.25) {
+    x.fillStyle = "#7fb3ff";
+    x.fillText("▶ RUNNING TESTS" + ".".repeat(1 + Math.floor(testT * 4) % 3), 20, 423);
+  } else {
+    x.fillStyle = "#8ee3a2";
+    x.fillText("✓ TEST RUNNER  340 / 340 PASSED", 20, 423);
+  }
   x.font = "13px monospace"; x.fillStyle = "#9aa6bd";
   x.fillText("RoutePlannerBench · 20×20 · 12.1 ms", 20, 447);
   x.fillStyle = "#7fb3ff"; x.fillText("main*", 530, 447);
@@ -873,6 +925,7 @@ function drawCodeEditor(t) {
   codeTex.needsUpdate = true;
 }
 drawCodeEditor(0);
+let codeStartT = performance.now() / 1000;
 /* 화면: 부팅 로그 텍스처로 시작 → 부팅 끝나면 개발 작업 화면으로 */
 const screenMat = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
 const screenSrc = codeTex;
@@ -882,12 +935,16 @@ crt.add(screen);
 const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.08, 20), shellMat);
 stand.position.y = -0.3;
 crt.add(stand);
+const standNeck = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.1, 0.12), monitorTrimMat);
+standNeck.position.set(0, -0.285, -0.01); standNeck.castShadow = true; crt.add(standNeck);
+const swivel = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.17, 0.025, 24), monitorTrimMat);
+swivel.position.set(0, -0.345, 0.015); swivel.castShadow = true; crt.add(swivel);
 
 /* CRT 디테일 — 후면 벌지·통풍구·전원 LED·버튼·브랜드·받침발·화면 스캔라인 */
 const bulge = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.38, 0.22), shellMat);
 bulge.position.z = -0.33; bulge.castShadow = true;
 crt.add(bulge);
-const ventMat = new THREE.MeshStandardMaterial({ color: 0x6e6b64, roughness: 0.8 });
+const ventMat = new THREE.MeshStandardMaterial({ color: 0x424954, roughness: 0.68, metalness: 0.08 });
 for (let i = 0; i < 6; i++) {
   const v = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.004, 0.02), ventMat);
   v.position.set(0, 0.262, -0.16 + i * 0.045);
@@ -907,8 +964,8 @@ for (let i = 0; i < 3; i++) {
 /* 브랜드 플레이트 — 캔버스 텍스처 */
 const bc = document.createElement("canvas"); bc.width = 256; bc.height = 48;
 const bg2d = bc.getContext("2d");
-bg2d.fillStyle = "#8a8781"; bg2d.fillRect(0, 0, 256, 48);
-bg2d.fillStyle = "#26241f"; bg2d.font = "bold 26px monospace"; bg2d.textAlign = "center";
+bg2d.fillStyle = "#505762"; bg2d.fillRect(0, 0, 256, 48);
+bg2d.fillStyle = "#e1e5eb"; bg2d.font = "bold 26px monospace"; bg2d.textAlign = "center";
 bg2d.fillText("SECOND LAYER", 128, 33);
 const brand = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 0.028),
   new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(bc) }));
@@ -1393,6 +1450,50 @@ const stylus = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.24, 8),
   new THREE.MeshStandardMaterial({ color: 0xd4d8df, roughness: 0.45 }));
 stylus.rotation.set(Math.PI / 2, 0, 0.28); stylus.position.set(0.81, 0.82, 0.02); scene.add(stylus);
 
+/* 게임패드 — 플레이 결과를 즉시 확인하는 개발 장비 */
+const gamepadG = new THREE.Group();
+const padMat = new THREE.MeshStandardMaterial({ color: 0x555c68, roughness: 0.42, metalness: 0.08 });
+const padDark = new THREE.MeshStandardMaterial({ color: 0x242a34, roughness: 0.48 });
+const padBody = new THREE.Mesh(new THREE.SphereGeometry(0.09, 20, 14), padMat);
+padBody.scale.set(1.28, 0.24, 0.72); padBody.castShadow = true; gamepadG.add(padBody);
+for (const hx of [-1, 1]) {
+  const grip = new THREE.Mesh(new THREE.SphereGeometry(0.052, 16, 12), padMat);
+  grip.scale.set(0.72, 0.36, 1.15); grip.position.set(hx * 0.09, -0.005, 0.045);
+  grip.rotation.y = hx * 0.22; grip.castShadow = true; gamepadG.add(grip);
+  const shoulder = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.018, 0.022), padDark);
+  shoulder.position.set(hx * 0.072, 0.018, -0.052); gamepadG.add(shoulder);
+}
+/* 십자키 */
+for (const [dw, dd] of [[0.05, 0.018], [0.018, 0.05]]) {
+  const d = new THREE.Mesh(new THREE.BoxGeometry(dw, 0.012, dd), padDark);
+  d.position.set(-0.052, 0.025, 0); gamepadG.add(d);
+}
+/* ABXY 컬러 버튼 */
+[[0.054,-0.016,0xf4d35e],[0.078,0.006,0x8ee3a2],[0.054,0.028,0x7fb3ff],[0.03,0.006,0xd0433a]].forEach(([bx,bz,c]) => {
+  const b = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.009, 12),
+    new THREE.MeshStandardMaterial({ color: c, roughness: 0.32 }));
+  b.position.set(bx, 0.028, bz); gamepadG.add(b);
+});
+/* 아날로그 스틱 두 개 */
+for (const sx of [-0.021, 0.022]) {
+  const stickBase = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.02, 0.012, 14), padDark);
+  stickBase.position.set(sx, 0.026, 0.032); gamepadG.add(stickBase);
+  const stickTop = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.009, 14),
+    new THREE.MeshStandardMaterial({ color: 0x747d8b, roughness: 0.5 }));
+  stickTop.position.set(sx, 0.037, 0.032); gamepadG.add(stickTop);
+}
+const padLed = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.006, 0.006),
+  new THREE.MeshBasicMaterial({ color: 0x6dff8a }));
+padLed.position.set(0, 0.029, -0.047); gamepadG.add(padLed);
+gamepadG.position.set(-0.38, 0.805, 0.39); gamepadG.rotation.y = 0.12; scene.add(gamepadG);
+const padCable = new THREE.Mesh(
+  new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.38, 0.81, 0.33), new THREE.Vector3(-0.48, 0.79, 0.2),
+    new THREE.Vector3(-0.42, 0.79, 0.03), new THREE.Vector3(-0.28, 0.84, -0.25)
+  ]), 20, 0.0045, 5),
+  new THREE.MeshStandardMaterial({ color: 0x1a2033, roughness: 0.9 }));
+scene.add(padCable);
+
 /* ── 후면 개발 보드 — 아이디어가 테스트와 출시로 이어지는 작업 흔적 ── */
 function devBoardTexture() {
   const c = document.createElement("canvas"); c.width = 768; c.height = 480;
@@ -1475,6 +1576,7 @@ addHit(cupG, () => { sfx.steam(); spawnPuff(0.82, 0.9, 0.44); });
 addHit(leanG, () => { sfx.pop(); fx.push({ type: "pop", o: leanG, t0: performance.now(), y0: 0.892 }); });
 addHit(hsG, () => { sfx.pop(); fx.push({ type: "pop", o: hsG, t0: performance.now(), y0: 0.775 }); });
 addHit(gameBoxes, () => { sfx.pop(); fx.push({ type: "pop", o: gameBoxes, t0: performance.now(), y0: 0.775 }); });
+addHit(gamepadG, () => { sfx.start(); fx.push({ type: "pop", o: gamepadG, t0: performance.now(), y0: 0.805 }); });
 const ray = new THREE.Raycaster();
 const ndcV = new THREE.Vector2();
 function pickRoot(e) {
@@ -1614,7 +1716,11 @@ let phase = (reduced || compactHero) ? "live" : "boot";
 window.__phase = () => phase;
 let bootT0 = performance.now();
 let pbT0 = 0, dropT0 = 0, pbK = 0, screenOnT = -1;
-function showWorkspace() { screenMat.map = screenSrc; screenMat.needsUpdate = true; }
+function showWorkspace() {
+  codeStartT = performance.now() / 1000;
+  drawCodeEditor(0);
+  screenMat.map = screenSrc; screenMat.needsUpdate = true;
+}
 if (reduced || compactHero) { showWorkspace(); }
 else {
   screenMat.map = bootTex;
@@ -1832,7 +1938,7 @@ function render(tms) {
   updateIntro(tms, dt);
   if (phase !== "boot" && t - lastCodeT > 0.11) {
     lastCodeT = t;
-    drawCodeEditor(t);
+    drawCodeEditor(Math.max(0, t - codeStartT));
   }
   const e = smooth(p);
   if (phase === "boot") {
