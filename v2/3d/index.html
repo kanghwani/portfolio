@@ -259,6 +259,10 @@ html.incontent #crtfx2{opacity:1}
   opacity:0;transform:translateY(100%);transition:.4s;pointer-events:none;white-space:nowrap;overflow:hidden}
 html.incontent #statusbar{opacity:1;transform:none}
 #statusbar .r{color:#4a5a78}
+#sndbtn{position:fixed;top:14px;right:14px;z-index:7;font-family:"Galmuri9",monospace;font-size:11px;
+  color:var(--dim);background:rgba(8,13,26,.6);border:1px dashed var(--line);padding:8px 11px;
+  min-height:34px;cursor:pointer}
+#sndbtn:hover{color:#8EE3A2;border-color:#8EE3A2}
 @media(max-width:640px){
   #title{bottom:5vh}
   #title h1{font-size:36px}
@@ -1630,7 +1634,7 @@ canvas.addEventListener("pointerdown", e => {
   const h = pickRoot(e);
   if (h) h.act();
 });
-let hoveredRoot = null, lastKeyT = 0;
+let hoveredRoot = null, lastKeyT = 0, keyGap = 0.13;
 const keyPresses = [];
 canvas.addEventListener("pointermove", e => {
   if (phase !== "live" || p > 0.5) { canvas.style.cursor = ""; hoveredRoot = null; return; }
@@ -1770,11 +1774,11 @@ if (!reduced && !compactHero && document.hidden) {
 /* 시작 입력 — 스페이스/클릭/탭. 로그 출력 중이면 스킵, 프롬프트 상태면 시작 */
 /* ── 8비트 SFX — 지연 생성 공유 AudioContext, 전부 코드 생성(파일 없음) ── */
 const sfx = (() => {
-  let ac = null, master = null;
+  let ac = null, master = null, mutedF = false;
   function ctx() {
     if (!ac) {
       ac = new (window.AudioContext || window.webkitAudioContext)();
-      master = ac.createGain(); master.gain.value = 0.5; master.connect(ac.destination);
+      master = ac.createGain(); master.gain.value = mutedF ? 0 : 0.5; master.connect(ac.destination);
     }
     if (ac.state === "suspended") ac.resume().catch(() => {});
     return ac;
@@ -1811,6 +1815,15 @@ const sfx = (() => {
   }
   const safe = f => () => { try { f(); } catch (e) {} };
   return {
+    mute(on) { mutedF = on; if (master) master.gain.value = on ? 0 : 0.5; },
+    /* 기분 좋은 도각임 — 저역 몸통 + 밴드패스 틱, 매번 피치·볼륨이 조금씩 다르다 */
+    key: safe(() => {
+      if (!ac || ac.state !== "running") return;          /* 제스처 전 큐잉 방지 */
+      const f = 84 + Math.random() * 40;
+      tone(f, f * 0.65, 0.05, { type: "triangle", vol: 0.045 + Math.random() * 0.03 });
+      noise(0.016, { vol: 0.02 + Math.random() * 0.012,
+        filter: { type: "bandpass", freq: 1700 + Math.random() * 1100 } });
+    }),
     start: safe(() => { tone(660, 660, 0.09, { vol: 0.14 }); tone(990, 990, 0.13, { vol: 0.14, at: 0.09 }); }),
     jump:  safe(() => tone(330, 880, 0.18, { vol: 0.1 })),
     pulse: safe(() => tone(110, 55, 0.25, { type: "triangle", vol: 0.22 })),
@@ -2003,9 +2016,11 @@ function render(tms) {
     warp.scale.z = 1 + e * 3.2;
   }
   /* 키보드 유령 타이핑 — 누가 치는 것처럼 키가 살짝 눌린다 */
-  if (phase === "live" && p < 0.6 && t - lastKeyT > 0.13) {
+  if (phase === "live" && p < 0.6 && t - lastKeyT > keyGap) {
     lastKeyT = t;
+    keyGap = Math.random() < 0.12 ? 0.4 + Math.random() * 0.7 : 0.07 + Math.random() * 0.15; /* 버스트 + 생각하는 멈춤 */
     keyPresses.push({ i: Math.floor(Math.random() * keyPos.length), t0: tms });
+    sfx.key();
   }
   if (keyPresses.length) {
     for (let i = keyPresses.length - 1; i >= 0; i--) {
@@ -2120,6 +2135,17 @@ const fx2 = document.createElement("div"); fx2.id = "crtfx2"; document.body.appe
 const sbar = document.createElement("div"); sbar.id = "statusbar";
 sbar.innerHTML = '<span class="l">A:\\SECONDLAYER</span><span class="r">640K RAM · 78,412 BYTES FREE</span>';
 document.body.appendChild(sbar);
+const sndBtn = document.createElement("button");
+sndBtn.id = "sndbtn"; sndBtn.type = "button";
+sndBtn.textContent = "SND ON";
+sndBtn.setAttribute("aria-label", "효과음 켜짐 — 누르면 끔");
+sndBtn.addEventListener("click", () => {
+  const toMute = sndBtn.textContent === "SND ON";
+  sfx.mute(toMute);
+  sndBtn.textContent = toMute ? "SND OFF" : "SND ON";
+  sndBtn.setAttribute("aria-label", toMute ? "효과음 꺼짐 — 누르면 켬" : "효과음 켜짐 — 누르면 끔");
+});
+document.body.appendChild(sndBtn);
 const sbL = sbar.querySelector(".l");
 if (!reduced) document.documentElement.classList.add("jsanim");
 const io = new IntersectionObserver(es => {
