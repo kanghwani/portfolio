@@ -1067,7 +1067,7 @@ const books = new THREE.Group();
   bk.userData.finalY = bk.position.y;
   books.add(bk);
 });
-books.position.set(-0.72, 0, 0.18);
+books.position.set(-0.88, 0, 0.08);
 scene.add(books);
 const bookRefs = books.children;
 
@@ -1082,7 +1082,7 @@ scene.add(deskPad);
 const spkMat = new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 });
 const spkDrv = new THREE.MeshStandardMaterial({ color: 0x20242e, roughness: 0.4 });
 const spGroups = [];
-[[-0.56, 1], [0.56, -1]].forEach(([sx, sgn]) => {
+[[-0.7, 1], [0.56, -1]].forEach(([sx, sgn]) => {
   const sp = new THREE.Group();
   const box = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.22, 0.14), spkMat);
   box.castShadow = box.receiveShadow = true;
@@ -1286,7 +1286,7 @@ const straw = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.1, 8),
   new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness: 0.5 }));
 straw.position.set(0.012, 0.135, 0); straw.rotation.z = 0.18;
 iceG.add(straw);
-iceG.position.set(-0.62, 0.775, 0.47);
+iceG.position.set(-0.93, 0.775, 0.42);
 scene.add(iceG);
 /* 과자 부스러기 */
 for (let i = 0; i < 4; i++) {
@@ -1407,7 +1407,7 @@ const leanCover = new THREE.Mesh(new THREE.PlaneGeometry(0.145, 0.21),
   new THREE.MeshBasicMaterial({ map: coverTex("#2b3350", "#E8ECF4", ["IDLE", "CITY", "기획노트"], "#6dff8a") }));
 leanCover.position.x = 0.0179; leanCover.rotation.y = Math.PI / 2;
 leanG.add(leanCover);
-leanG.position.set(-0.5, 0.892, 0.14);
+leanG.position.set(-0.7, 0.892, 0.12);
 leanG.rotation.set(0.02, 0.85, -0.16);
 scene.add(leanG);
 
@@ -1450,49 +1450,99 @@ const stylus = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.24, 8),
   new THREE.MeshStandardMaterial({ color: 0xd4d8df, roughness: 0.45 }));
 stylus.rotation.set(Math.PI / 2, 0, 0.28); stylus.position.set(0.81, 0.82, 0.02); scene.add(stylus);
 
-/* 게임패드 — 플레이 결과를 즉시 확인하는 개발 장비 */
+/* 듀얼센스형 게임패드 — 흰 날개 셸·검은 센터·터치패드·대칭 스틱 */
 const gamepadG = new THREE.Group();
-const padMat = new THREE.MeshStandardMaterial({ color: 0x555c68, roughness: 0.42, metalness: 0.08 });
-const padDark = new THREE.MeshStandardMaterial({ color: 0x242a34, roughness: 0.48 });
-const padBody = new THREE.Mesh(new THREE.SphereGeometry(0.09, 20, 14), padMat);
-padBody.scale.set(1.28, 0.24, 0.72); padBody.castShadow = true; gamepadG.add(padBody);
+const padWhite = new THREE.MeshStandardMaterial({ color: 0xd5dae1, roughness: 0.42, metalness: 0.04 });
+const padBlack = new THREE.MeshStandardMaterial({ color: 0x171b23, roughness: 0.38, metalness: 0.08 });
+const padRubber = new THREE.MeshStandardMaterial({ color: 0x2a303b, roughness: 0.72 });
+/* 안쪽 블랙 코어 */
+const padCore = new THREE.Mesh(new THREE.SphereGeometry(0.083, 24, 16), padBlack);
+padCore.scale.set(1.24, 0.29, 0.77); padCore.castShadow = true; gamepadG.add(padCore);
+/* 좌우 화이트 셸과 아래로 흐르는 그립 */
 for (const hx of [-1, 1]) {
-  const grip = new THREE.Mesh(new THREE.SphereGeometry(0.052, 16, 12), padMat);
-  grip.scale.set(0.72, 0.36, 1.15); grip.position.set(hx * 0.09, -0.005, 0.045);
-  grip.rotation.y = hx * 0.22; grip.castShadow = true; gamepadG.add(grip);
-  const shoulder = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.018, 0.022), padDark);
-  shoulder.position.set(hx * 0.072, 0.018, -0.052); gamepadG.add(shoulder);
+  const wing = new THREE.Mesh(new THREE.SphereGeometry(0.063, 24, 16), padWhite);
+  wing.scale.set(1.08, 0.35, 0.72); wing.position.set(hx * 0.065, 0.004, -0.012);
+  wing.castShadow = true; gamepadG.add(wing);
+  const grip = new THREE.Mesh(new THREE.CapsuleGeometry(0.028, 0.075, 6, 14), padWhite);
+  grip.rotation.x = Math.PI / 2; grip.rotation.y = hx * 0.27;
+  grip.position.set(hx * 0.092, -0.005, 0.052); grip.castShadow = true; gamepadG.add(grip);
+  const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.018, 0.025), padBlack);
+  trigger.position.set(hx * 0.071, -0.002, -0.065); trigger.rotation.z = -hx * 0.08;
+  gamepadG.add(trigger);
+}
+/* 센터 페이스 플레이트 */
+const facePlate = new THREE.Mesh(new THREE.SphereGeometry(0.064, 20, 12), padBlack);
+facePlate.scale.set(0.95, 0.24, 0.8); facePlate.position.y = 0.017; gamepadG.add(facePlate);
+/* 터치패드와 양옆 블루 라이트바 */
+const touchpad = new THREE.Mesh(new THREE.BoxGeometry(0.088, 0.013, 0.049),
+  new THREE.MeshStandardMaterial({ color: 0x2c333f, roughness: 0.58 }));
+touchpad.position.set(0, 0.033, -0.033); touchpad.castShadow = true; gamepadG.add(touchpad);
+for (const tx of [-0.049, 0.049]) {
+  const lightBar = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.008, 0.044),
+    new THREE.MeshBasicMaterial({ color: 0x65b7ff }));
+  lightBar.position.set(tx, 0.034, -0.03); lightBar.rotation.z = -tx * 0.7; gamepadG.add(lightBar);
 }
 /* 십자키 */
-for (const [dw, dd] of [[0.05, 0.018], [0.018, 0.05]]) {
-  const d = new THREE.Mesh(new THREE.BoxGeometry(dw, 0.012, dd), padDark);
-  d.position.set(-0.052, 0.025, 0); gamepadG.add(d);
+for (const [dw, dd] of [[0.043, 0.015], [0.015, 0.043]]) {
+  const d = new THREE.Mesh(new THREE.BoxGeometry(dw, 0.011, dd), padRubber);
+  d.position.set(-0.057, 0.036, -0.003); gamepadG.add(d);
 }
-/* ABXY 컬러 버튼 */
-[[0.054,-0.016,0xf4d35e],[0.078,0.006,0x8ee3a2],[0.054,0.028,0x7fb3ff],[0.03,0.006,0xd0433a]].forEach(([bx,bz,c]) => {
-  const b = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.009, 12),
-    new THREE.MeshStandardMaterial({ color: c, roughness: 0.32 }));
-  b.position.set(bx, 0.028, bz); gamepadG.add(b);
+/* 플레이스테이션 계열 4버튼 — 색은 은은하게만 남긴다 */
+[[0.058,-0.022,0x7fb3ff],[0.079,-0.002,0xf2a0b5],[0.058,0.018,0x8ee3a2],[0.037,-0.002,0xe8ecf4]].forEach(([bx,bz,c]) => {
+  const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.0095, 0.0095, 0.009, 16), padRubber);
+  rim.position.set(bx, 0.036, bz); gamepadG.add(rim);
+  const glyph = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.0105, 12),
+    new THREE.MeshBasicMaterial({ color: c }));
+  glyph.position.set(bx, 0.041, bz); gamepadG.add(glyph);
 });
-/* 아날로그 스틱 두 개 */
-for (const sx of [-0.021, 0.022]) {
-  const stickBase = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.02, 0.012, 14), padDark);
-  stickBase.position.set(sx, 0.026, 0.032); gamepadG.add(stickBase);
-  const stickTop = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.009, 14),
-    new THREE.MeshStandardMaterial({ color: 0x747d8b, roughness: 0.5 }));
-  stickTop.position.set(sx, 0.037, 0.032); gamepadG.add(stickTop);
+/* 대칭 아날로그 스틱 */
+for (const sx of [-0.027, 0.027]) {
+  const stickBase = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.021, 0.012, 18), padRubber);
+  stickBase.position.set(sx, 0.038, 0.03); gamepadG.add(stickBase);
+  const stickTop = new THREE.Mesh(new THREE.CylinderGeometry(0.0135, 0.0135, 0.011, 18), padBlack);
+  stickTop.position.set(sx, 0.05, 0.03); gamepadG.add(stickTop);
+  const stickRing = new THREE.Mesh(new THREE.TorusGeometry(0.0095, 0.0018, 6, 18),
+    new THREE.MeshBasicMaterial({ color: 0x596273 }));
+  stickRing.rotation.x = Math.PI / 2; stickRing.position.set(sx, 0.056, 0.03); gamepadG.add(stickRing);
 }
-const padLed = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.006, 0.006),
-  new THREE.MeshBasicMaterial({ color: 0x6dff8a }));
-padLed.position.set(0, 0.029, -0.047); gamepadG.add(padLed);
-gamepadG.position.set(-0.38, 0.805, 0.39); gamepadG.rotation.y = 0.12; scene.add(gamepadG);
-const padCable = new THREE.Mesh(
-  new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.38, 0.81, 0.33), new THREE.Vector3(-0.48, 0.79, 0.2),
-    new THREE.Vector3(-0.42, 0.79, 0.03), new THREE.Vector3(-0.28, 0.84, -0.25)
-  ]), 20, 0.0045, 5),
-  new THREE.MeshStandardMaterial({ color: 0x1a2033, roughness: 0.9 }));
-scene.add(padCable);
+/* PS 버튼·마이크 LED·스피커 타공 */
+const psBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.008, 14), padBlack);
+psBtn.position.set(0, 0.039, 0.006); gamepadG.add(psBtn);
+const micLed = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.004, 0.004),
+  new THREE.MeshBasicMaterial({ color: 0xf4d35e }));
+micLed.position.set(0, 0.043, 0.056); gamepadG.add(micLed);
+for (let i = -2; i <= 2; i++) {
+  const hole = new THREE.Mesh(new THREE.SphereGeometry(0.0023, 6, 6), padRubber);
+  hole.position.set(i * 0.009, 0.043, 0.017); gamepadG.add(hole);
+}
+
+/* 전용 충전 거치대 — 패드를 눕히지 않고 전면이 보이게 세운다 */
+const padStandG = new THREE.Group();
+const standDark = new THREE.MeshStandardMaterial({ color: 0x242a34, roughness: 0.4, metalness: 0.2 });
+const standBase = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.12, 0.026, 28), padWhite);
+standBase.scale.z = 0.62; standBase.castShadow = standBase.receiveShadow = true; padStandG.add(standBase);
+const standTop = new THREE.Mesh(new THREE.CylinderGeometry(0.084, 0.097, 0.012, 28),
+  new THREE.MeshStandardMaterial({ color: 0x3f4754, roughness: 0.35, metalness: 0.16 }));
+standTop.position.y = 0.019; standTop.scale.z = 0.58; padStandG.add(standTop);
+const standStem = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.16, 0.032), standDark);
+standStem.position.set(0, 0.092, -0.025); standStem.rotation.x = -0.12; standStem.castShadow = true; padStandG.add(standStem);
+const backRest = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.095, 0.018), standDark);
+backRest.position.set(0, 0.16, -0.014); backRest.rotation.x = -0.18; padStandG.add(backRest);
+for (const ax of [-0.075, 0.075]) {
+  const arm = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.05, 0.045), standDark);
+  arm.position.set(ax, 0.085, 0.025); arm.rotation.z = -ax * 1.4; padStandG.add(arm);
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.014, 10, 8), padRubber);
+  tip.position.set(ax, 0.11, 0.043); padStandG.add(tip);
+}
+const chargeLed = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.005, 0.006),
+  new THREE.MeshBasicMaterial({ color: 0x65b7ff }));
+chargeLed.position.set(0, 0.034, 0.062); padStandG.add(chargeLed);
+padStandG.position.set(-0.4, 0.797, 0.36); padStandG.rotation.y = 0.08; scene.add(padStandG);
+
+gamepadG.position.set(-0.4, 0.985, 0.365);
+gamepadG.rotation.set(1.06, 0.08, 0.01);
+gamepadG.scale.setScalar(1.08);
+scene.add(gamepadG);
 
 /* ── 후면 개발 보드 — 아이디어가 테스트와 출시로 이어지는 작업 흔적 ── */
 function devBoardTexture() {
