@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>김강환 — Unity 클라이언트 개발자</title>
-<meta name="description" content="김강환. 시뮬레이션 규칙을 설계하고 테스트와 벤치마크로 검증하는 Unity 클라이언트 개발자. IDLE CITY 교통 시뮬레이션 코어 · PARRYWAY 4방향 패링 러너.">
+<meta name="description" content="게임 규칙을 만들고 테스트로 틀린 곳을 찾는 Unity 클라이언트 개발자 김강환의 포트폴리오. IDLE CITY · PARRYWAY · Molten Arena.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="김강환 — Unity 클라이언트 개발자">
-<meta property="og:description" content="시뮬레이션 규칙을 설계하고 테스트와 벤치마크로 검증합니다. IDLE CITY · PARRYWAY.">
+<meta property="og:description" content="게임 규칙을 만들고 테스트로 틀린 곳을 찾습니다. IDLE CITY · PARRYWAY · Molten Arena.">
 <meta property="og:image" content="https://kanghwani.github.io/portfolio/v2/hero-poster.jpg">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
@@ -20,7 +20,7 @@ body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pre
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-strong{color:var(--accent);font-weight:700}
+strong{color:inherit;font-weight:700}
 #scroll3d{height:165vh}
 #stage{position:sticky;top:0;height:100vh;overflow:hidden}
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -77,13 +77,13 @@ strong{color:var(--accent);font-weight:700}
 
 <div id="scroll3d">
   <div id="stage">
-    <canvas id="gl" role="img" aria-label="3D 장면: 책상 위 CRT 모니터가 부팅된 뒤 자작 게임 PARRYWAY가 실행된다"></canvas>
+    <canvas id="gl" role="img" aria-label="3D 장면: CRT 모니터에 Unity C# 코드가 입력되고, 카메라가 빠지며 게임 개발자의 책상이 드러난다"></canvas>
     <div id="title">
       <div class="wrap">
         <h1>김강환<span class="cursor">&nbsp;</span></h1>
         <p class="role">Unity 클라이언트 개발자</p>
-        <p class="slogan">시뮬레이션 규칙을 설계하고, 테스트와 벤치마크로 검증합니다.</p>
-        <p class="hint">모니터에는 실제 개발 방식이 흐릅니다 — 스크롤해서 코드 안으로 들어가 보세요</p>
+        <p class="slogan">게임 규칙을 만들고, 테스트로 틀린 곳을 찾습니다.</p>
+        <p class="hint">모니터의 코드는 한 줄씩 작성됩니다. 스크롤하면 작업 기록으로 이어집니다.</p>
         <p class="hero-links">
           <a href="#work">대표작 보기</a>
           <a href="https://zzangh2.itch.io/parryway">PARRYWAY 플레이</a>
@@ -97,7 +97,7 @@ strong{color:var(--accent);font-weight:700}
         <div class="bar"><span>C:\SECONDLAYER\KANGHWAN.SYS</span><span class="dots">— □ ×</span></div>
         <div class="body">
           <h2>김강환</h2>
-          <p class="sub">Unity 클라이언트 개발자 — 규칙을 수식으로, 수식을 테스트로.</p>
+          <p class="sub">Unity에서 시뮬레이션과 게임플레이를 만듭니다.</p>
           <table>
             <tr><th>플레이 기록</th><td>120개 타이틀 · PS · Steam · Switch · Xbox</td></tr>
             <tr><th>대표작</th><td>IDLE CITY — 교통 시뮬 코어 설계·구현 / PARRYWAY — 4방향 패링 러너·공모전 출품작</td></tr>
@@ -153,7 +153,7 @@ html.jsanim #content section.on::before{animation:typeIn 1s steps(24) both}
 #content figure{margin:20px 0}
 #content figure img{max-width:100%;height:auto;border:1px solid var(--line)}
 #content figcaption{font-family:"Galmuri9",Pretendard,monospace;font-size:12.5px;color:var(--dim);margin-top:8px}
-#content .case{background:var(--card);border:1px dashed var(--line);padding:20px 22px;margin:18px 0}
+#content .case{background:transparent;border:0;border-left:2px solid #8EE3A2;padding:0 0 0 18px;margin:24px 0}
 #content .case h4{font-family:"Galmuri9",Pretendard,monospace;font-weight:400;font-size:14.5px;
   color:#8EE3A2;margin-bottom:8px}
 #content .case p{margin:8px 0;font-size:15.5px}
@@ -165,9 +165,10 @@ html.jsanim #content section.on::before{animation:typeIn 1s steps(24) both}
   padding:8px 11px;display:inline-flex;align-items:center;min-height:44px}
 #content .links a:hover{background:var(--card);text-decoration:none}
 #content code{background:var(--card);border:1px dashed var(--line);padding:1px 7px;font-size:14.5px}
-#content .chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+#content .chips{display:flex;flex-wrap:wrap;gap:0;margin:18px 0}
 #content .chips span{font-family:"Galmuri9",Pretendard,monospace;font-size:12.5px;
-  background:transparent;border:1px dashed var(--line);padding:3px 13px;color:var(--dim)}
+  background:transparent;border:0;padding:3px 0;color:var(--dim)}
+#content .chips span+span::before{content:"/";color:#4a5a78;margin:0 9px}
 #content .note{font-family:"Galmuri9",Pretendard,monospace;font-size:12.5px;color:var(--dim);margin-top:10px}
 #content dl.rows{display:grid;grid-template-columns:130px 1fr;gap:10px 18px;margin:20px 0}
 #content dl.rows dt{font-family:"Galmuri9",Pretendard,monospace;color:#8EE3A2;
@@ -189,21 +190,23 @@ html.jsanim #content section.on::before{animation:typeIn 1s steps(24) both}
 #content .project-card h3{font-family:"Galmuri11","Galmuri14",Pretendard,monospace;font-size:20px;
   color:var(--ink);margin:8px 0 7px;line-height:1.35}
 #content .project-card p{font-size:14px;line-height:1.65;color:var(--dim);margin:0}
-#content .project-proof{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+#content .project-proof{display:flex;flex-wrap:wrap;gap:0;margin-top:14px}
 #content .project-proof span{font-family:"Galmuri9",monospace;font-size:10.5px;color:#8EE3A2;
-  border:1px dashed var(--line);padding:3px 7px}
+  border:0;padding:3px 0}
+#content .project-proof span+span::before{content:"·";color:#4a5a78;margin:0 8px}
 #content .project-run{margin-top:auto;padding-top:15px;font-family:"Galmuri9",monospace;font-size:11px;color:var(--accent)}
 /* 프로젝트별 증거 수치 */
-#content .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:20px 0 24px}
-#content .metric{border:1px dashed var(--line);background:rgba(24,34,64,.7);padding:13px 13px 12px;min-height:108px}
+#content .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:22px 0 28px;
+  border-top:1px dashed var(--line);border-bottom:1px dashed var(--line)}
+#content .metric{border:0;border-left:1px dashed var(--line);background:transparent;padding:13px 14px 14px;min-height:104px}
+#content .metric:first-child{border-left:0}
 #content .metric .k{display:block;font-family:"Galmuri9",monospace;font-size:10.5px;color:#8EE3A2;letter-spacing:.04em}
 #content .metric .v{display:block;margin-top:5px;font-family:"Galmuri11",Pretendard,monospace;font-size:21px;line-height:1.3;color:var(--accent)}
 #content .metric .d{display:block;margin-top:5px;font-size:11.5px;line-height:1.45;color:var(--dim)}
 /* 문제 → 판단 → 해결 → 검증 */
-#content .decision-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;list-style:none;padding:0;margin:14px 0 18px;counter-reset:step}
-#content .decision-flow li{position:relative;border:1px dashed var(--line);background:#0a1120;padding:12px 11px;min-height:132px}
-#content .decision-flow li:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:50%;z-index:2;
-  transform:translateY(-50%);color:var(--accent);background:var(--card);padding:1px 2px;font-family:monospace}
+#content .decision-flow{display:block;list-style:none;padding:0;margin:14px 0 20px;border-top:1px dashed var(--line)}
+#content .decision-flow li{display:grid;grid-template-columns:92px 1fr;gap:12px;border:0;border-bottom:1px dashed var(--line);
+  background:transparent;padding:10px 4px;min-height:0}
 #content .decision-flow .k{display:block;font-family:"Galmuri9",monospace;font-size:10.5px;color:#8EE3A2;margin-bottom:7px}
 #content .decision-flow .t{display:block;font-size:13px;line-height:1.55;color:var(--ink)}
 /* 플레이 기록 카드 */
@@ -238,10 +241,9 @@ html.jsanim #content section.on{animation:crtOn .45s steps(4) both}
 #content .links a:hover{background:#8EE3A2;color:#07131f;border-color:#8EE3A2;text-decoration:none}
 #content .gcard:hover{border-color:#8EE3A2}
 #content .chips span:hover{border-color:#8EE3A2;color:#8EE3A2}
-#content .case{padding:0 22px 18px}
-#content .case h4{background:rgba(109,255,138,.08);margin:0 -22px 12px;padding:9px 22px;
-  border-bottom:1px dashed var(--line)}
-#content .case h4::before{content:"▸ "}
+#content .case{padding:0 0 0 18px}
+#content .case h4{background:transparent;margin:0 0 10px;padding:0;border:0}
+#content .case h4::before{content:""}
 #content .codeblock{position:relative;padding-top:36px}
 #content .codeblock::before{content:attr(data-file);position:absolute;top:0;left:0;right:0;
   padding:5px 14px;font-family:"Galmuri9",monospace;font-size:11px;letter-spacing:.04em;
@@ -270,9 +272,9 @@ html.incontent #statusbar{opacity:1;transform:none}
   #content .featured .project-art{aspect-ratio:16/9;min-height:0}
   #content .project-copy{min-height:0}
   #content .metrics{grid-template-columns:1fr 1fr}
-  #content .decision-flow{grid-template-columns:1fr}
-  #content .decision-flow li{min-height:0}
-  #content .decision-flow li:not(:last-child)::after{content:"↓";right:auto;left:20px;top:auto;bottom:-13px;transform:none}
+  #content .metric:nth-child(odd){border-left:0}
+  #content .metric:nth-child(n+3){border-top:1px dashed var(--line)}
+  #content .decision-flow li{grid-template-columns:72px 1fr}
   #content table{display:block;overflow-x:auto}
   #content th{white-space:normal}
 }
@@ -282,12 +284,12 @@ html.incontent #statusbar{opacity:1;transform:none}
 
 <section id="work" data-cmd="SELECTED_WORK.DAT">
   <h2>대표 프로젝트</h2>
-  <p>게임의 규칙을 직접 설계하고, 구현 결과를 테스트와 수치로 확인합니다.</p>
+  <p>제가 만든 규칙과 코드, 그리고 실제로 확인한 수치를 함께 놓았습니다.</p>
   <div class="project-grid">
     <a class="project-card featured" href="#idle-city">
       <div class="project-art"><img src="../../assets/idle-city.jpg" alt="IDLE CITY의 도로와 차량이 보이는 도시 화면" width="1600" height="800"></div>
       <div class="project-copy">
-        <span class="project-no">01 / FEATURED · UNITY</span>
+        <span class="project-no">UNITY · TEAM PROJECT</span>
         <h3>IDLE CITY</h3>
         <p>우회로가 쓰이지 않는 문제를 통행 배정으로 다시 정의하고, 부하 적립 라우팅을 설계했습니다.</p>
         <span class="project-proof"><span>기획 선정작</span><span>커밋 56%</span><span>벤치마크 실측</span></span>
@@ -297,7 +299,7 @@ html.incontent #statusbar{opacity:1;transform:none}
     <a class="project-card" href="#parryway">
       <div class="project-art"><img src="../../assets/parryway-play.jpg" alt="PARRYWAY 플레이 화면" width="1600" height="900" loading="lazy"></div>
       <div class="project-copy">
-        <span class="project-no">02 · TYPESCRIPT</span>
+        <span class="project-no">TYPESCRIPT · SOLO</span>
         <h3>PARRYWAY</h3>
         <p>공격키 없이 네 방향의 방패 상태만으로 판단하는 리듬 패링 러너입니다.</p>
         <span class="project-proof"><span>13일 완성</span><span>테스트 160개</span></span>
@@ -307,7 +309,7 @@ html.incontent #statusbar{opacity:1;transform:none}
     <a class="project-card" href="#molten-arena">
       <div class="project-art"><img src="../../assets/molten-arena.jpg" alt="Molten Arena 전투 화면" width="1600" height="900" loading="lazy"></div>
       <div class="project-copy">
-        <span class="project-no">03 · UNITY TEAM</span>
+        <span class="project-no">UNITY · 2-PERSON TEAM</span>
         <h3>MOLTEN ARENA</h3>
         <p>새 아이템 효과가 기존 코드 수정 없이 추가되는 데이터 주도 확장 구조를 만들었습니다.</p>
         <span class="project-proof"><span>2인 팀</span><span>1개월 완주</span></span>
@@ -327,7 +329,7 @@ html.incontent #statusbar{opacity:1;transform:none}
     <tr><th>솔로 인수 후</th><td>씬 13→5개 정리 · 라이선스 미증빙 음원 16곡 삭제 · 품질 계측 도구 구축</td></tr>
     <tr><th>링크</th><td><a href="https://youtu.be/6rCe-v5Aewk">팀 시연 영상 (4분 30초)</a> · <a href="https://github.com/hjh8874/GreenLight">공개 저장소</a></td></tr>
   </table>
-  <div class="metrics" aria-label="IDLE CITY 핵심 수치">
+  <div class="metrics" aria-label="IDLE CITY 확인 수치">
     <div class="metric"><span class="k">공개 기여도</span><span class="v">56%</span><span class="d">GitHub 424 / 752 커밋</span></div>
     <div class="metric"><span class="k">팀 전체 테스트</span><span class="v">1,204</span><span class="d">Sim 671 + View 533</span></div>
     <div class="metric"><span class="k">20×20 만차</span><span class="v">12.1 ms</span><span class="d">82대 재계획 · 11회 중앙값</span></div>
@@ -338,7 +340,7 @@ html.incontent #statusbar{opacity:1;transform:none}
     <img src="../../assets/idle-city.jpg"
          alt="IDLE CITY 플레이 화면. 주택가와 사무실 건물 사이 교차로에 신호등이 서 있고, 주차칸마다 통근 차량이 늘어서 있다."
          width="1600" height="800" loading="lazy">
-    <figcaption>인게임 화면. 도로를 지으면 교통이 분산되는 것이 이 게임의 핵심 상호작용입니다.</figcaption>
+    <figcaption>도로를 새로 놓자 차량이 여러 경로로 갈라지는 장면.</figcaption>
   </figure>
 
   <p>
@@ -365,12 +367,12 @@ html.incontent #statusbar{opacity:1;transform:none}
   </ul>
 
   <div class="case">
-    <h4>사례 — 길찾기 재설계: 틀린 건 알고리즘이 아니라 질문이었다</h4>
+    <h4>길찾기가 아니라 통행 배정 문제였다</h4>
     <ol class="decision-flow">
-      <li><span class="k">01 문제</span><span class="t">수백 대가 같은 최단 경로를 받아 우회로를 사용하지 않았습니다.</span></li>
-      <li><span class="k">02 재정의</span><span class="t">길찾기가 아니라 차량을 여러 경로에 나누는 통행 배정 문제였습니다.</span></li>
-      <li><span class="k">03 해결</span><span class="t"><code>step = 1 + w × 부하/수용량</code>을 다음 차량의 비용으로 사용했습니다.</span></li>
-      <li><span class="k">04 검증</span><span class="t"><code>w=0</code>에서 실패하는 회귀 테스트와 실제 분산 화면으로 고정했습니다.</span></li>
+      <li><span class="k">문제</span><span class="t">수백 대가 같은 최단 경로를 받아 우회로를 사용하지 않았습니다.</span></li>
+      <li><span class="k">재정의</span><span class="t">길찾기가 아니라 차량을 여러 경로에 나누는 통행 배정 문제였습니다.</span></li>
+      <li><span class="k">설계</span><span class="t"><code>step = 1 + w × 부하/수용량</code>을 다음 차량의 비용으로 사용했습니다.</span></li>
+      <li><span class="k">확인</span><span class="t"><code>w=0</code>에서 실패하는 회귀 테스트와 실제 분산 화면으로 고정했습니다.</span></li>
     </ol>
     <pre class="codeblock" data-file="ROUTEPLANNER.CS — READ ONLY">// ① 배정이 끝난 차량의 경로를 부하로 적립한다 (Plan)
 for (int i = 0; i &lt; demands.Count; i++) {
@@ -384,7 +386,7 @@ float step = 1f + w * _load[ni] * capInv;                 // w = 2
 float cand = _cost[cur] + step;
 if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
     <p class="note">우회를 지시하는 조건문이 없습니다. 비용 함수 한 줄이 바뀌었을 뿐이고, 분산은 그 결과로 나옵니다.</p>
-    <p><strong>이 선택의 단점.</strong> 순차 배정이라 <strong>차량 순서가 결과를 바꿉니다.</strong> 세이브·로드에서 같은 그림이 나오려면 전 구간 tie-break를 명시해야 했고, 앞차의 결과가 뒷차의 입력이라 병렬화도 막힙니다. 재현성을 얻고 병렬성을 포기한 셈입니다.</p>
+    <p>대가도 있습니다. 순차 배정이라 차량 순서가 결과를 바꿉니다. 세이브·로드 뒤에도 같은 그림을 만들기 위해 전 구간의 tie-break를 명시했고, 앞차의 결과가 뒷차의 입력이라 병렬화는 포기했습니다.</p>
   </div>
 
   <figure>
@@ -394,7 +396,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
     <figcaption>도로 설계에 반응하는 차량 분산. 부하 적립 통행 배정의 결과가 플레이 화면에 드러나는 장면입니다.</figcaption>
   </figure>
 
-  <h3>성능 — 측정한 것과 아직 못 넘은 벽</h3>
+  <h3>성능과 남은 병목</h3>
   <p>
     통행 배정 1회의 비용을 EditMode 벤치마크로 실측했습니다. 이 함수는 매 프레임이 아니라
     <strong>도로를 지을 때만</strong> 호출되므로, 기준은 프레임 타임이 아니라 건설 클릭의 체감입니다.
@@ -412,17 +414,15 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
     <a href="https://github.com/hjh8874/GreenLight/pull/257">PR #257</a>
   </p>
   <p>
-    <strong>차량 수에는 선형입니다</strong> — 18대와 82대의 1대당 비용이 0.151ms와 0.147ms로 거의 같습니다.
-    <strong>도로망 크기에는 무너집니다</strong> — 도로가 4배 늘 때 1대당 비용이 27배가 됐습니다.
-    다음 수는 우선순위 큐와 변경 구역만 다시 푸는 증분 재계획이며, 벤치마크가 테스트로 남아 있어
-    개선 여부는 다시 측정해서 확인합니다.
+    차량이 18대에서 82대로 늘어도 1대당 비용은 0.151ms와 0.147ms로 비슷했습니다.
+    반면 도로가 4배 늘면 1대당 비용이 27배가 됩니다. 다음 작업은 우선순위 큐와 변경 구역만 다시 푸는 증분 재계획입니다.
+    같은 벤치마크로 전후 값을 다시 비교할 예정입니다.
   </p>
 
   <div class="case">
-    <h4>사례 — 플레이테스트 기반 단일 지표</h4>
-    <p><strong>문제.</strong> "조작의 효과가 느껴지지 않는다"는 피드백. 교통 도구는 여러 개인데 설치 결과가 화면에 보이지 않았습니다.</p>
-    <p><strong>후보와 판단.</strong> <strong>평균 통행 시간</strong>은 버렸습니다 — 신호등을 놓은 직후엔 오히려 나빠져 클릭과 숫자가 어긋납니다. <strong>도착한 차량 수</strong>도 버렸습니다 — 도로를 아무렇게나 늘려도 올라갑니다. <strong>정지 없이 연속 통과한 교차로 수</strong>를 채택했습니다 — 무엇을 설치하든 즉시 반응하고, 막히면 그 자리에서 끊깁니다.</p>
-    <p><strong>구현 원칙.</strong> 판정은 시뮬레이션 계층에서만 합니다. 화면이 같이 판정하면 진실이 두 개가 되고, 그것이 실제로 겪은 버그의 원인이었기 때문입니다.</p>
+    <h4>교통 도구가 먹혔는지 한 숫자로 확인하기</h4>
+    <p>플레이테스트에서 "조작의 효과가 느껴지지 않는다"는 말을 들었습니다. 평균 통행 시간은 신호등을 놓은 직후 오히려 나빠졌고, 도착 차량 수는 도로를 아무렇게나 늘려도 올랐습니다. 둘 다 클릭 직후의 체감과 맞지 않아 버렸습니다.</p>
+    <p>대신 "정지 없이 연속 통과한 교차로 수"를 기록합니다. 어떤 교통 도구를 설치해도 바로 변하고, 차가 막힌 자리에서 숫자도 끊깁니다. 판정은 시뮬레이션에서만 하고 화면은 결과만 읽습니다.</p>
   </div>
 
   <div class="chips"><span>Unity</span><span>C#</span><span>기획</span><span>경로 탐색</span><span>시뮬레이션</span><span>TDD</span></div>
@@ -436,11 +436,10 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   <h2>PARRYWAY — 공격키 없는 4방향 패링 러너</h2>
   <p class="dim">4방향 리듬 패링 러너 · HTML5 · 2026.08.14–26 (13일) · OpenAI Game Builders Seoul 출품작</p>
   <p>
-    공격도 이동도 없이, 사방에서 오는 공격의 마지막 진입 방향을 읽고 방패로 튕겨내며
-    집으로 향하는 게임입니다. <strong>반응이 아니라 판단을 시험합니다.</strong>
-    막을 때마다 방향마다 다른 펜타토닉 음이 나서, 잘 막으면 연주가 됩니다 —
-    <strong>"막을수록 음악이 된다"</strong>가 이 게임의 한 줄입니다.
-    착수 하루 만에 플레이 가능한 첫 빌드를 냈고, 이후 튜닝과 검증을 고도화해 13일 만에 출품 빌드를 완성했습니다.
+    공격과 이동 버튼이 없습니다. 사방에서 들어오는 공격의 마지막 방향을 읽고 방패로
+    튕겨내며 집으로 갑니다. 네 방향에는 서로 다른 펜타토닉 음을 붙였습니다. 연속으로
+    막으면 플레이가 짧은 연주처럼 들립니다. 첫날 플레이 가능한 빌드를 만들었고,
+    13일 동안 판정과 리듬을 조정해 출품했습니다.
   </p>
   <div class="video">
     <iframe src="https://www.youtube.com/embed/FNGmbfAQ0nI" title="PARRYWAY 데모 영상"
@@ -448,34 +447,30 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
       allowfullscreen loading="lazy"></iframe>
   </div>
   <table>
-    <tr><th>제작 방식</th><td>AI 네이티브 — 계획·체감 판정·수용은 사람, 구현·검증 루프는 AI 분업</td></tr>
+    <tr><th>제작 방식</th><td>규칙과 플레이 감각은 직접 판단했습니다. Claude와 Codex는 구현과 테스트 작성에 사용했습니다.</td></tr>
     <tr><th>구현</th><td>TypeScript 15파일 · Canvas 2D · Web Audio · 런타임 의존성 0</td></tr>
-    <tr><th>검증</th><td>회귀 테스트 <strong>160개</strong> (초기 빌드 56개 → 검증 루프 고도화) — 판정 1ms 경계 · 리듬 · 1000m 자동 완주 스모크 포함</td></tr>
-    <tr><th>AI 분업</th><td>Claude(초기 골격) · Codex(고도화·검증 루프) · 서브에이전트 3관점 독립 감사 · <strong>사람 = 규칙·체감 판정·수용 결정</strong></td></tr>
+    <tr><th>검증</th><td>회귀 테스트 160개로 판정의 1ms 경계, 리듬, 1,000m 자동 완주를 확인합니다.</td></tr>
   </table>
-  <div class="metrics" aria-label="PARRYWAY 핵심 수치">
+  <div class="metrics" aria-label="PARRYWAY 확인 수치">
     <div class="metric"><span class="k">제작 기간</span><span class="v">13일</span><span class="d">기획부터 출품 빌드까지</span></div>
     <div class="metric"><span class="k">회귀 테스트</span><span class="v">160개</span><span class="d">판정 1ms 경계 포함</span></div>
     <div class="metric"><span class="k">자동 검증</span><span class="v">1,000 m</span><span class="d">자동 완주 스모크</span></div>
     <div class="metric"><span class="k">런타임 의존성</span><span class="v">0</span><span class="d">TypeScript · Canvas 2D</span></div>
   </div>
   <div class="case">
-    <h4>사례 — 판정 기준을 입력 시각에서 방패 상태로</h4>
-    <p><strong>문제.</strong> 입력 시각으로 판정하면 연타가 항상 유리해집니다. 패링 게임의 긴장이 사라집니다.</p>
-    <p><strong>해결.</strong> 임팩트 순간의 <strong>방패 상태</strong>만 판정합니다 — 방향 전환에 90ms 커밋이 걸리고, 활성 후 60ms 안이면 저스트, 140ms 안이면 패링, 계속 들면 안전하지만 느려지는 가드입니다. 연타는 패링 창이 반감됩니다.</p>
-    <p><strong>이 선택의 단점.</strong> 전환 90ms 동안은 어떤 공격도 못 막습니다 — 방향 전환이 비용이 되는 대신, 규칙이 한 문장으로 설명됩니다.</p>
+    <h4>입력 시각 대신 방패 상태를 판정한다</h4>
+    <p>입력 시각을 기준으로 삼으니 연타가 항상 유리했습니다. 지금은 임팩트 순간의 방패 상태만 봅니다. 방향 전환에는 90ms가 걸리고, 활성 후 60ms 안이면 저스트, 140ms 안이면 패링입니다. 계속 들고 있으면 안전하지만 느려집니다.</p>
+    <p>방향을 바꾸는 90ms 동안은 어떤 공격도 막지 못합니다. 이 빈틈이 연타의 비용입니다.</p>
   </div>
   <div class="case">
-    <h4>사례 — 속도감의 원인은 배율이 아니라 무늬였다</h4>
-    <p><strong>문제.</strong> "속도감이 없다"는 체감 피드백. 스크롤 배율을 올리자 멀미만 늘었습니다.</p>
-    <p><strong>해결.</strong> 바닥이 가로 줄무늬라 가로로 흘려도 시각계가 이동을 검출하지 못하는 것이 원인이었습니다. 배율 대신 <strong>4m 간격의 수직 엣지(벽 배너)</strong>를 도입해 같은 속도에서 속도감을 만들었습니다.</p>
+    <h4>속도 배율보다 바닥 무늬가 문제였다</h4>
+    <p>"속도감이 없다"는 피드백을 받고 스크롤 배율부터 올렸지만 멀미만 늘었습니다. 바닥의 가로 줄무늬는 가로로 흘러도 움직임이 잘 보이지 않았습니다. 4m 간격의 수직 벽 배너를 넣자 같은 속도에서도 이동이 읽혔습니다.</p>
   </div>
   <div class="case">
-    <h4>사례 — 통과하는 테스트는 증거가 아니다</h4>
-    <p><strong>문제.</strong> 튜토리얼 탈출 테스트가 검증 대상 상수를 테스트 안에서 그대로 써서, 상수를 9999로 바꿔도 통과했습니다.</p>
-    <p><strong>해결.</strong> 요구를 고정 상한으로 다시 표현하고, 이후 중요한 테스트는 전부 일부러 코드를 망가뜨려 실패하는지 확인한 뒤에만 통과시켰습니다.</p>
+    <h4>통과한 테스트를 일부러 깨뜨렸다</h4>
+    <p>튜토리얼 탈출 테스트가 제품 상수를 그대로 읽고 있어서 그 값을 9999로 바꿔도 통과했습니다. 요구사항을 독립된 고정 상한으로 다시 썼고, 중요한 테스트는 코드를 일부러 망가뜨려 실패를 확인한 뒤에만 안전망으로 인정했습니다.</p>
   </div>
-  <div class="chips"><span>TypeScript</span><span>Canvas 2D</span><span>Web Audio</span><span>회귀 테스트</span><span>AI 오케스트레이션</span></div>
+  <div class="chips"><span>TypeScript</span><span>Canvas 2D</span><span>Web Audio</span><span>회귀 테스트</span><span>AI 분업</span></div>
   <p class="links">
     <a href="https://zzangh2.itch.io/parryway">플레이하기</a>
     <a href="https://youtu.be/FNGmbfAQ0nI">데모 영상</a>
@@ -484,8 +479,8 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
 
 <section id="molten-arena" data-cmd="MOLTEN.EXE">
   <h2>MOLTEN ARENA — 1개월 완주</h2>
-  <p class="dim">3인칭 웨이브 생존 로그라이트 · 2026.05–06 (1개월) · 2인 팀 · <strong>클라이언트 담당</strong>(인벤토리·아이템·적 AI·UI — 동료: 컨트롤러·카메라·무기 발사)</p>
-  <div class="metrics" aria-label="MOLTEN ARENA 핵심 수치">
+  <p class="dim">3인칭 웨이브 생존 로그라이트 · 2026.05–06 (1개월) · 2인 팀 · 클라이언트 담당: 인벤토리·아이템·적 AI·UI. 동료 담당: 컨트롤러·카메라·무기 발사.</p>
+  <div class="metrics" aria-label="MOLTEN ARENA 확인 수치">
     <div class="metric"><span class="k">협업</span><span class="v">2인</span><span class="d">클라이언트 역할 분리</span></div>
     <div class="metric"><span class="k">완주 기간</span><span class="v">1개월</span><span class="d">개발·발표 완료</span></div>
     <div class="metric"><span class="k">새 효과 추가</span><span class="v">0줄</span><span class="d">기존 코드 수정 없이 확장</span></div>
@@ -497,36 +492,25 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
       allowfullscreen loading="lazy"></iframe>
   </div>
   <ul>
-    <li><strong>확장 구조 설계.</strong> 무기·아이템 데이터를 ScriptableObject로 분리 — <strong>아이템 효과는 ItemEffectSO 상속만으로 추가</strong>되어, 새 효과를 넣을 때 <strong>기존 코드 수정 0줄</strong>(OCP)</li>
-    <li><strong>이벤트 주도 구조.</strong> 이벤트 구독으로 인벤토리·레벨업·핫바 UI와 시스템 로직 분리</li>
-    <li><strong>타격감.</strong> 히트스톱·플래시·스케일 펀치 + VFX 오브젝트 풀링·동시 상한 — 파티클 <strong>1,000 → 56~149개</strong>로 다이어트</li>
+    <li>무기와 아이템 데이터를 ScriptableObject로 분리했습니다. 새 효과는 ItemEffectSO를 상속해 추가하므로 기존 코드를 수정하지 않습니다.</li>
+    <li>이벤트 구독으로 인벤토리·레벨업·핫바 UI를 시스템 로직과 분리했습니다.</li>
+    <li>히트스톱·플래시·스케일 펀치를 넣고 VFX는 풀링했습니다. 동시 파티클 수는 최대 1,000개에서 56~149개로 줄었습니다.</li>
   </ul>
   <div class="case">
-    <h4>사례 — 병합 충돌 회피 설계</h4>
-    <p><strong>문제.</strong> 일시정지 상태에서 카메라가 계속 돌았습니다. 회전 로직이 동료 코드 안에 있어 직접 고치면 병합 충돌 위험이 있었습니다.</p>
-    <p><strong>해결.</strong> 원본을 건드리지 않고 <code>timeScale=0</code>일 때 회전 입력만 차단하는 독립 컴포넌트를 붙였습니다. <strong>동료 코드 수정 0줄.</strong> 3개 경로에서 검증했습니다.</p>
+    <h4>동료 코드를 건드리지 않고 카메라 입력을 막았다</h4>
+    <p>일시정지 중에도 카메라가 돌았지만 회전 로직은 동료가 작업 중인 파일에 있었습니다. 그 파일 대신 <code>timeScale=0</code>일 때 회전 입력만 차단하는 컴포넌트를 따로 붙였습니다. 동료 코드 수정 없이 세 경로에서 동작을 확인했습니다.</p>
   </div>
   <div class="chips"><span>Unity URP</span><span>C#</span><span>ScriptableObject</span><span>NavMesh</span><span>Cinemachine</span></div>
 </section>
 
-<section id="ai" data-cmd="AI_WORKFLOW.EXE">
-  <h2>AI와 일하는 방식</h2>
-  <p>
-    AI는 구현 속도를 높이지만, <strong>무엇을 만들지 정하고 결과를 수용할지는 사람이 판단해야 한다</strong>고
-    생각합니다. PARRYWAY와 IDLE CITY를 만들며 다음 세 가지 원칙을 지켰습니다.
-  </p>
-  <div class="case">
-    <h4>1. 지식은 모델이 아니라 저에게 쌓입니다</h4>
-    <p>개발 로그와 교훈을 개인 위키로 회수하고, 반복된 실패는 <strong>증상 → 원인 → 다음에 할 것</strong>으로 남깁니다. 어떤 AI를 사용하더라도 같은 기록과 절차에서 이어서 시작합니다.</p>
-  </div>
-  <div class="case">
-    <h4>2. 맡기기 전에 계획과 중단 조건을 씁니다</h4>
-    <p>자동 테스트로 검증 가능한 시뮬레이션·자료구조는 AI와 분업하고, 재미·손맛·연출처럼 직접 만져야 판단할 수 있는 것은 제가 결정합니다.</p>
-  </div>
-  <div class="case">
-    <h4>3. 통과한 결과도 일부러 깨뜨려 봅니다</h4>
-    <p>중요한 테스트는 코드를 고의로 망가뜨려 실제로 실패하는지 확인합니다. PARRYWAY는 이 검증 루프를 거쳐 <strong>13일 안에 완성했고 회귀 테스트 160개</strong>를 함께 남겼습니다.</p>
-  </div>
+<section id="ai" data-cmd="WORKFLOW.LOG">
+  <h2>작업 방식</h2>
+  <p>AI는 구현과 테스트 작성에 사용합니다. 규칙, 플레이 감각, 최종 수용 여부는 제가 결정합니다.</p>
+  <dl class="rows">
+    <dt>기록</dt><dd>개발 로그와 교훈을 개인 위키에 남깁니다. 반복된 실패는 증상, 원인, 다음 행동으로 정리해 다음 작업에서 다시 확인합니다.</dd>
+    <dt>경계</dt><dd>자동 테스트로 확인할 수 있는 시뮬레이션과 자료구조는 나눠서 작업합니다. 재미와 손맛, 연출은 직접 플레이한 뒤 결정합니다.</dd>
+    <dt>검증</dt><dd>중요한 테스트는 코드를 일부러 망가뜨려 실제로 실패하는지 확인합니다. PARRYWAY에는 이 방식으로 만든 회귀 테스트 160개가 남아 있습니다.</dd>
+  </dl>
 </section>
 
 <section id="skills" data-cmd="SPECS.CFG">
@@ -536,22 +520,21 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
     <dt>LANGUAGE</dt>    <dd>C#, TypeScript, Python</dd>
     <dt>CLIENT</dt>      <dd>게임플레이, UI·HUD, 인벤토리, 타격감, 경로 탐색과 통행 배분, 에디터 툴</dd>
     <dt>DESIGN</dt>      <dd>ScriptableObject 데이터 주도, 이벤트 구독, SOLID(SRP/OCP/DIP), 자체 알고리즘 설계</dd>
-    <dt>VERIFY</dt>      <dd><strong>TDD</strong> — EditMode·NUnit, 회귀 테스트로 특성 고정, 뮤테이션 확인</dd>
-    <dt>COLLAB</dt>      <dd>Git(브랜치·PR 리뷰·머지), Plastic SCM, 개발 로그 문서화, AI 오케스트레이션(Claude Code·Codex·Unity MCP)</dd>
+    <dt>VERIFY</dt>      <dd>EditMode·NUnit, 회귀 테스트로 특성 고정, 뮤테이션 확인</dd>
+    <dt>COLLAB</dt>      <dd>Git(브랜치·PR 리뷰·머지), Plastic SCM, 개발 로그, Claude Code·Codex·Unity MCP</dd>
     <dt>EDU</dt>         <dd>한국방송통신대학교 컴퓨터공학과 2027.03 졸업 예정 · 오즈코딩스쿨 게임 개발 부트캠프 (2026.03–08)</dd>
   </dl>
-  <h3>그 외 — 게임 분석 블로그</h3>
+  <h3>게임 분석 블로그</h3>
   <p>
-    화제작·신작을 개발자 관점에서 역기획하는 글을 <strong>69편</strong> 발행했습니다.
-    소재 선정(검색 수요 데이터) → 개요 → 초안 → 품질 검수 → 발행의 반자동 파이프라인을 직접
-    만들었고, 어느 단계를 자동화하고 어느 단계에 사람의 판단을 남길지 설계한 것이 결과물입니다.
+    게임을 플레이하며 시스템을 역기획한 글을 69편 썼습니다. 검색 수요를 보고 소재를 고르며,
+    초안을 만든 뒤에는 사실과 문장을 직접 확인합니다.
   </p>
   <p class="links"><a href="https://blog.naver.com/zzangh91">blog.naver.com/zzangh91</a></p>
 </section>
 
 <section id="contact" data-cmd="CONTACT.SYS">
   <h2>연락처</h2>
-  <p>서류 단계에서 궁금한 점은 어느 채널이든 하루 안에 답변드립니다.</p>
+  <p>연락은 아래 이메일로 받습니다.</p>
   <p class="links">
     <a href="mailto:zzangh91@naver.com">zzangh91@naver.com</a>
     <a href="https://github.com/kanghwani">GitHub</a>
@@ -562,8 +545,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
 <section id="play" data-cmd="PLAYLOG.DAT">
   <h2>부록 — 플레이 기록</h2>
   <p>
-    고전 RPG부터 현대 시스템 게임까지, <strong>장르의 기준이 된 게임들</strong>을 골라 플레이해 왔습니다.
-    전체 기록은 취향을 과장하기 위한 목록이 아니라 어떤 시스템을 오래 관찰해 왔는지 보여주는 근거입니다.
+    제가 어떤 게임을 오래 플레이했는지 확인할 수 있도록 기록을 그대로 공개합니다.
   </p>
   <div class="chips">
     <span>창세기전 시리즈</span><span>악튜러스</span><span>파이널판타지 시리즈</span>
@@ -1138,7 +1120,7 @@ function noteTex(bg, ink, lines, size) {
 [
   { bg: "#f2e06b", ink: "#4a4128", lines: ["버그:", "차 뒷걸음", "→ FIX ✓"], x: -0.285, y: 0.135, r: 0.06 },
   { bg: "#8EE3A2", ink: "#1e4028", lines: ["테스트", "340", "GREEN"], x: -0.285, y: 0.005, r: -0.05 },
-  { bg: "#ffb26b", ink: "#5a3413", lines: ["스팀 데모", "2/22 🚀"], x: -0.285, y: -0.125, r: 0.04 },
+  { bg: "#ffb26b", ink: "#5a3413", lines: ["스팀 데모", "2/22 BUILD"], x: -0.285, y: -0.125, r: 0.04 },
   { bg: "#f2a0b5", ink: "#5a2433", lines: ["w=2", "잊지말기!"], x: 0.285, y: 0.1, r: 0.08 },
   { bg: "#a8d8f0", ink: "#1e3a50", lines: ["세이브", "먼저 백업", "!!"], x: 0.285, y: -0.04, r: -0.07 },
   { bg: "#E8ECF4", ink: "#33302a", lines: ["면접 Q:", "왜 SO로?", "→ OCP"], x: 0.285, y: -0.175, r: 0.05 }
