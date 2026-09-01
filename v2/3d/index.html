@@ -19,6 +19,7 @@
 body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;line-height:1.75;font-size:17px}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 strong{color:var(--accent);font-weight:700}
 #scroll3d{height:165vh}
 #stage{position:sticky;top:0;height:100vh;overflow:hidden}
@@ -171,6 +172,40 @@ html.jsanim #content section.on::before{animation:typeIn 1s steps(24) both}
 #content dl.rows{display:grid;grid-template-columns:130px 1fr;gap:10px 18px;margin:20px 0}
 #content dl.rows dt{font-family:"Galmuri9",Pretendard,monospace;color:#8EE3A2;
   font-size:13px;letter-spacing:.04em;padding-top:2px}
+/* 대표작 선택 화면 */
+#content .project-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+#content .project-card{display:block;position:relative;overflow:hidden;border:1px dashed var(--line);
+  background:var(--card);color:var(--ink);text-decoration:none;transition:transform .12s steps(2),border-color .12s steps(2),box-shadow .12s steps(2)}
+#content .project-card:hover,#content .project-card:focus-visible{transform:translate(-3px,-3px);border-color:#8EE3A2;
+  box-shadow:6px 6px 0 rgba(110,255,138,.16);text-decoration:none}
+#content .project-card.featured{grid-column:1/-1;display:grid;grid-template-columns:1.2fr 1fr;border-color:rgba(244,211,94,.65)}
+#content .project-art{position:relative;aspect-ratio:16/9;overflow:hidden;background:#050a13}
+#content .featured .project-art{aspect-ratio:auto;min-height:260px}
+#content .project-art img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88) contrast(1.04)}
+#content .project-art::after{content:"";position:absolute;inset:0;border:1px solid rgba(255,255,255,.04);pointer-events:none}
+#content .project-copy{display:flex;flex-direction:column;padding:18px 18px 16px;min-height:190px}
+#content .project-no{font-family:"Galmuri9",monospace;font-size:11px;color:#8EE3A2;letter-spacing:.08em}
+#content .project-card.featured .project-no{color:var(--accent)}
+#content .project-card h3{font-family:"Galmuri11","Galmuri14",Pretendard,monospace;font-size:20px;
+  color:var(--ink);margin:8px 0 7px;line-height:1.35}
+#content .project-card p{font-size:14px;line-height:1.65;color:var(--dim);margin:0}
+#content .project-proof{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+#content .project-proof span{font-family:"Galmuri9",monospace;font-size:10.5px;color:#8EE3A2;
+  border:1px dashed var(--line);padding:3px 7px}
+#content .project-run{margin-top:auto;padding-top:15px;font-family:"Galmuri9",monospace;font-size:11px;color:var(--accent)}
+/* 프로젝트별 증거 수치 */
+#content .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:20px 0 24px}
+#content .metric{border:1px dashed var(--line);background:rgba(24,34,64,.7);padding:13px 13px 12px;min-height:108px}
+#content .metric .k{display:block;font-family:"Galmuri9",monospace;font-size:10.5px;color:#8EE3A2;letter-spacing:.04em}
+#content .metric .v{display:block;margin-top:5px;font-family:"Galmuri11",Pretendard,monospace;font-size:21px;line-height:1.3;color:var(--accent)}
+#content .metric .d{display:block;margin-top:5px;font-size:11.5px;line-height:1.45;color:var(--dim)}
+/* 문제 → 판단 → 해결 → 검증 */
+#content .decision-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;list-style:none;padding:0;margin:14px 0 18px;counter-reset:step}
+#content .decision-flow li{position:relative;border:1px dashed var(--line);background:#0a1120;padding:12px 11px;min-height:132px}
+#content .decision-flow li:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:50%;z-index:2;
+  transform:translateY(-50%);color:var(--accent);background:var(--card);padding:1px 2px;font-family:monospace}
+#content .decision-flow .k{display:block;font-family:"Galmuri9",monospace;font-size:10.5px;color:#8EE3A2;margin-bottom:7px}
+#content .decision-flow .t{display:block;font-size:13px;line-height:1.55;color:var(--ink)}
 /* 플레이 기록 카드 */
 #content .playhead{display:flex;align-items:center;gap:12px;margin:18px 0 14px}
 #content .playhead input{flex:1;max-width:280px;background:var(--card);border:1px dashed var(--line);
@@ -230,6 +265,14 @@ html.incontent #statusbar{opacity:1;transform:none}
   #title .hero-links{gap:6px;margin-top:14px}
   #title .hero-links a{padding:7px 10px}
   #content dl.rows{grid-template-columns:1fr}
+  #content .project-grid{grid-template-columns:1fr}
+  #content .project-card.featured{grid-column:auto;display:block}
+  #content .featured .project-art{aspect-ratio:16/9;min-height:0}
+  #content .project-copy{min-height:0}
+  #content .metrics{grid-template-columns:1fr 1fr}
+  #content .decision-flow{grid-template-columns:1fr}
+  #content .decision-flow li{min-height:0}
+  #content .decision-flow li:not(:last-child)::after{content:"↓";right:auto;left:20px;top:auto;bottom:-13px;transform:none}
   #content table{display:block;overflow-x:auto}
   #content th{white-space:normal}
 }
@@ -240,11 +283,38 @@ html.incontent #statusbar{opacity:1;transform:none}
 <section id="work" data-cmd="SELECTED_WORK.DAT">
   <h2>대표 프로젝트</h2>
   <p>게임의 규칙을 직접 설계하고, 구현 결과를 테스트와 수치로 확인합니다.</p>
-  <table>
-    <tr><th><a href="#idle-city">IDLE CITY</a></th><td>교통 시뮬레이션 코어 · 부하 적립 통행 배정 · 성능 벤치마크</td></tr>
-    <tr><th><a href="#parryway">PARRYWAY</a></th><td>공격키 없는 4방향 패링 러너 · 13일 완성 · 회귀 테스트 160개</td></tr>
-    <tr><th><a href="#molten-arena">MOLTEN ARENA</a></th><td>2인 팀 클라이언트 담당 · 데이터 주도 확장 구조 · 1개월 완주</td></tr>
-  </table>
+  <div class="project-grid">
+    <a class="project-card featured" href="#idle-city">
+      <div class="project-art"><img src="../../assets/idle-city.jpg" alt="IDLE CITY의 도로와 차량이 보이는 도시 화면" width="1600" height="800"></div>
+      <div class="project-copy">
+        <span class="project-no">01 / FEATURED · UNITY</span>
+        <h3>IDLE CITY</h3>
+        <p>우회로가 쓰이지 않는 문제를 통행 배정으로 다시 정의하고, 부하 적립 라우팅을 설계했습니다.</p>
+        <span class="project-proof"><span>기획 선정작</span><span>커밋 56%</span><span>벤치마크 실측</span></span>
+        <span class="project-run">RUN IDLECITY.SIM →</span>
+      </div>
+    </a>
+    <a class="project-card" href="#parryway">
+      <div class="project-art"><img src="../../assets/parryway-play.jpg" alt="PARRYWAY 플레이 화면" width="1600" height="900" loading="lazy"></div>
+      <div class="project-copy">
+        <span class="project-no">02 · TYPESCRIPT</span>
+        <h3>PARRYWAY</h3>
+        <p>공격키 없이 네 방향의 방패 상태만으로 판단하는 리듬 패링 러너입니다.</p>
+        <span class="project-proof"><span>13일 완성</span><span>테스트 160개</span></span>
+        <span class="project-run">RUN PARRYWAY.EXE →</span>
+      </div>
+    </a>
+    <a class="project-card" href="#molten-arena">
+      <div class="project-art"><img src="../../assets/molten-arena.jpg" alt="Molten Arena 전투 화면" width="1600" height="900" loading="lazy"></div>
+      <div class="project-copy">
+        <span class="project-no">03 · UNITY TEAM</span>
+        <h3>MOLTEN ARENA</h3>
+        <p>새 아이템 효과가 기존 코드 수정 없이 추가되는 데이터 주도 확장 구조를 만들었습니다.</p>
+        <span class="project-proof"><span>2인 팀</span><span>1개월 완주</span></span>
+        <span class="project-run">RUN MOLTEN.EXE →</span>
+      </div>
+    </a>
+  </div>
 </section>
 
 <section id="idle-city" data-cmd="IDLECITY.SIM">
@@ -257,6 +327,12 @@ html.incontent #statusbar{opacity:1;transform:none}
     <tr><th>솔로 인수 후</th><td>씬 13→5개 정리 · 라이선스 미증빙 음원 16곡 삭제 · 품질 계측 도구 구축</td></tr>
     <tr><th>링크</th><td><a href="https://youtu.be/6rCe-v5Aewk">팀 시연 영상 (4분 30초)</a> · <a href="https://github.com/hjh8874/GreenLight">공개 저장소</a></td></tr>
   </table>
+  <div class="metrics" aria-label="IDLE CITY 핵심 수치">
+    <div class="metric"><span class="k">공개 기여도</span><span class="v">56%</span><span class="d">GitHub 424 / 752 커밋</span></div>
+    <div class="metric"><span class="k">팀 전체 테스트</span><span class="v">1,204</span><span class="d">Sim 671 + View 533</span></div>
+    <div class="metric"><span class="k">20×20 만차</span><span class="v">12.1 ms</span><span class="d">82대 재계획 · 11회 중앙값</span></div>
+    <div class="metric"><span class="k">차선 검증</span><span class="v">80 / 80</span><span class="d">정확 · 차간 위반 0</span></div>
+  </div>
 
   <figure>
     <img src="../../assets/idle-city.jpg"
@@ -290,10 +366,12 @@ html.incontent #statusbar{opacity:1;transform:none}
 
   <div class="case">
     <h4>사례 — 길찾기 재설계: 틀린 건 알고리즘이 아니라 질문이었다</h4>
-    <p><strong>문제.</strong> 우회로를 건설해도 통행량이 옮겨가지 않았습니다. 최단 경로 탐색을 수백 번 반복하면 수백 대가 전부 같은 경로를 돌려받기 때문입니다.</p>
-    <p><strong>분석.</strong> 이것은 길찾기가 아니라 통행 배정(traffic assignment) 문제입니다. 부하는 배정하면서 생기는 중이므로 혼잡 휴리스틱은 순환 의존이 됩니다.</p>
-    <p><strong>해결.</strong> 수요를 한 대씩 순차 배정하며 확정 경로의 타일에 부하를 쌓고, 다음 차량이 그 부하를 비용으로 읽게 했습니다. <code>step = 1 + w × (부하 / 수용량)</code></p>
-    <p><strong>결과.</strong> 우회를 지시하는 분기문 없이 통행량이 분산됩니다. <code>w=0</code>이면 실패하는 회귀 테스트로 고정했고, 구현 후 대조하니 교통공학의 점증 통행배정과 같은 구조였습니다.</p>
+    <ol class="decision-flow">
+      <li><span class="k">01 문제</span><span class="t">수백 대가 같은 최단 경로를 받아 우회로를 사용하지 않았습니다.</span></li>
+      <li><span class="k">02 재정의</span><span class="t">길찾기가 아니라 차량을 여러 경로에 나누는 통행 배정 문제였습니다.</span></li>
+      <li><span class="k">03 해결</span><span class="t"><code>step = 1 + w × 부하/수용량</code>을 다음 차량의 비용으로 사용했습니다.</span></li>
+      <li><span class="k">04 검증</span><span class="t"><code>w=0</code>에서 실패하는 회귀 테스트와 실제 분산 화면으로 고정했습니다.</span></li>
+    </ol>
     <pre class="codeblock" data-file="ROUTEPLANNER.CS — READ ONLY">// ① 배정이 끝난 차량의 경로를 부하로 적립한다 (Plan)
 for (int i = 0; i &lt; demands.Count; i++) {
     var carPath = Search(grid, demands[i].SourceRoad, demands[i].SinkRoad, ...);
@@ -375,6 +453,12 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
     <tr><th>검증</th><td>회귀 테스트 <strong>160개</strong> (초기 빌드 56개 → 검증 루프 고도화) — 판정 1ms 경계 · 리듬 · 1000m 자동 완주 스모크 포함</td></tr>
     <tr><th>AI 분업</th><td>Claude(초기 골격) · Codex(고도화·검증 루프) · 서브에이전트 3관점 독립 감사 · <strong>사람 = 규칙·체감 판정·수용 결정</strong></td></tr>
   </table>
+  <div class="metrics" aria-label="PARRYWAY 핵심 수치">
+    <div class="metric"><span class="k">제작 기간</span><span class="v">13일</span><span class="d">기획부터 출품 빌드까지</span></div>
+    <div class="metric"><span class="k">회귀 테스트</span><span class="v">160개</span><span class="d">판정 1ms 경계 포함</span></div>
+    <div class="metric"><span class="k">자동 검증</span><span class="v">1,000 m</span><span class="d">자동 완주 스모크</span></div>
+    <div class="metric"><span class="k">런타임 의존성</span><span class="v">0</span><span class="d">TypeScript · Canvas 2D</span></div>
+  </div>
   <div class="case">
     <h4>사례 — 판정 기준을 입력 시각에서 방패 상태로</h4>
     <p><strong>문제.</strong> 입력 시각으로 판정하면 연타가 항상 유리해집니다. 패링 게임의 긴장이 사라집니다.</p>
@@ -401,6 +485,12 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
 <section id="molten-arena" data-cmd="MOLTEN.EXE">
   <h2>MOLTEN ARENA — 1개월 완주</h2>
   <p class="dim">3인칭 웨이브 생존 로그라이트 · 2026.05–06 (1개월) · 2인 팀 · <strong>클라이언트 담당</strong>(인벤토리·아이템·적 AI·UI — 동료: 컨트롤러·카메라·무기 발사)</p>
+  <div class="metrics" aria-label="MOLTEN ARENA 핵심 수치">
+    <div class="metric"><span class="k">협업</span><span class="v">2인</span><span class="d">클라이언트 역할 분리</span></div>
+    <div class="metric"><span class="k">완주 기간</span><span class="v">1개월</span><span class="d">개발·발표 완료</span></div>
+    <div class="metric"><span class="k">새 효과 추가</span><span class="v">0줄</span><span class="d">기존 코드 수정 없이 확장</span></div>
+    <div class="metric"><span class="k">파티클 상한</span><span class="v">56–149</span><span class="d">기존 최대 1,000개</span></div>
+  </div>
   <div class="video">
     <iframe src="https://www.youtube.com/embed/rlZltzKGEIY" title="Molten Arena 플레이 영상"
       allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
