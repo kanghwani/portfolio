@@ -4,11 +4,11 @@
 
 ## Platform
 
-web
+web — 기본 공개 경로는 `/v2/3d/`
 
 ## Stack
 
-정적 HTML/CSS/JS (GitHub Pages 배포 전제, 빌드 도구 없음). 페이지 3장 — `index.html`(개발) · `design/`(기획) · `qa/`(QA) — 이 `assets/manual.css`·`assets/manual.js` 한 벌을 공유한다 (2026-08-21 통합).
+정적 HTML/CSS/JS (GitHub Pages 배포 전제, 빌드 도구 없음). 루트는 `v2/3d/` 개발 포트폴리오로 연결된다. 구 매뉴얼형 개발판과 기획·QA 트랙은 보존되어 있다.
 
 ## Users
 
@@ -20,7 +20,7 @@ web
 
 ## Positioning
 
-주니어 포폴 중 드문 차별점 두 개: ① **표준 알고리즘이 기획과 충돌하는 지점을 특정해 자체 설계** (HILT 통행 배정, 회귀 테스트 340개로 고정) ② **자기신고가 아닌 데이터 증명** — PSN·Steam API 실측 + Xbox/Switch 수기 8건 = 플레이 이력 120개·1,972시간으로 "시스템 게임 30년" 취향을 뒷받침.
+주니어 포폴 중 드문 차별점 두 개: ① **표준 알고리즘이 기획과 충돌하는 지점을 특정해 자체 설계** (HILT 통행 배정, 팀 EditMode 671개·전체 1,204개 중 통행 배정·차량 주행 테스트군 담당) ② **자기신고가 아닌 데이터 증명** — 벤치마크와 회귀 테스트, PSN·Steam API 기반 플레이 기록으로 주장을 검증.
 
 ## Operating Context
 
@@ -30,7 +30,7 @@ web
 
 ## Capabilities and Constraints
 
-- 프로젝트 3개: IDLE CITY(간판, 5인 팀·공모전 선정·커밋 57%·테스트 340) / Molten Arena(2인 팀) / 타코야끼(개인, 플레이 가능 링크)
+- 프로젝트 3개: IDLE CITY(간판, 5인 팀·기획 선정·교통 시뮬레이션 코어) / PARRYWAY(개인, 13일·회귀 테스트 160개·플레이 가능) / Molten Arena(2인 팀)
 - 이미지 자산: `assets/idle-city.jpg`, `assets/molten-arena.jpg`. GIF 슬롯(hilt-before-after, freeflow-streak, hitstop, takoyaki)은 **미제작** — onerror로 숨김 처리 중. 게임 카드 이미지: Steam은 CDN header.jpg 사용 가능, PSN은 덤프에 imageUrl 있음
 - 수치 규칙: 측정 조건 없는 수치 금지, 자기신고 항목 부풀리기 금지 (위키 마스터 규칙)
 
@@ -43,7 +43,7 @@ web
 ## Evidence on Hand
 
 - 플레이 데이터: `assets/play-data.js` (PSN 106 + Steam 6 + Xbox/Switch 수기 8, 1,972h, 2026-08-18 덤프+08-19 수기)
-- 플레이 영상: Molten Arena https://youtu.be/rlZltzKGEIY · 타코야끼 라이브 https://kanghwani.github.io/takoyaki/
+- 플레이 영상: IDLE CITY https://youtu.be/6rCe-v5Aewk · PARRYWAY https://youtu.be/FNGmbfAQ0nI · Molten Arena https://youtu.be/rlZltzKGEIY
 - 블로그 69편 발행 실적
 - 없음(조작 금지): 상용 출시작, 다운로드 수치, 수상(게임 분야)
 
