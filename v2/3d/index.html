@@ -122,6 +122,16 @@ strong{color:inherit;font-weight:700}
 /* ── 본문 섹션 (레트로 CRT 톤) — 3d/index.html의 :root 변수(--bg,--ink,--dim,--accent,--line,--card) 사용 ──
  * 전부 #content 하위로 스코프 — 히어로(#stage,#reveal) 스타일과 충돌하지 않는다 */
 #content{max-width:820px;margin:0 auto;padding:0 22px 96px;word-break:keep-all}
+/* 연속용지 스프로킷 레일 — 본문이 "출력 중인 개발 로그"로 읽히게 좌우를 채운다 */
+@media(min-width:1140px){
+  #content::before,#content::after{content:"";position:fixed;top:0;bottom:0;width:34px;z-index:1;
+    pointer-events:none;opacity:0;transition:opacity .5s;
+    background-image:radial-gradient(circle,rgba(122,140,190,.32) 4px,rgba(122,140,190,.1) 5px,transparent 6px);
+    background-size:34px 44px;background-position:center top}
+  #content::before{left:calc(50% - 465px);border-right:1px dashed rgba(122,140,190,.22)}
+  #content::after{right:calc(50% - 465px);border-left:1px dashed rgba(122,140,190,.22)}
+  html.incontent #content::before,html.incontent #content::after{opacity:.55}
+}
 #content p a,#content li a,#content .note a,#content td a{text-decoration:underline;text-underline-offset:3px}
 #content .codeblock{background:#0a1120;border:1px dashed var(--line);padding:16px 18px;margin:14px 0;
   font-size:13px;line-height:1.7;overflow-x:auto;color:#c9d4e8}
@@ -796,11 +806,11 @@ for (const lx of [-1.1, 1.1]) {
 
 /* ── CRT 모니터 ── */
 const crt = new THREE.Group();
-const shellMat = new THREE.MeshStandardMaterial({ color: 0x9da3ad, roughness: 0.48, metalness: 0.05 });
+const shellMat = new THREE.MeshStandardMaterial({ color: 0xDCD3C2, roughness: 0.52, metalness: 0.03 }); /* 패미컴 크림 */
 const body = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.52, 0.5), shellMat);
 body.castShadow = body.receiveShadow = true;
 crt.add(body);
-const monitorTrimMat = new THREE.MeshStandardMaterial({ color: 0x505762, roughness: 0.4, metalness: 0.16 });
+const monitorTrimMat = new THREE.MeshStandardMaterial({ color: 0x8f2f24, roughness: 0.45, metalness: 0.08 }); /* 패미컴 다크레드 베젤 */
 const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.46, 0.05), monitorTrimMat);
 bezel.position.z = 0.26;
 crt.add(bezel);
@@ -808,7 +818,7 @@ crt.add(bezel);
 const innerBezel = new THREE.Mesh(new THREE.BoxGeometry(0.535, 0.41, 0.018),
   new THREE.MeshStandardMaterial({ color: 0x2e343e, roughness: 0.38, metalness: 0.12 }));
 innerBezel.position.z = 0.272; crt.add(innerBezel);
-const seamMat = new THREE.MeshBasicMaterial({ color: 0x737b87 });
+const seamMat = new THREE.MeshBasicMaterial({ color: 0xBCB2A0 });
 for (const sy of [-0.245, 0.245]) {
   const seam = new THREE.Mesh(new THREE.BoxGeometry(0.61, 0.006, 0.008), seamMat);
   seam.position.set(0, sy, 0.19); crt.add(seam);
@@ -981,31 +991,49 @@ const screenWorld = new THREE.Vector3(0, 1.08, -0.12 + SCREEN.z);
 /* 키보드 — 베이스 + 키캡 그리드(인스턴싱) + 스페이스바 + 케이블 */
 const kbGroup = new THREE.Group();
 const kb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.028, 0.17),
-  new THREE.MeshStandardMaterial({ color: 0xa5a29b, roughness: 0.8 })); /* NES 그레이 바디 */
+  new THREE.MeshStandardMaterial({ color: 0xEDE4D3, roughness: 0.75 })); /* 8BitDo 패미컴 크림 바디 */
 kb.castShadow = kb.receiveShadow = true;
 kbGroup.add(kb);
+/* 8BitDo 시그니처 — 상단 컨트롤 바: 레드 레버 + 볼륨 노브 + LED */
+const kbBar = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.02, 0.034),
+  new THREE.MeshStandardMaterial({ color: 0x8f2f24, roughness: 0.6 }));
+kbBar.position.set(0, 0.024, -0.068); kbGroup.add(kbBar);
+const kbLever = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.02, 8),
+  new THREE.MeshStandardMaterial({ color: 0xd0433a, roughness: 0.45 }));
+kbLever.position.set(-0.205, 0.042, -0.068); kbLever.rotation.z = 0.35; kbGroup.add(kbLever);
+const kbLeverTip = new THREE.Mesh(new THREE.SphereGeometry(0.006, 8, 8),
+  new THREE.MeshStandardMaterial({ color: 0xd0433a, roughness: 0.45 }));
+kbLeverTip.position.set(-0.208, 0.051, -0.068); kbGroup.add(kbLeverTip);
+const kbKnob = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.012, 14),
+  new THREE.MeshStandardMaterial({ color: 0xEDE4D3, roughness: 0.5 }));
+kbKnob.position.set(0.21, 0.038, -0.068); kbGroup.add(kbKnob);
+const kbLed = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.006, 0.006),
+  new THREE.MeshBasicMaterial({ color: 0x6dff8a }));
+kbLed.position.set(0.16, 0.035, -0.068); kbGroup.add(kbLed);
 const keyGeo = new THREE.BoxGeometry(0.03, 0.012, 0.028);
 const keyMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.55 }); /* 인스턴스 색 사용 */
 const ROWS = 4, COLS = 13;
 const keys = new THREE.InstancedMesh(keyGeo, keyMat, ROWS * COLS - 5);
 const m4 = new THREE.Matrix4();
-const keyPos = [];
+const keyPos = [], keyColors = [];
 let ki = 0;
 for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
   if (r === 3 && c >= 3 && c <= 7) continue;              // 스페이스바 자리
   const kx = -0.222 + c * 0.037 + r * 0.004, kz = -0.058 + r * 0.038;
   m4.setPosition(kx, 0.021, kz);
   keyPos.push([kx, kz]);
+  /* 패미컴 투톤 — 크림 알파열 + 다크레드 모디파이어(가장자리·아랫줄) */
+  keyColors.push(c === 0 || c === COLS - 1 || r === 3 ? 0x8f2f24 : 0xEae0cd);
   keys.setMatrixAt(ki++, m4);
 }
 keys.castShadow = true;
 const keyCol = new THREE.Color();
 for (let i = 0; i < ki; i++)
-  keys.setColorAt(i, keyCol.setHex(i === 7 || i === 33 ? 0xd0433a : 0x55524c)); /* 다크 그레이 + 레드 키 2개 */
+  keys.setColorAt(i, keyCol.setHex(i === 7 || i === 33 ? 0xd0433a : keyColors[i])); /* A·B 레드 키 2개 */
 keys.instanceColor.needsUpdate = true;
 kbGroup.add(keys);
 const space = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.012, 0.028),
-  new THREE.MeshStandardMaterial({ color: 0x55524c, roughness: 0.55 }));
+  new THREE.MeshStandardMaterial({ color: 0x8f2f24, roughness: 0.55 }));
 space.position.set(-0.02, 0.021, -0.058 + 3 * 0.038);
 kbGroup.add(space);
 kbGroup.position.set(0, 0.797, 0.33); kbGroup.rotation.y = -0.04;
@@ -1643,13 +1671,13 @@ canvas.addEventListener("pointermove", e => {
 });
 
 /* ── 조명: 앰버 램프 + 블루 림 + 화면 글로우 ── */
-scene.add(new THREE.AmbientLight(0x223048, 0.7));
+scene.add(new THREE.AmbientLight(0x2e2c40, 0.7)); /* 크림 플라스틱이 죽지 않게 살짝 웜 */
 const lamp = new THREE.PointLight(0xF4D35E, 6, 8, 1.8);
 lamp.position.set(-1.3, 1.9, 0.9);
 lamp.castShadow = true;
 lamp.shadow.mapSize.set(isTouch ? 512 : 1024, isTouch ? 512 : 1024);
 scene.add(lamp);
-const rim = new THREE.PointLight(0x3b6bd6, 5, 9, 1.8);
+const rim = new THREE.PointLight(0x5568c8, 3.6, 9, 1.8); /* 크림 외장이 파랗게 먹히지 않는 선 */
 rim.position.set(1.8, 1.4, -1.0);
 scene.add(rim);
 const glow = new THREE.PointLight(0x9db8ff, 0.7, 2.4, 2);
