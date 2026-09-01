@@ -1648,7 +1648,7 @@ scene.add(lamp);
 const rim = new THREE.PointLight(0x3b6bd6, 5, 9, 1.8);
 rim.position.set(1.8, 1.4, -1.0);
 scene.add(rim);
-const glow = new THREE.PointLight(0x9db8ff, 1.6, 2.4, 2);
+const glow = new THREE.PointLight(0x9db8ff, 0.7, 2.4, 2);
 glow.position.copy(screenWorld).add(new THREE.Vector3(0, 0, 0.25));
 scene.add(glow);
 
@@ -1990,8 +1990,8 @@ function render(tms) {
   camera.lookAt(screenWorld);
   /* 줌인 램프 suck — p 0.45까지 상승, 0.8까지 플래토, 도착 직전 복귀. 양끝 0 */
   const suck = smooth(Math.min(1, p / 0.45)) * (1 - smooth(Math.max(0, (p - 0.8) / 0.2)));
-  glow.intensity = 1.4 + suck * 2.2
-    + (Math.sin(t * 9) * 0.15 + Math.sin(t * 23) * 0.08) * (1 + suck * 1.6); /* 줌인할수록 신호가 세진다 */
+  glow.intensity = 0.7 + suck * 0.8
+    + (Math.sin(t * 9) * 0.07 + Math.sin(t * 23) * 0.04) * (1 + suck * 1.2); /* 줌인할수록 신호가 세진다 */
   dust.position.z = -suck * 0.9;                          /* 먼지가 화면 쪽으로 쏠린다 */
   dust.rotation.y = t * 0.014 + suck * 1.1;
   starsNear.rotation.y = t * 0.0035;                      /* 근경 별 미세 드리프트 */
