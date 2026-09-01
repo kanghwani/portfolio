@@ -2066,9 +2066,11 @@ function render(tms) {
     renderer.render(scene, camera);
   }
 
-  const introK = phase === "pullback" ? pbK : 1;
+  const introK = phase === "boot" ? 0 : phase === "pullback" ? pbK : 1; /* 부팅 로그와 겹치지 않게 풀백부터 등장 */
   const tt = Math.min(1, p / 0.25);
-  titleEl.style.opacity = (1 - tt) * introK;
+  const titleOp = (1 - tt) * introK;
+  titleEl.style.opacity = titleOp;
+  titleEl.style.pointerEvents = titleOp < 0.5 ? "none" : "";
   titleEl.style.transform = "translateY(" + tt * -26 + "px)";
   const r = Math.max(0, Math.min(1, (p - 0.62) / 0.3));
   revealEl.style.opacity = r;
