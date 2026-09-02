@@ -1808,12 +1808,21 @@ if (!reduced && !compactHero && document.hidden) {
 /* ── 8비트 SFX — 지연 생성 공유 AudioContext, 전부 코드 생성(파일 없음) ── */
 const sfx = (() => {
   let ac = null, master = null, mutedF = false;
+  /* 실기 타건 샘플 — HHKB Pro Hybrid(Topre 45g) 녹음, CC0 (freesound.org/s/546033) */
+  let keyRaw = null, keyBufs = null;
+  Promise.all([1, 2, 3, 4, 5, 6].map(n =>
+    fetch("../../assets/thock-" + n + ".mp3").then(r => r.arrayBuffer())
+  )).then(bufs => { keyRaw = bufs; }).catch(() => {});
   function ctx() {
     if (!ac) {
       ac = new (window.AudioContext || window.webkitAudioContext)();
       master = ac.createGain(); master.gain.value = mutedF ? 0 : 0.5; master.connect(ac.destination);
     }
     if (ac.state === "suspended") ac.resume().catch(() => {});
+    if (keyRaw) { /* 컨텍스트가 생긴 뒤 1회 디코드 */
+      const raw = keyRaw; keyRaw = null; keyBufs = [];
+      raw.forEach(b => ac.decodeAudioData(b, d => keyBufs.push(d), () => {}));
+    }
     return ac;
   }
   function tone(f0, f1, d, { type = "square", vol = 0.12, at = 0 } = {}) {
@@ -1849,9 +1858,18 @@ const sfx = (() => {
   const safe = f => () => { try { f(); } catch (e) {} };
   return {
     mute(on) { mutedF = on; if (master) master.gain.value = on ? 0 : 0.5; },
-    /* 기분 좋은 도각임 — 저역 몸통 + 밴드패스 틱, 매번 피치·볼륨이 조금씩 다르다 */
+    /* 타건음 — 실기 샘플을 피치·볼륨 랜덤으로 재생, 로드 전엔 합성 도각 폴백 */
     key: safe(() => {
       if (!ac || ac.state !== "running") return;          /* 제스처 전 큐잉 방지 */
+      ctx();                                              /* 늦게 도착한 샘플의 디코드를 여기서 건다 */
+      if (keyBufs && keyBufs.length) {
+        const src = ac.createBufferSource();
+        src.buffer = keyBufs[(Math.random() * keyBufs.length) | 0];
+        src.playbackRate.value = 0.94 + Math.random() * 0.12;
+        const g = ac.createGain(); g.gain.value = 0.35 + Math.random() * 0.2;
+        src.connect(g); g.connect(master); src.start();
+        return;
+      }
       const f = 84 + Math.random() * 40;
       tone(f, f * 0.65, 0.05, { type: "triangle", vol: 0.045 + Math.random() * 0.03 });
       noise(0.016, { vol: 0.02 + Math.random() * 0.012,
