@@ -2175,6 +2175,108 @@ const sfx = (() => {
   };
 })();
 window.__sfx = sfx;                                     /* 본문 미니 플레이가 같은 마스터(뮤트 포함)를 쓴다 */
+
+/* ── "Can it run Doom?" — 아니요, 대신 제가 짠 건 돌아갑니다. IDDQD를 치면 CRT가 레이캐스터가 된다 ──
+   DDA 레이캐스팅(울펜슈타인 방식) · 320×200을 640×480으로 확대 · 의존성 0 · ESC로 복귀 */
+const DOOM_LINES = 98;                                  /* 아래 블록 실제 줄 수 — 커밋 전 grep로 맞춘다 */
+const DMAP = [
+  "1111111111111111","1000000000000001","1011011110110101","1010000000010001",
+  "1010333300010111","1000300000010001","1011300222010001","1000000200000001",
+  "1001111211011101","1000000000010001","1044440110010001","1000040110000001",
+  "1010040000011101","1010000110000001","1000000000000001","1111111111111111"];
+const DCOL = { 1: [150, 150, 160], 2: [176, 66, 58], 3: [70, 110, 190], 4: [88, 170, 108] };
+const doomCv = document.createElement("canvas"); doomCv.width = 640; doomCv.height = 480;
+const dctx = doomCv.getContext("2d");
+const rcCv = document.createElement("canvas"); rcCv.width = 320; rcCv.height = 200;
+const rctx = rcCv.getContext("2d");
+const doomTex = new THREE.CanvasTexture(doomCv);
+doomTex.colorSpace = THREE.SRGBColorSpace; doomTex.magFilter = THREE.NearestFilter;
+let doomOn = false, doomT0 = 0, cheatBuf = "";
+const dp = { x: 1.5, y: 1.5, a: 0.3 }, dkeys = new Set();
+function dcell(x, y) { const r = DMAP[y | 0]; return r ? +r[x | 0] || 0 : 1; }
+function doomStart() {
+  if (doomOn) return;
+  doomOn = true; doomT0 = performance.now(); dp.x = 1.5; dp.y = 1.5; dp.a = 0.3;
+  screenMat.map = doomTex; screenMat.needsUpdate = true;
+  sfx.start();
+}
+function doomStop() {
+  if (!doomOn) return;
+  doomOn = false; dkeys.clear();
+  screenMat.map = phase === "boot" ? bootTex : screenSrc; screenMat.needsUpdate = true;
+}
+function drawDoom(dt) {
+  /* 이동 — W/S 전진·후진, A/D 옆걸음, ←/→·Q/E 회전. 벽은 축별로 따로 막는다 */
+  const spd = 2.6 * dt, rot = 2.4 * dt;
+  const cx = Math.cos(dp.a), sy = Math.sin(dp.a);
+  let mx = 0, my = 0;
+  if (dkeys.has("KeyW") || dkeys.has("ArrowUp"))   { mx += cx; my += sy; }
+  if (dkeys.has("KeyS") || dkeys.has("ArrowDown")) { mx -= cx; my -= sy; }
+  if (dkeys.has("KeyA")) { mx += sy; my -= cx; }
+  if (dkeys.has("KeyD")) { mx -= sy; my += cx; }
+  if (dkeys.has("ArrowLeft") || dkeys.has("KeyQ"))  dp.a -= rot;
+  if (dkeys.has("ArrowRight") || dkeys.has("KeyE")) dp.a += rot;
+  const nx = dp.x + mx * spd, ny = dp.y + my * spd, m = 0.2;
+  if (!dcell(nx + Math.sign(mx) * m, dp.y)) dp.x = nx;
+  if (!dcell(dp.x, ny + Math.sign(my) * m)) dp.y = ny;
+  /* 천장·바닥 — 바닥은 4단 밴드로 깊이감 */
+  rctx.fillStyle = "#1a2030"; rctx.fillRect(0, 0, 320, 100);
+  [["#2a2620", 100], ["#312c24", 130], ["#3a3428", 160], ["#433c2e", 180]].forEach(([c, y]) => {
+    rctx.fillStyle = c; rctx.fillRect(0, y, 320, 200 - y); });
+  /* DDA — 열마다 광선 하나. planeX/Y가 FOV 66°를 만든다 */
+  const dirX = cx, dirY = sy, plX = -sy * 0.66, plY = cx * 0.66;
+  for (let x = 0; x < 320; x++) {
+    const camX = 2 * x / 320 - 1, rdx = dirX + plX * camX, rdy = dirY + plY * camX;
+    let mX = dp.x | 0, mY = dp.y | 0;
+    const dX = rdx === 0 ? 1e30 : Math.abs(1 / rdx), dY = rdy === 0 ? 1e30 : Math.abs(1 / rdy);
+    const stX = rdx < 0 ? -1 : 1, stY = rdy < 0 ? -1 : 1;
+    let sdX = rdx < 0 ? (dp.x - mX) * dX : (mX + 1 - dp.x) * dX;
+    let sdY = rdy < 0 ? (dp.y - mY) * dY : (mY + 1 - dp.y) * dY;
+    let side = 0, hit = 0, guard = 0;
+    while (!hit && guard++ < 64) {
+      if (sdX < sdY) { sdX += dX; mX += stX; side = 0; } else { sdY += dY; mY += stY; side = 1; }
+      hit = dcell(mX, mY);
+    }
+    const dist = Math.max(0.05, side === 0 ? sdX - dX : sdY - dY);
+    const h = (200 / dist) | 0, y0 = Math.max(0, 100 - (h >> 1)), y1 = Math.min(200, 100 + (h >> 1));
+    const c = DCOL[hit] || DCOL[1], f = Math.max(0.15, 1 - dist / 14) * (side ? 0.62 : 1);
+    rctx.fillStyle = "rgb(" + (c[0] * f | 0) + "," + (c[1] * f | 0) + "," + (c[2] * f | 0) + ")";
+    rctx.fillRect(x, y0, 1, y1 - y0);
+  }
+  /* 640×480으로 확대(픽셀 유지) + HUD */
+  dctx.imageSmoothingEnabled = false;
+  dctx.drawImage(rcCv, 0, 0, 640, 480);
+  dctx.fillStyle = "rgba(4,7,15,.85)"; dctx.fillRect(0, 436, 640, 44);
+  dctx.font = '15px "Galmuri9",monospace'; dctx.textBaseline = "middle";
+  dctx.fillStyle = "#8EE3A2"; dctx.textAlign = "left";
+  dctx.fillText("IDDQD ACCEPTED · GOD MODE", 16, 458);
+  dctx.fillStyle = "#9AA6BD"; dctx.textAlign = "right";
+  dctx.fillText("RAYCASTER · 0 DEPS · " + DOOM_LINES + " LINES · WASD ←→ · ESC", 624, 458);
+  if (performance.now() - doomT0 < 2600) {              /* 첫 2.6초 — 밈의 정답을 화면 위에 */
+    dctx.fillStyle = "#F4D35E"; dctx.textAlign = "center"; dctx.font = '20px "Galmuri11","Galmuri9",monospace';
+    dctx.fillText("CAN IT RUN DOOM?  —  NO. BUT IT RUNS MINE.", 320, 40);
+  }
+  dctx.fillStyle = "#E8ECF4"; dctx.fillRect(318, 238, 4, 4);   /* 크로스헤어 */
+  doomTex.needsUpdate = true;
+}
+addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target && e.target.tagName) || "";
+  if (tag === "INPUT" || tag === "TEXTAREA") return;
+  if (doomOn) {
+    if (e.code === "Escape") { doomStop(); return; }
+    dkeys.add(e.code);
+    if (e.code.startsWith("Arrow") || e.code === "Space") e.preventDefault();
+    return;
+  }
+  if (e.key && e.key.length === 1) {
+    cheatBuf = (cheatBuf + e.key.toLowerCase()).slice(-5);
+    if (cheatBuf === "iddqd") { cheatBuf = ""; doomStart(); }
+  }
+});
+addEventListener("keyup", e => { dkeys.delete(e.code); });
+addEventListener("blur", () => dkeys.clear());
+
 function tryStart() {
   if (phase !== "boot") return;
   const el = (performance.now() - bootT0) / 1000;
@@ -2320,7 +2422,8 @@ function render(tms) {
   const dt = Math.min(0.05, lastFrameT ? t - lastFrameT : 0.016);
   lastFrameT = t;
   updateIntro(tms, dt);
-  if (phase !== "boot" && t - lastCodeT > 0.11) {
+  if (doomOn) drawDoom(dt);
+  else if (phase !== "boot" && t - lastCodeT > 0.11) {
     lastCodeT = t;
     drawCodeEditor(Math.max(0, t - codeStartT));
   }
@@ -2504,6 +2607,7 @@ addEventListener("scroll", () => {
 console.log("%cSIC PARVIS MAGNA", "font-size:22px;font-weight:bold;color:#8EE3A2");
 console.log("작은 시작에서 위대함으로. 여기까지 열어보는 분과 일하고 싶습니다 — zzangh91@naver.com");
 console.log("『이거 AI가 다 만든 거 아니야?』 — 그건 네 생각이고. 커밋 로그가 증거입니다: github.com/kanghwani");
+console.log("%cIDDQD?", "color:#9AA6BD");
 </script>
 </body>
 </html>
