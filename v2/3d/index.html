@@ -161,6 +161,17 @@ html.jsanim #content section.on::before{animation:typeIn 1s steps(24) both}
 #content th{font-family:"Galmuri9",Pretendard,monospace;font-weight:400;font-size:13px;
   background:transparent;color:#8EE3A2;white-space:nowrap}
 #content figure{margin:20px 0}
+/* 라이브 통행 배정 시뮬 — 페이지의 코드와 같은 식이 캔버스에서 돈다 */
+#content .sim{margin:24px 0}
+#content .sim-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  font-family:"Galmuri9",monospace;font-size:11px;color:#8EE3A2;padding:7px 11px;
+  background:#0d1626;border:1px dashed var(--line);border-bottom:0}
+#content .sim-ctl{display:flex;gap:6px}
+#content .sim-ctl button{font:inherit;color:var(--dim);background:transparent;border:1px dashed var(--line);
+  padding:5px 11px;min-height:30px;cursor:pointer}
+#content .sim-ctl button:hover{color:#8EE3A2;border-color:#8EE3A2}
+#content .sim-ctl button[aria-pressed="true"]{color:#07131f;background:#8EE3A2;border-color:#8EE3A2}
+#content .sim canvas{display:block;width:100%;height:auto;background:#070b14;border:1px dashed var(--line)}
 #content figure img{max-width:100%;height:auto;border:1px solid var(--line)}
 #content figcaption{font-family:"Galmuri9",Pretendard,monospace;font-size:12.5px;color:var(--dim);margin-top:8px}
 #content .case{background:transparent;border:0;border-left:2px solid #8EE3A2;padding:0 0 0 18px;margin:24px 0}
@@ -403,6 +414,19 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
     <p>대가도 있습니다. 순차 배정이라 차량 순서가 결과를 바꿉니다. 세이브·로드 뒤에도 같은 그림을 만들기 위해 전 구간의 tie-break를 명시했고, 앞차의 결과가 뒷차의 입력이라 병렬화는 포기했습니다.</p>
   </div>
 
+  <figure class="sim" id="routesim">
+    <div class="sim-head">
+      <span>ROUTEPLANNER.SIM — 위 식 그대로 · 도로망 9×5 · 차 40대 · 집→회사</span>
+      <span class="sim-ctl" role="group" aria-label="부하 가중치 w">
+        <button type="button" data-w="0" aria-pressed="true">w = 0</button>
+        <button type="button" data-w="2" aria-pressed="false">w = 2</button>
+      </span>
+    </div>
+    <canvas id="simcv" width="760" height="300"
+      aria-label="통행 배정 시뮬레이션. w=0이면 40대가 가운데 길 하나에 몰리고, w=2면 옆 길로 갈라진다"></canvas>
+    <figcaption id="simcap">w = 0 — 40대 전부 같은 최단 경로. 우회로는 비어 있습니다.</figcaption>
+  </figure>
+
   <figure>
     <img src="../../assets/idle-traffic-flow.jpg"
          alt="IDLE CITY에서 도로 설계와 예상 혼잡에 따라 차량이 여러 경로로 분산되는 플레이 화면"
@@ -616,6 +640,93 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   more.addEventListener("click",function(){expanded=!expanded;render()});
   q.addEventListener("input",render);
   render();
+})();
+</script>
+
+<script>
+/* ROUTEPLANNER.SIM — 본문 코드 블록의 Plan(부하 적립)→Search(비용 읽기)를 그대로 옮긴 미니 시뮬.
+   격자 9×5, 집(0,2)→회사(8,2). 최단 경로는 가운데 행 하나뿐이라 w=0이면 전부 거기로 몰린다. */
+(function(){
+  "use strict";
+  var cv=document.getElementById("simcv"); if(!cv) return;
+  var cap=document.getElementById("simcap"), ctx=cv.getContext("2d");
+  var W=9,H=5,N=W*H,CARS=40,CAP=10,SRC=2*W+0,DST=2*W+8;
+  var capInv=1/CAP;
+  function nb(n){ var x=n%W,y=(n-x)/W,o=[];
+    if(x+1<W)o.push(n+1); if(y>0)o.push(n-W); if(y+1<H)o.push(n+W); if(x>0)o.push(n-1); return o; }
+  /* ② 다음 차량은 앞차들이 쌓은 부하를 비용으로 읽는다 (Search) */
+  function search(w,load){
+    var cost=new Float64Array(N).fill(Infinity),from=new Int16Array(N).fill(-1),done=new Uint8Array(N);
+    cost[SRC]=0;
+    for(;;){ var cur=-1,best=Infinity;
+      for(var i=0;i<N;i++) if(!done[i]&&cost[i]<best){best=cost[i];cur=i;}
+      if(cur<0||cur===DST) break; done[cur]=1;
+      var ns=nb(cur);
+      for(var k=0;k<ns.length;k++){ var ni=ns[k];
+        var step=1+w*load[ni]*capInv;                     // 페이지 코드와 같은 식
+        var cand=cost[cur]+step;
+        if(cand<cost[ni]){cost[ni]=cand;from[ni]=cur;}    // 엄격 부등호 = 결정적 tie-break
+      } }
+    var p=[]; for(var n=DST;n>=0;n=from[n]) p.unshift(n); return p; }
+  /* ① 배정이 끝난 차량의 경로를 부하로 적립한다 (Plan) */
+  function plan(w){ var load=new Float32Array(N),paths=[];
+    for(var i=0;i<CARS;i++){ var p=search(w,load); paths.push(p); for(var j=0;j<p.length;j++) load[p[j]]+=1; }
+    return paths; }
+  var paths=[],edgeLoad={},maxEdge=0,usedEdges=0,cars=[],w=0;
+  function ek(a,b){ return a<b?a+"-"+b:b+"-"+a; }
+  function assign(nw){ w=nw; paths=plan(w); edgeLoad={}; maxEdge=0; usedEdges=0;
+    paths.forEach(function(p){ for(var i=1;i<p.length;i++){ var k=ek(p[i-1],p[i]); edgeLoad[k]=(edgeLoad[k]||0)+1; } });
+    for(var k in edgeLoad){ usedEdges++; if(edgeLoad[k]>maxEdge) maxEdge=edgeLoad[k]; }
+    cars=paths.map(function(p,i){ return {p:p,t:(i*0.37)%(p.length-1)}; });
+    cap.textContent = w===0
+      ? "w = 0 — 40대 전부 같은 최단 경로. 우회로는 비어 있습니다. 가장 붐비는 구간 "+maxEdge+"대."
+      : "w = 2 — 같은 식, w만 바꿨습니다. 뒷차가 앞차의 부하를 비용으로 읽고 옆 길로 갈라집니다. 가장 붐비는 구간 "+maxEdge+"대 · 쓰인 도로 "+usedEdges+"개.";
+  }
+  /* 그리기 */
+  var dpr=1,cw=760,ch=300,mx=54,my=40,sx,sy;
+  function layout(){ dpr=Math.min(2,window.devicePixelRatio||1); cw=cv.clientWidth||760; ch=Math.round(cw*300/760);
+    cv.width=cw*dpr; cv.height=ch*dpr; sx=(cw-mx*2)/(W-1); sy=(ch-my*2)/(H-1); }
+  function px(n){ var x=n%W; return {x:mx+x*sx, y:my+((n-x)/W)*sy}; }
+  function heat(v){ var t=Math.min(1,v/24);           /* 0→어두운 도로, 12→노랑, 24+→빨강 */
+    if(t<0.5){ var u=t*2; return "rgb("+Math.round(38+(244-38)*u)+","+Math.round(52+(211-52)*u)+","+Math.round(80+(94-80)*u)+")"; }
+    var v2=(t-0.5)*2; return "rgb("+Math.round(244+(208-244)*v2)+","+Math.round(211+(67-211)*v2)+","+Math.round(94+(58-94)*v2)+")"; }
+  function draw(){
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,cw,ch);
+    /* 블록 */
+    ctx.fillStyle="#0f1a2e";
+    for(var y=0;y<H-1;y++) for(var x=0;x<W-1;x++) ctx.fillRect(mx+x*sx+7,my+y*sy+7,sx-14,sy-14);
+    /* 도로 — 부하 색 */
+    ctx.lineCap="round";
+    for(var n=0;n<N;n++){ var a=px(n),ns=nb(n);
+      for(var k=0;k<ns.length;k++){ var m=ns[k]; if(m<n) continue; var b=px(m),l=edgeLoad[ek(n,m)]||0;
+        ctx.strokeStyle=heat(l); ctx.lineWidth=l?6:3; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } }
+    /* 집·회사 */
+    var s=px(SRC),d=px(DST);
+    ctx.fillStyle="#EDE4D3"; ctx.fillRect(s.x-9,s.y-9,18,18);
+    ctx.fillStyle="#7fb3ff"; ctx.fillRect(d.x-9,d.y-9,18,18);
+    ctx.font='11px "Galmuri9",monospace'; ctx.fillStyle="#9aa6bd";
+    ctx.textAlign="right"; ctx.fillText("집",s.x-14,s.y+4);
+    ctx.textAlign="left";  ctx.fillText("회사",d.x+14,d.y+4);
+    /* 차 */
+    ctx.fillStyle="#E8ECF4";
+    for(var i=0;i<cars.length;i++){ var c=cars[i],seg=Math.floor(c.t),f=c.t-seg;
+      var a2=px(c.p[seg]),b2=px(c.p[Math.min(seg+1,c.p.length-1)]);
+      ctx.fillRect(a2.x+(b2.x-a2.x)*f-2.5,a2.y+(b2.y-a2.y)*f-2.5,5,5); }
+  }
+  var reduced=matchMedia("(prefers-reduced-motion: reduce)").matches, running=false, last=0;
+  function frame(t){ if(!running) return; var dt=Math.min(0.05,(t-last)/1000||0); last=t;
+    for(var i=0;i<cars.length;i++){ var c=cars[i]; c.t+=dt*1.7; if(c.t>=c.p.length-1) c.t=0; }
+    draw(); requestAnimationFrame(frame); }
+  function start(){ if(running||reduced) return; running=true; last=performance.now(); requestAnimationFrame(frame); }
+  function stop(){ running=false; }
+  document.querySelectorAll("#routesim .sim-ctl button").forEach(function(b){
+    b.addEventListener("click",function(){
+      document.querySelectorAll("#routesim .sim-ctl button").forEach(function(o){ o.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true"); assign(+b.dataset.w); draw(); });
+  });
+  layout(); assign(0); draw();
+  addEventListener("resize",function(){ layout(); draw(); });
+  new IntersectionObserver(function(es){ es.forEach(function(e){ e.isIntersecting?start():stop(); }); },{threshold:0.1}).observe(cv);
 })();
 </script>
 
