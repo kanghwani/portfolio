@@ -2269,8 +2269,8 @@ addEventListener("keydown", e => {
     if (e.code.startsWith("Arrow") || e.code === "Space") e.preventDefault();
     return;
   }
-  if (e.key && e.key.length === 1) {
-    cheatBuf = (cheatBuf + e.key.toLowerCase()).slice(-5);
+  if (/^Key[A-Z]$/.test(e.code)) {                      /* 물리 키 기준 — 한글 입력 모드여도 통한다 */
+    cheatBuf = (cheatBuf + e.code[3].toLowerCase()).slice(-5);
     if (cheatBuf === "iddqd") { cheatBuf = ""; doomStart(); }
   }
 });
@@ -2302,7 +2302,8 @@ function goLive() {
 }
 if (!reduced && !compactHero) {
   addEventListener("pointerdown", () => { if (phase === "boot") startPullback(); });
-  addEventListener("keydown", e => { if (!e.metaKey && !e.ctrlKey && !e.altKey && phase === "boot") startPullback(); });
+  addEventListener("keydown", e => {                    /* 글자 키는 치트 입력용으로 남긴다 — 시작은 스페이스·클릭 */
+    if (!e.metaKey && !e.ctrlKey && !e.altKey && phase === "boot" && !/^Key[A-Z]$/.test(e.code)) startPullback(); });
   addEventListener("wheel", () => { if (phase !== "live") goLive(); }, { passive: true });
 }
 
