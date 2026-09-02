@@ -2150,6 +2150,11 @@ const sfx = (() => {
     }),
     guard: safe(() => tone(150, 110, 0.09, { type: "triangle", vol: 0.08 })),
     foot:  safe(() => noise(0.05, { vol: 0.07, filter: { type: "lowpass", freq: 650 } })),
+    /* 레이캐스터 전투 — 총성·피격·사망·으르렁 */
+    shot:  safe(() => { noise(0.12, { vol: 0.22, filter: { type: "lowpass", freq: 1400 } }); tone(190, 50, 0.11, { vol: 0.14 }); }),
+    hurt:  safe(() => tone(260, 130, 0.1, { vol: 0.1 })),
+    die:   safe(() => { tone(420, 70, 0.38, { type: "sawtooth", vol: 0.1 }); noise(0.2, { vol: 0.1, at: 0.05, filter: { type: "lowpass", freq: 500 } }); }),
+    growl: safe(() => tone(95, 70, 0.26, { type: "triangle", vol: 0.13 })),
     /* 타건음 — 실기 샘플을 피치·볼륨 랜덤으로 재생, 로드 전엔 합성 도각 폴백 */
     key: safe(() => {
       if (!ac || ac.state !== "running") return;          /* 제스처 전 큐잉 방지 */
@@ -2183,7 +2188,7 @@ window.__sfx = sfx;                                     /* 본문 미니 플레�
 
 /* ── "Can it run Doom?" — 아니요, 대신 제가 짠 건 돌아갑니다. IDDQD를 치면 CRT가 레이캐스터가 된다 ──
    DDA 레이캐스팅(울펜슈타인 방식) · 320×200을 640×480으로 확대 · 의존성 0 · ESC로 복귀 */
-const DOOM_LINES = 133;                                   /* 아래 블록 실제 줄 수 — 커밋 전 스크립트로 맞춘다 */
+const DOOM_LINES = 206;                                   /* 아래 블록 실제 줄 수 — 커밋 전 스크립트로 맞춘다 */
 const DMAP = [
   "1111111111111111","1000000000000001","1011011110110101","1010000000010001",
   "1010333300010111","1000300000010001","1011300222010001","1000000200000001",
@@ -2201,6 +2206,27 @@ const DTEX = (() => {
     4: mk((x, y, n) => n < 0.35 ? px(46, 110, 60) : px(80 + n * 40 | 0, 160 + n * 40 | 0, 90 + n * 30 | 0)),
   };
 })();
+/* 스프라이트 — 문자 아트를 16×16 Uint32로. 임프 2프레임(팔 내림/올림), 권총 16×12 */
+const spr = (rows, pal) => { const t = new Uint32Array(rows.length * 16);
+  rows.forEach((r, y) => { for (let x = 0; x < 16; x++) { const c = pal[r[x]]; if (c) t[y * 16 + x] = (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]; } }); return t; };
+const IMP_PAL = { b: [150, 80, 60], d: [90, 40, 30], e: [255, 220, 60], w: [240, 240, 240] };
+const IMP_BODY = ["......bbbb......","....bbddddbb....","...bdeeddeedb...","...bddddddddb...","....bdwwwwdb....",".....bbbbbb....."];
+const IMP_LEGS = ["..bbbbbbbbbbbb..","....bbbbbbbb....","....bbb..bbb....","....bbb..bbb....","...bbbb..bbbb...","...dddd..dddd...","................"];
+const IMP = [
+  spr(IMP_BODY.concat(["..bb..bbbb..bb..",".bddb.bbbb.bddb.",".bddbbbbbbbbddb."], IMP_LEGS), IMP_PAL),
+  spr(IMP_BODY.concat([".bb...bbbb...bb.",".bddb.bbbb.bddb.","..bdbbbbbbbbdb.."], IMP_LEGS), IMP_PAL)];
+const GUN = ["........gggg....",".......gggggg...",".......ggllgg...","......gggggggg..","......ggggggggg.",".....gggggggggg.",
+  "....ggggddddgg..","...ggggdddddgg..","..gggggdddd.....","..ggggg.........","..gggg..........","..ggg..........."];
+const GUN_PAL = { g: [120, 125, 135], l: [200, 200, 210], d: [70, 60, 55] };
+const zbuf = new Float32Array(320);
+const imps = [], IMP_N = 6;
+let kills = 0, fireT = -9, fireCool = 0;
+function openCell(minD) {                               /* 플레이어에서 minD 이상 떨어진 빈 칸 */
+  for (let i = 0; i < 200; i++) { const x = 1 + Math.random() * 14, y = 1 + Math.random() * 14;
+    if (!dcell(x, y) && Math.hypot(x - dp.x, y - dp.y) >= minD) return { x, y }; }
+  return { x: 13.5, y: 13.5 };
+}
+function spawnImp(e) { const c = openCell(6); e.x = c.x; e.y = c.y; e.hp = 2; e.st = "alive"; e.t = Math.random() * 2; e.pain = 0; e.att = 0; }
 const doomCv = document.createElement("canvas"); doomCv.width = 640; doomCv.height = 480;
 const dctx = doomCv.getContext("2d");
 const rcCv = document.createElement("canvas"); rcCv.width = 320; rcCv.height = 200;
@@ -2208,14 +2234,29 @@ const rctx = rcCv.getContext("2d");
 const rcImg = rctx.createImageData(320, 200), rcBuf = new Uint32Array(rcImg.data.buffer);
 const doomTex = new THREE.CanvasTexture(doomCv);
 doomTex.colorSpace = THREE.SRGBColorSpace; doomTex.magFilter = THREE.NearestFilter;
-let doomOn = false, doomT0 = 0, cheatBuf = "", turnV = 0, mouseDX = 0, walkT = 0, stepAcc = 0;
+let doomOn = false, doomT0 = 0, cheatBuf = "", turnV = 0, mouseDX = 0, walkT = 0, stepAcc = 0, hurtT = -9;
 const dp = { x: 1.5, y: 1.5, a: 0.3 }, dkeys = new Set();
 function dcell(x, y) { const r = DMAP[y | 0]; return r ? +r[x | 0] || 0 : 1; }
 function doomStart() {
   if (doomOn) return;
   doomOn = true; doomT0 = performance.now(); dp.x = 1.5; dp.y = 1.5; dp.a = 0.3; turnV = 0; walkT = 0;
+  kills = 0; imps.length = 0; for (let i = 0; i < IMP_N; i++) { const e = {}; spawnImp(e); imps.push(e); }
   screenMat.map = doomTex; screenMat.needsUpdate = true;
   sfx.start();
+}
+function fire() {
+  if (!doomOn || fireCool > 0) return;
+  fireCool = 0.28; fireT = performance.now(); sfx.shot();
+  /* 히트스캔 — 화면 중앙에 걸린 가장 가까운 임프. 벽 뒤(zbuf)는 못 맞힌다 */
+  const cx = Math.cos(dp.a), sy = Math.sin(dp.a), plX = -sy * 0.66, plY = cx * 0.66, inv = 1 / (plX * sy - cx * plY);
+  let best = null, bd = 1e9;
+  imps.forEach(e => { if (e.st !== "alive") return;
+    const dx = e.x - dp.x, dy = e.y - dp.y, tx = inv * (sy * dx - cx * dy), ty = inv * (-plY * dx + plX * dy);
+    if (ty < 0.2) return; const sx = 160 * (1 + tx / ty), w = 200 / ty;
+    if (Math.abs(sx - 160) < Math.max(4, w * 0.35) && zbuf[160] > ty && ty < bd) { bd = ty; best = e; } });
+  if (!best) return;
+  best.hp--; best.pain = 0.18;
+  if (best.hp <= 0) { best.st = "dying"; best.t = 0; kills++; sfx.die(); } else sfx.hurt();
 }
 function doomStop() {
   if (!doomOn) return;
@@ -2244,6 +2285,17 @@ function drawDoom(dt) {
     if (stepAcc > 0.42) { stepAcc = 0; sfx.foot(); }        /* 발소리 — 걷는 리듬 */
   } else stepAcc = 0.3;
   const bob = moving ? Math.sin(walkT * 11) * 3 : 0;         /* 걷기 바운스 — 수평선이 살짝 출렁인다 */
+  fireCool -= dt;
+  /* 임프 — 다가와서 할퀸다. GOD MODE라 체력은 안 깎이고 화면만 살짝 붉어진다 */
+  imps.forEach(e => {
+    e.t += dt; if (e.pain > 0) e.pain -= dt;
+    if (e.st === "dying") { if (e.t > 0.5) { e.st = "dead"; e.t = 0; } return; }
+    if (e.st === "dead") { if (e.t > 3) spawnImp(e); return; }
+    const dx = dp.x - e.x, dy = dp.y - e.y, d = Math.hypot(dx, dy);
+    if (d > 0.9) { const s = 1.25 * dt / d, nx = e.x + dx * s, ny = e.y + dy * s;
+      if (!dcell(nx + Math.sign(dx) * 0.2, e.y)) e.x = nx; if (!dcell(e.x, ny + Math.sign(dy) * 0.2)) e.y = ny; e.att = 0; }
+    else { e.att += dt; if (e.att > 0.9) { e.att = 0; hurtT = performance.now(); sfx.growl(); } }
+  });
   /* 천장·바닥 — 행마다 밝기 그라데이션 */
   for (let y = 0; y < 200; y++) {
     const k = Math.abs(y - 100 - bob) / 100, c = y < 100 + bob ? [26 + k * 10, 32 + k * 10, 48 + k * 14] : [40 + k * 30, 36 + k * 26, 28 + k * 20];
@@ -2268,6 +2320,7 @@ function drawDoom(dt) {
     /* 벽의 어디를 맞았나 → 텍스처 열 */
     let wallX = side === 0 ? dp.y + dist * rdy : dp.x + dist * rdx; wallX -= Math.floor(wallX);
     let tx = (wallX * 32) | 0; if ((side === 0 && rdx > 0) || (side === 1 && rdy < 0)) tx = 31 - tx;
+    zbuf[x] = dist;
     const tex = DTEX[hit] || DTEX[1], h = 200 / dist, top = 100 + bob - h / 2;
     const y0 = Math.max(0, top | 0), y1 = Math.min(200, (top + h) | 0);
     const f = Math.max(0.12, 1 - dist / 14) * (side ? 0.62 : 1);
@@ -2276,21 +2329,45 @@ function drawDoom(dt) {
       rcBuf[y * 320 + x] = (255 << 24) | ((((c >> 16) & 255) * f) << 16) | ((((c >> 8) & 255) * f) << 8) | ((c & 255) * f);
     }
   }
+  /* 임프 스프라이트 — 카메라 공간으로 변환해 빌보드, zbuf로 벽 뒤 가림, 죽을 땐 찌부러진다 */
+  const inv = 1 / (plX * sy - cx * plY);
+  imps.filter(e => e.st !== "dead").map(e => { const dx = e.x - dp.x, dy = e.y - dp.y;
+    return { e, tx: inv * (sy * dx - cx * dy), ty: inv * (-plY * dx + plX * dy) }; })
+    .filter(o => o.ty > 0.15).sort((a, b) => b.ty - a.ty).forEach(({ e, tx, ty }) => {
+      const sxp = 160 * (1 + tx / ty), full = 200 / ty, sq = e.st === "dying" ? Math.max(0.05, 1 - e.t / 0.5) : 1;
+      const h = full * sq, w = full, top = 100 + bob + full / 2 - h, left = sxp - w / 2;
+      const frame = IMP[((e.t * 4) | 0) & 1], f = Math.max(0.2, 1 - ty / 14), white = e.pain > 0;
+      const x0 = Math.max(0, left | 0), x1 = Math.min(320, (left + w) | 0), y0 = Math.max(0, top | 0), y1 = Math.min(200, (top + h) | 0);
+      for (let x = x0; x < x1; x++) { if (zbuf[x] <= ty) continue; const tx2 = (((x - left) * 16 / w) | 0) & 15;
+        for (let y = y0; y < y1; y++) { const c = frame[((((y - top) * 16 / h) | 0) & 15) * 16 + tx2]; if (!c) continue;
+          rcBuf[y * 320 + x] = white ? 0xffffffff : (255 << 24) | ((((c >> 16) & 255) * f) << 16) | ((((c >> 8) & 255) * f) << 8) | ((c & 255) * f); } }
+    });
   rctx.putImageData(rcImg, 0, 0);
   /* 미니맵 — 좌상단, 벽·현재 위치·시선 */
-  rctx.fillStyle = "rgba(0,0,0,.45)"; rctx.fillRect(3, 3, 16 * 3 + 2, 16 * 3 + 2);
-  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (dcell(x, y)) { rctx.fillStyle = "#7c8496"; rctx.fillRect(4 + x * 3, 4 + y * 3, 3, 3); }
-  rctx.fillStyle = "#F4D35E"; rctx.fillRect(4 + dp.x * 3 - 1, 4 + dp.y * 3 - 1, 3, 3);
-  rctx.strokeStyle = "#F4D35E"; rctx.beginPath(); rctx.moveTo(4 + dp.x * 3, 4 + dp.y * 3); rctx.lineTo(4 + (dp.x + cx * 1.6) * 3, 4 + (dp.y + sy * 1.6) * 3); rctx.stroke();
+  const MX = 320 - 4 - 48, MY = 4;                           /* 우상단 */
+  rctx.fillStyle = "rgba(0,0,0,.45)"; rctx.fillRect(MX - 1, MY - 1, 50, 50);
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (dcell(x, y)) { rctx.fillStyle = "#7c8496"; rctx.fillRect(MX + x * 3, MY + y * 3, 3, 3); }
+  rctx.fillStyle = "#d0433a"; imps.forEach(e => { if (e.st === "alive") rctx.fillRect(MX + e.x * 3 - 1, MY + e.y * 3 - 1, 2, 2); });
+  rctx.fillStyle = "#F4D35E"; rctx.fillRect(MX + dp.x * 3 - 1, MY + dp.y * 3 - 1, 3, 3);
+  rctx.strokeStyle = "#F4D35E"; rctx.beginPath(); rctx.moveTo(MX + dp.x * 3, MY + dp.y * 3); rctx.lineTo(MX + (dp.x + cx * 1.6) * 3, MY + (dp.y + sy * 1.6) * 3); rctx.stroke();
   /* 640×480으로 확대(픽셀 유지) + HUD */
   dctx.imageSmoothingEnabled = false;
   dctx.drawImage(rcCv, 0, 0, 640, 480);
+  const sinceFire = performance.now() - fireT, sinceHurt = performance.now() - hurtT;
+  if (sinceHurt < 220) { dctx.fillStyle = "rgba(208,67,58," + (0.28 * (1 - sinceHurt / 220)).toFixed(3) + ")"; dctx.fillRect(0, 0, 640, 480); }
+  /* 권총 — 8배 확대, 쏘면 반동·머즐 플래시 */
+  const rec = sinceFire < 120 ? (1 - sinceFire / 120) * 14 : 0, gx = 300 - rec * 0.6, gy = 340 + rec + Math.abs(bob) * 1.5;
+  if (sinceFire < 70) { dctx.fillStyle = "#F4D35E"; dctx.fillRect(gx + 60, gy - 30, 34, 34); dctx.fillStyle = "#fff5c0"; dctx.fillRect(gx + 68, gy - 22, 18, 18); }
+  GUN.forEach((r, y) => { for (let x = 0; x < 16; x++) { const c = GUN_PAL[r[x]]; if (!c) continue;
+    dctx.fillStyle = "rgb(" + c[0] + "," + c[1] + "," + c[2] + ")"; dctx.fillRect(gx + x * 8, gy + y * 8, 8, 8); } });
   dctx.fillStyle = "rgba(4,7,15,.85)"; dctx.fillRect(0, 436, 640, 44);
   dctx.font = '15px "Galmuri9",monospace'; dctx.textBaseline = "middle";
   dctx.fillStyle = "#8EE3A2"; dctx.textAlign = "left";
-  dctx.fillText("IDDQD ACCEPTED · GOD MODE", 16, 458);
-  dctx.fillStyle = "#9AA6BD"; dctx.textAlign = "right"; dctx.font = '13px "Galmuri9",monospace';
-  dctx.fillText("0 DEPS · " + DOOM_LINES + " LINES · WASD · " + (document.pointerLockElement ? "MOUSE ON" : "CLICK=MOUSE") + " · ESC", 624, 458);
+  dctx.fillText("GOD MODE · HP 100% · AMMO ∞ · KILLS " + kills, 16, 458);
+  dctx.fillStyle = "#9AA6BD"; dctx.textAlign = "right";
+  dctx.fillText("0 DEPS · " + DOOM_LINES + " LINES", 624, 458);
+  dctx.font = '12px "Galmuri9",monospace'; dctx.textAlign = "left"; dctx.fillStyle = "rgba(154,166,189,.8)";
+  dctx.fillText("WASD MOVE · ←→ TURN · SPACE/CLICK FIRE · " + (document.pointerLockElement ? "MOUSE LOOK ON" : "CLICK = MOUSE LOOK") + " · ESC", 16, 66);
   if (performance.now() - doomT0 < 2600) {              /* 첫 2.6초 — 밈의 정답을 화면 위에 */
     dctx.fillStyle = "#F4D35E"; dctx.textAlign = "center"; dctx.font = '20px "Galmuri11","Galmuri9",monospace';
     dctx.fillText("CAN IT RUN DOOM?  —  NO. BUT IT RUNS MINE.", 320, 40);
@@ -2304,6 +2381,7 @@ addEventListener("keydown", e => {
   if (tag === "INPUT" || tag === "TEXTAREA") return;
   if (doomOn) {
     if (e.code === "Escape") { doomStop(); return; }
+    if ((e.code === "Space" || e.code === "KeyF") && !e.repeat) fire();
     dkeys.add(e.code);
     if (e.code.startsWith("Arrow") || e.code === "Space") e.preventDefault();
     return;
@@ -2318,7 +2396,10 @@ addEventListener("mousemove", e => { if (doomOn && document.pointerLockElement =
 addEventListener("blur", () => dkeys.clear());
 
 function tryStart() {
-  if (doomOn) { if (canvas.requestPointerLock) canvas.requestPointerLock(); return; } /* 클릭 = 마우스 룩 */
+  if (doomOn) {                                          /* 클릭 — 마우스 룩 켜기, 켜져 있으면 발사 */
+    if (document.pointerLockElement === canvas) fire();
+    else if (canvas.requestPointerLock) canvas.requestPointerLock();
+    return; }
   if (phase !== "boot") return;
   const el = (performance.now() - bootT0) / 1000;
   if (el <= BOOT_DUR) { bootT0 = performance.now() - BOOT_DUR * 1000 - 1; return; } /* 로그 스킵 */
