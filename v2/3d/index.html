@@ -308,7 +308,9 @@ html.incontent #statusbar{opacity:1;transform:none}
 #sndbtn{position:fixed;top:14px;right:14px;z-index:7;font-family:"Galmuri9",monospace;font-size:11px;
   color:var(--dim);background:rgba(8,13,26,.6);border:1px dashed var(--line);padding:8px 11px;
   min-height:34px;cursor:pointer}
-#sndbtn:hover{color:var(--acc);border-color:var(--acc)}
+#sndbtn:hover{color:#8EE3A2;border-color:#8EE3A2}
+@keyframes sndNudge{0%,100%{border-color:var(--line)}50%{border-color:#8EE3A2;color:#8EE3A2}}
+#sndbtn{animation:sndNudge 1.2s 3 4s}   /* 4초 뒤 세 번 깜빡 — 있다는 것만 알린다 */
 @media(max-width:640px){
   #content section[data-hud]::after{display:none}
   #title{bottom:5vh}
@@ -2092,7 +2094,7 @@ if (!reduced && !compactHero && document.hidden) {
 /* 시작 입력 — 스페이스/클릭/탭. 로그 출력 중이면 스킵, 프롬프트 상태면 시작 */
 /* ── 8비트 SFX — 지연 생성 공유 AudioContext, 전부 코드 생성(파일 없음) ── */
 const sfx = (() => {
-  let ac = null, master = null, mutedF = false;
+  let ac = null, master = null, mutedF = true;   /* 기본 무음 — 사무실에서 여는 담당자를 위해 */
   /* 실기 타건 샘플 — HHKB Pro Hybrid(Topre 45g) 녹음, CC0 (freesound.org/s/546033) */
   let keyRaw = null, keyBufs = null;
   Promise.all([1, 2, 3, 4, 5, 6].map(n =>
@@ -2721,8 +2723,8 @@ sbar.innerHTML = '<span class="l">A:\\SECONDLAYER</span><span class="r">640K RAM
 document.body.appendChild(sbar);
 const sndBtn = document.createElement("button");
 sndBtn.id = "sndbtn"; sndBtn.type = "button";
-sndBtn.textContent = "SND ON";
-sndBtn.setAttribute("aria-label", "효과음 켜짐 — 누르면 끔");
+sndBtn.textContent = "SND OFF";
+sndBtn.setAttribute("aria-label", "효과음 꺼짐 — 누르면 켬");
 sndBtn.addEventListener("click", () => {
   const toMute = sndBtn.textContent === "SND ON";
   sfx.mute(toMute);
