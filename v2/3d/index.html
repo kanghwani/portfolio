@@ -2155,6 +2155,7 @@ const sfx = (() => {
     hurt:  safe(() => tone(260, 130, 0.1, { vol: 0.1 })),
     die:   safe(() => { tone(420, 70, 0.38, { type: "sawtooth", vol: 0.1 }); noise(0.2, { vol: 0.1, at: 0.05, filter: { type: "lowpass", freq: 500 } }); }),
     growl: safe(() => tone(95, 70, 0.26, { type: "triangle", vol: 0.13 })),
+    win:   safe(() => [523, 659, 784, 1047].forEach((f, i) => tone(f, f, 0.16, { vol: 0.12, at: i * 0.12 }))),
     /* 타건음 — 실기 샘플을 피치·볼륨 랜덤으로 재생, 로드 전엔 합성 도각 폴백 */
     key: safe(() => {
       if (!ac || ac.state !== "running") return;          /* 제스처 전 큐잉 방지 */
@@ -2188,7 +2189,7 @@ window.__sfx = sfx;                                     /* 본문 미니 플레�
 
 /* ── "Can it run Doom?" — 아니요, 대신 제가 짠 건 돌아갑니다. IDDQD를 치면 CRT가 레이캐스터가 된다 ──
    DDA 레이캐스팅(울펜슈타인 방식) · 320×200을 640×480으로 확대 · 의존성 0 · ESC로 복귀 */
-const DOOM_LINES = 206;                                   /* 아래 블록 실제 줄 수 — 커밋 전 스크립트로 맞춘다 */
+const DOOM_LINES = 222;                                   /* 아래 블록 실제 줄 수 — 커밋 전 스크립트로 맞춘다 */
 const DMAP = [
   "1111111111111111","1000000000000001","1011011110110101","1010000000010001",
   "1010333300010111","1000300000010001","1011300222010001","1000000200000001",
@@ -2219,8 +2220,8 @@ const GUN = ["........gggg....",".......gggggg...",".......ggllgg...","......ggg
   "....ggggddddgg..","...ggggdddddgg..","..gggggdddd.....","..ggggg.........","..gggg..........","..ggg..........."];
 const GUN_PAL = { g: [120, 125, 135], l: [200, 200, 210], d: [70, 60, 55] };
 const zbuf = new Float32Array(320);
-const imps = [], IMP_N = 6;
-let kills = 0, fireT = -9, fireCool = 0;
+const imps = [], IMP_N = 8;
+let kills = 0, fireT = -9, fireCool = 0, doomClear = false, clearMs = 0;
 function openCell(minD) {                               /* 플레이어에서 minD 이상 떨어진 빈 칸 */
   for (let i = 0; i < 200; i++) { const x = 1 + Math.random() * 14, y = 1 + Math.random() * 14;
     if (!dcell(x, y) && Math.hypot(x - dp.x, y - dp.y) >= minD) return { x, y }; }
@@ -2237,15 +2238,21 @@ doomTex.colorSpace = THREE.SRGBColorSpace; doomTex.magFilter = THREE.NearestFilt
 let doomOn = false, doomT0 = 0, cheatBuf = "", turnV = 0, mouseDX = 0, walkT = 0, stepAcc = 0, hurtT = -9;
 const dp = { x: 1.5, y: 1.5, a: 0.3 }, dkeys = new Set();
 function dcell(x, y) { const r = DMAP[y | 0]; return r ? +r[x | 0] || 0 : 1; }
+function doomReset() {                                  /* 시작·리트라이 공통 */
+  doomT0 = performance.now(); dp.x = 1.5; dp.y = 1.5; dp.a = 0.3; turnV = 0; walkT = 0;
+  kills = 0; doomClear = false; imps.length = 0;
+  for (let i = 0; i < IMP_N; i++) { const e = {}; spawnImp(e); imps.push(e); }
+}
 function doomStart() {
   if (doomOn) return;
-  doomOn = true; doomT0 = performance.now(); dp.x = 1.5; dp.y = 1.5; dp.a = 0.3; turnV = 0; walkT = 0;
-  kills = 0; imps.length = 0; for (let i = 0; i < IMP_N; i++) { const e = {}; spawnImp(e); imps.push(e); }
+  doomOn = true; doomReset();
   screenMat.map = doomTex; screenMat.needsUpdate = true;
   sfx.start();
 }
 function fire() {
-  if (!doomOn || fireCool > 0) return;
+  if (!doomOn) return;
+  if (doomClear) { doomReset(); sfx.start(); return; }
+  if (fireCool > 0) return;
   fireCool = 0.28; fireT = performance.now(); sfx.shot();
   /* 히트스캔 — 화면 중앙에 걸린 가장 가까운 임프. 벽 뒤(zbuf)는 못 맞힌다 */
   const cx = Math.cos(dp.a), sy = Math.sin(dp.a), plX = -sy * 0.66, plY = cx * 0.66, inv = 1 / (plX * sy - cx * plY);
@@ -2290,12 +2297,13 @@ function drawDoom(dt) {
   imps.forEach(e => {
     e.t += dt; if (e.pain > 0) e.pain -= dt;
     if (e.st === "dying") { if (e.t > 0.5) { e.st = "dead"; e.t = 0; } return; }
-    if (e.st === "dead") { if (e.t > 3) spawnImp(e); return; }
+    if (e.st === "dead") return;                          /* 리스폰 없음 — 다 잡으면 클리어 */
     const dx = dp.x - e.x, dy = dp.y - e.y, d = Math.hypot(dx, dy);
     if (d > 0.9) { const s = 1.25 * dt / d, nx = e.x + dx * s, ny = e.y + dy * s;
       if (!dcell(nx + Math.sign(dx) * 0.2, e.y)) e.x = nx; if (!dcell(e.x, ny + Math.sign(dy) * 0.2)) e.y = ny; e.att = 0; }
     else { e.att += dt; if (e.att > 0.9) { e.att = 0; hurtT = performance.now(); sfx.growl(); } }
   });
+  if (!doomClear && imps.every(e => e.st === "dead")) { doomClear = true; clearMs = performance.now() - doomT0; sfx.win(); }
   /* 천장·바닥 — 행마다 밝기 그라데이션 */
   for (let y = 0; y < 200; y++) {
     const k = Math.abs(y - 100 - bob) / 100, c = y < 100 + bob ? [26 + k * 10, 32 + k * 10, 48 + k * 14] : [40 + k * 30, 36 + k * 26, 28 + k * 20];
@@ -2363,7 +2371,8 @@ function drawDoom(dt) {
   dctx.fillStyle = "rgba(4,7,15,.85)"; dctx.fillRect(0, 436, 640, 44);
   dctx.font = '15px "Galmuri9",monospace'; dctx.textBaseline = "middle";
   dctx.fillStyle = "#8EE3A2"; dctx.textAlign = "left";
-  dctx.fillText("GOD MODE · HP 100% · AMMO ∞ · KILLS " + kills, 16, 458);
+  const left = imps.filter(e => e.st !== "dead").length, secs = ((doomClear ? clearMs : performance.now() - doomT0) / 1000).toFixed(1);
+  dctx.fillText("GOD MODE · HP 100% · IMPS " + left + "/" + IMP_N + " · " + secs + "s", 16, 458);
   dctx.fillStyle = "#9AA6BD"; dctx.textAlign = "right";
   dctx.fillText("0 DEPS · " + DOOM_LINES + " LINES", 624, 458);
   dctx.font = '12px "Galmuri9",monospace'; dctx.textAlign = "left"; dctx.fillStyle = "rgba(154,166,189,.8)";
@@ -2373,6 +2382,14 @@ function drawDoom(dt) {
     dctx.fillText("CAN IT RUN DOOM?  —  NO. BUT IT RUNS MINE.", 320, 40);
   }
   dctx.fillStyle = "#E8ECF4"; dctx.fillRect(318, 238, 4, 4);   /* 크로스헤어 */
+  if (doomClear) {                                      /* 전부 잡았다 — 타임 기록, 스페이스/클릭으로 다시 */
+    dctx.fillStyle = "rgba(4,7,15,.6)"; dctx.fillRect(0, 150, 640, 150);
+    dctx.textAlign = "center"; dctx.fillStyle = "#F4D35E"; dctx.font = '40px "Galmuri14","Galmuri11",monospace';
+    dctx.fillText("LEVEL CLEAR", 320, 205);
+    dctx.fillStyle = "#E8ECF4"; dctx.font = '16px "Galmuri9",monospace';
+    dctx.fillText(IMP_N + " IMPS · " + secs + "s", 320, 245);
+    dctx.fillStyle = "#9AA6BD"; dctx.fillText("SPACE / CLICK — RETRY   ·   ESC — EXIT", 320, 275);
+  }
   doomTex.needsUpdate = true;
 }
 addEventListener("keydown", e => {
