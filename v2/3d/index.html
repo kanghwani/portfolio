@@ -2022,6 +2022,7 @@ const BOOT_LINES = [
   { t: "MOUNTING C:\\SECONDLAYER ............. DONE" },
   { t: "KANGHWAN KIM", big: true },
   { t: "— GAME MAKER —", big: true, accent: true },
+  { t: "ROLE: UNITY CLIENT DEVELOPER · C# / URP / TDD" }, /* 첫 프레임에 직무가 보여야 한다 */
   { t: "OPENING ROUTEPLANNER.CS ..." }
 ];
 const LINE_GAP = 0.36, BOOT_HOLD = 0.9;
@@ -2034,7 +2035,7 @@ const bootTex = new THREE.CanvasTexture(bootCv);
 bootTex.colorSpace = THREE.SRGBColorSpace;
 function drawBoot(el) {
   bctx.fillStyle = "#04070f"; bctx.fillRect(0, 0, 640, 480);
-  let y = 96; /* 7줄 + 프롬프트가 © 줄을 안 덮는 시작점 */
+  let y = 72; /* 8줄 + 프롬프트가 © 줄을 안 덮는 시작점 */
   const n = Math.min(BOOT_LINES.length, Math.floor(el / LINE_GAP) + 1);
   for (let i = 0; i < n; i++) {
     const L = BOOT_LINES[i];
@@ -2473,6 +2474,7 @@ function updateIntro(now, dt) {
   if (phase === "boot") {
     const el = (now - bootT0) / 1000;
     drawBoot(el);                                        /* 진행은 tryStart(스페이스/탭)가 한다 */
+    if (el > BOOT_DUR + 6 && !doomOn) startPullback();  /* 6초 무입력이면 알아서 — 담당자는 스페이스를 안 누른다 */
   }
   /* CRT 전원 온 — 가로선이 펴진다 */
   if (screenOnT >= 0) {
