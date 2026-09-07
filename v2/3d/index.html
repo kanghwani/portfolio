@@ -101,7 +101,7 @@ strong{color:inherit;font-weight:700}
           <table>
             <tr><th>플레이 기록</th><td>120개 타이틀 · PS · Steam · Switch · Xbox</td></tr>
             <tr><th>대표작</th><td>IDLE CITY — 교통 시뮬 코어 설계·구현 / PARRYWAY — 4방향 패링 러너·공모전 출품작</td></tr>
-            <tr><th>검증 습관</th><td>팀 프로젝트 전체 1,204개 · PARRYWAY 160개 회귀 테스트 · 성능은 벤치마크로 실측</td></tr>
+            <tr><th>검증 습관</th><td>IDLE CITY 통행 배정·차량 주행 테스트군 담당 · 개인작 PARRYWAY 회귀 테스트 160개 · 성능은 벤치마크로 실측</td></tr>
             <tr><th>동작 환경</th><td>Unity 6 (URP) · C# · TypeScript(웹)</td></tr>
           </table>
           <p class="links">
@@ -377,7 +377,7 @@ html.incontent #statusbar{opacity:1;transform:none}
   <p class="dim">방치형 도시건설 시뮬레이션 · 기획 선정작 (Second Layer Games)</p>
   <table>
     <tr><th>플랫폼·장르</th><td>PC · 방치형 도시건설 시뮬레이션</td></tr>
-    <tr><th>인원·기간</th><td>팀 개발 5명 · 2026.07.01–08.13 (6주) / 08.13부터 솔로 인수·출시 준비</td></tr>
+    <tr><th>인원·기간</th><td>팀 개발 5명 · 2026.07.01–08.13 (6주) / 08.13 솔로 인수 · 09.06 개발 보류</td></tr>
     <tr><th>담당</th><td>최초 기획(기획 선정) + 교통 시뮬레이션 코어 · 커밋 <strong>56%(424/752)</strong> · 후반 머지 담당(오픈 PR 6건 처리)</td></tr>
     <tr><th>솔로 인수 후</th><td>씬 13→5개 정리 · 라이선스 미증빙 음원 16곡 삭제 · 품질 계측 도구 구축</td></tr>
     <tr><th>링크</th><td><a href="https://youtu.be/6rCe-v5Aewk">팀 시연 영상 (4분 30초)</a> · <a href="https://github.com/hjh8874/GreenLight">공개 저장소</a></td></tr>
@@ -413,7 +413,7 @@ html.incontent #statusbar{opacity:1;transform:none}
 
   <h3>코어 구현</h3>
   <ul>
-    <li><strong>길찾기 — 부하 적립 라우팅(RoutePlanner).</strong> 수백 대의 차량을 서로 다른 경로로 배분하는 통행 배정 알고리즘. 앞차가 채운 부하를 뒷차가 비용으로 읽는 순차 배정 다익스트라, 20×20 리전 분할</li>
+    <li><strong>길찾기 — 부하 적립 라우팅(RoutePlanner).</strong> 수백 대의 차량을 서로 다른 경로로 배분하는 통행 배정 알고리즘. 앞차가 채운 부하를 뒷차가 비용으로 읽는 순차 배정 다익스트라</li>
     <li><strong>차량 주행.</strong> 개별 속도 시뮬레이션, 교차로 점유·연속 대기열, 정지 복구 워치독(재라우팅 3회·재시작 6회)</li>
     <li><strong>시뮬레이션과 화면의 권한 분리.</strong> 위치·점유 판정을 시뮬레이션 계층으로 단일화, 화면은 보간만(PR 5건). 차선 오프셋 검증 <strong>80/80 정확 · 차간 위반 0</strong></li>
     <li><strong>경제 어뷰징 차단.</strong> 정체를 일부러 만드는 편법이 순이익이던 구조(실측 35 대 24코인)를 무이자 정산과 장부 소각으로 뒤집고 단언 테스트 3종으로 고정</li>
@@ -440,6 +440,16 @@ float cand = _cost[cur] + step;
 if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
     <p>대가도 있습니다. 순차 배정이라 차량 순서가 결과를 바꿉니다. 세이브·로드 뒤에도 같은 그림을 만들기 위해 전 구간의 tie-break를 명시했고, 앞차의 결과가 뒷차의 입력이라 병렬화는 포기했습니다.</p>
   </div>
+
+  <h3>C#·자료구조·알고리즘 — 왜 이 방법이었나</h3>
+  <dl class="rows">
+    <dt>1차원 배열</dt>
+    <dd>격자 크기를 알고 있고 대부분의 칸을 반복해서 읽으므로 <code>Dictionary</code> 대신 <code>float[] _cost</code>·<code>bool[] _done</code>·<code>int[] _cameFrom</code>을 한 번 할당했습니다. 좌표는 <code>y × width + x</code>로 바꿔 해시 탐색과 반복 할당을 피했습니다.</dd>
+    <dt>배열 스캔 다익스트라</dt>
+    <dd>초기 플레이 구역은 20×20이고 경로 계산은 매 프레임이 아니라 도로 구조가 바뀔 때만 실행됩니다. 그래서 우선순위 큐보다 단순하고 결정적인 배열 스캔을 먼저 택했습니다. 대신 맵이 커지면 느려지는 한계가 있어 40×40부터 같은 벤치마크로 비용을 드러냈습니다.</dd>
+    <dt>순차 배정</dt>
+    <dd>앞 차량의 경로를 <code>_load</code>에 적립하고 다음 차량이 그 값을 비용으로 읽어야 우회가 생깁니다. 병렬 처리보다 규칙의 성립을 우선한 선택이며, 차량 순서 의존성과 tie-break 명시가 그 대가입니다.</dd>
+  </dl>
 
   <p class="pull">우회를 지시하는 조건문이 없습니다. 비용 함수 한 줄이 바뀌었을 뿐이고, 분산은 그 결과로 나옵니다.</p>
 
@@ -482,8 +492,8 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   </p>
   <p>
     차량이 18대에서 82대로 늘어도 1대당 비용은 0.151ms와 0.147ms로 비슷했습니다.
-    반면 도로가 4배 늘면 1대당 비용이 27배가 됩니다. 다음 작업은 우선순위 큐와 변경 구역만 다시 푸는 증분 재계획입니다.
-    같은 벤치마크로 전후 값을 다시 비교할 예정입니다.
+    반면 도로가 4배 늘면 1대당 비용이 27배가 됩니다. 증분 경로 갱신은 구현했지만 하루 경계의 전체 재계획이 이를 우회하는 병목이 남았습니다.
+    개발은 2026-09-06 보류했으며, 재개 시 같은 벤치마크로 해당 경계를 다시 확인합니다.
   </p>
 
   <div class="case">
@@ -568,7 +578,7 @@ if (cand &lt; _cost[ni]) { _cost[ni] = cand; _cameFrom[ni] = cur; }</pre>
   <div class="metrics" aria-label="MOLTEN ARENA 확인 수치">
     <div class="metric"><span class="k">협업</span><span class="v">2인</span><span class="d">클라이언트 역할 분리</span></div>
     <div class="metric"><span class="k">완주 기간</span><span class="v">1개월</span><span class="d">개발·발표 완료</span></div>
-    <div class="metric"><span class="k">새 효과 추가</span><span class="v">0줄</span><span class="d">기존 코드 수정 없이 확장</span></div>
+    <div class="metric"><span class="k">새 효과 추가</span><span class="v">0줄</span><span class="d">ItemUser 기존 코드 수정</span></div>
     <div class="metric"><span class="k">파티클 상한</span><span class="v">56–149</span><span class="d">기존 최대 1,000개</span></div>
   </div>
   <div class="video">
@@ -1100,20 +1110,7 @@ const monitorTrimMat = new THREE.MeshStandardMaterial({ color: 0x8f2f24, roughne
 const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.46, 0.05), monitorTrimMat);
 bezel.position.z = 0.26;
 crt.add(bezel);
-/* 이중 프레임·패널 심·나사 — CRT 외장 마감 */
-const innerBezel = new THREE.Mesh(new THREE.BoxGeometry(0.535, 0.41, 0.018),
-  new THREE.MeshStandardMaterial({ color: 0x2e343e, roughness: 0.38, metalness: 0.12 }));
-innerBezel.position.z = 0.272; crt.add(innerBezel);
-const seamMat = new THREE.MeshBasicMaterial({ color: 0xBCB2A0 });
-for (const sy of [-0.245, 0.245]) {
-  const seam = new THREE.Mesh(new THREE.BoxGeometry(0.61, 0.006, 0.008), seamMat);
-  seam.position.set(0, sy, 0.19); crt.add(seam);
-}
-const screwMat = new THREE.MeshStandardMaterial({ color: 0x252a32, roughness: 0.3, metalness: 0.65 });
-for (const [sx, sy] of [[-0.282, -0.208], [0.282, -0.208], [-0.282, 0.208], [0.282, 0.208]]) {
-  const screw = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.005, 12), screwMat);
-  screw.rotation.x = Math.PI / 2; screw.position.set(sx, sy, 0.289); crt.add(screw);
-}
+/* 외장은 한 겹만 둔다. 화면이 주인공이고 나사·패널 심은 시선을 나눴다. */
 /* 화면 = 게임 결과물이 아니라, 실제로 게임을 만드는 Unity/C# 작업 화면 */
 const SCREEN = { w: 0.5, h: 0.375, z: 0.287 };
 const codeCv = document.createElement("canvas"); codeCv.width = 640; codeCv.height = 480;
@@ -1122,44 +1119,33 @@ const codeTex = new THREE.CanvasTexture(codeCv);
 codeTex.colorSpace = THREE.SRGBColorSpace;
 codeTex.minFilter = THREE.LinearFilter;
 const CODE = [
-  [["public", "#d68cff"], [" sealed class ", "#e8ecf4"], ["RoutePlanner", "#6dff8a"]],
+  [["readonly float[] ", "#7fb3ff"], ["_cost, _load;", "#e8ecf4"]],
+  [["readonly int[] ", "#7fb3ff"], ["_cameFrom;", "#e8ecf4"]],
+  [],
+  [["int ni = ny * _w + nx;", "#e8ecf4"]],
+  [["float step = 1f + w * _load[ni] * capInv;", "#f4d35e"]],
+  [["float cand = _cost[cur] + step;", "#e8ecf4"]],
+  [["if ", "#d68cff"], ["(cand < _cost[ni])", "#e8ecf4"]],
   [["{", "#e8ecf4"]],
-  [["  private readonly ", "#d68cff"], ["ILaneGraph", "#7fb3ff"], [" graph;", "#e8ecf4"]],
-  [["  private readonly ", "#d68cff"], ["RouteCache", "#7fb3ff"], [" cache;", "#e8ecf4"]],
-  [],
-  [["  public ", "#d68cff"], ["Route", "#7fb3ff"], [" Find", "#f4d35e"], ["(", "#e8ecf4"], ["LaneId", "#7fb3ff"], [" from, ", "#e8ecf4"], ["LaneId", "#7fb3ff"], [" to)", "#e8ecf4"]],
-  [["  {", "#e8ecf4"]],
-  [["    if ", "#d68cff"], ["(cache.TryGet(from, to, out var route))", "#e8ecf4"]],
-  [["      return ", "#d68cff"], ["route;", "#e8ecf4"]],
-  [],
-  [["    var path = ", "#e8ecf4"], ["laneSearch.Run", "#f4d35e"], ["(graph, from, to);", "#e8ecf4"]],
-  [["    cache.Store(from, to, path);", "#e8ecf4"]],
-  [["    return ", "#d68cff"], ["path;", "#e8ecf4"]],
-  [["  }", "#e8ecf4"]],
+  [["  _cost[ni] = cand;", "#e8ecf4"]],
+  [["  _cameFrom[ni] = cur;", "#e8ecf4"]],
   [["}", "#e8ecf4"]]
 ];
 const CODE_LENGTHS = CODE.map(line => line.reduce((n, [txt]) => n + txt.length, 0));
 const CODE_TOTAL = CODE_LENGTHS.reduce((n, len) => n + len + 1, 0);
 const TYPE_CPS = 34;
+const CODE_TYPING_DUR = CODE_TOTAL / TYPE_CPS;
 function drawCodeEditor(t) {
   const x = codeCtx;
   x.fillStyle = "#080d18"; x.fillRect(0, 0, 640, 480);
-  /* 타이틀바 + 에디터 탭 */
-  x.fillStyle = "#111a2b"; x.fillRect(0, 0, 640, 48);
-  x.fillStyle = "#1b2940"; x.fillRect(56, 10, 224, 38);
-  x.fillStyle = "#6dff8a"; x.fillRect(56, 45, 224, 3);
-  x.font = "bold 18px monospace"; x.fillStyle = "#e8ecf4";
-  x.fillText("{}  RoutePlanner.cs", 72, 35);
-  x.fillStyle = "#60708d"; x.font = "15px monospace";
-  x.fillText("TrafficSpirit", 450, 30);
-  /* 액티비티 바 + 라인 번호 */
-  x.fillStyle = "#0d1422"; x.fillRect(0, 48, 56, 350);
-  [84, 132, 180, 228].forEach((y, i) => {
-    x.strokeStyle = i === 0 ? "#6dff8a" : "#60708d"; x.lineWidth = 3;
-    x.strokeRect(17, y - 18, 23, 24);
-  });
-  const typingDuration = CODE_TOTAL / TYPE_CPS;
-  const cycle = typingDuration + 4.6;
+  /* 파일명과 실제 선택만 남긴 조용한 에디터 */
+  x.fillStyle = "#111a2b"; x.fillRect(0, 0, 640, 52);
+  x.fillStyle = "#6dff8a"; x.fillRect(0, 49, 640, 3);
+  x.font = "bold 19px monospace"; x.fillStyle = "#e8ecf4";
+  x.fillText("RoutePlanner.cs", 28, 34);
+  x.fillStyle = "#60708d"; x.font = "14px monospace";
+  x.fillText("DENSE GRID / FLAT ARRAYS", 365, 33);
+  const cycle = CODE_TYPING_DUR + 4.6;
   const cycleT = t % cycle;
   const typed = Math.min(CODE_TOTAL, Math.floor(cycleT * TYPE_CPS));
   let left = typed, active = CODE.length - 1;
@@ -1168,14 +1154,13 @@ function drawCodeEditor(t) {
     if (left >= 0 && active === CODE.length - 1) active = i;
     const shown = Math.min(len, Math.max(0, left)); left = -1; return shown;
   });
-  const top = 75, gap = 20;
-  x.font = "15px monospace"; x.textBaseline = "middle";
+  const top = 82, gap = 27;
+  x.font = "17px monospace"; x.textBaseline = "middle";
   CODE.forEach((line, i) => {
     const y = top + i * gap;
-    if (i === active && typed < CODE_TOTAL) { x.fillStyle = "rgba(109,255,138,.07)"; x.fillRect(56, y - 10, 584, 20); }
-    x.fillStyle = "#43516a"; x.textAlign = "right"; x.fillText(String(i + 1), 86, y);
+    if (i === active && typed < CODE_TOTAL) { x.fillStyle = "rgba(109,255,138,.06)"; x.fillRect(18, y - 13, 604, 26); }
     x.textAlign = "left";
-    let px = 102, chars = visible[i];
+    let px = 28, chars = visible[i];
     line.forEach(([txt, color]) => {
       const part = txt.slice(0, Math.max(0, chars));
       x.fillStyle = color; x.fillText(part, px, y); px += x.measureText(part).width;
@@ -1185,25 +1170,13 @@ function drawCodeEditor(t) {
       x.fillStyle = "#e8ecf4"; x.fillRect(px + 2, y - 8, 7, 16);
     }
   });
-  /* 테스트 러너 — 코드를 쓰는 것과 검증하는 것을 한 화면에 */
-  x.fillStyle = "#0b1220"; x.fillRect(0, 398, 640, 82);
-  x.fillStyle = "#24324a"; x.fillRect(0, 398, 640, 2);
-  const testT = cycleT - typingDuration;
-  x.font = "bold 14px monospace";
-  if (typed < CODE_TOTAL) {
-    x.fillStyle = "#f4d35e";
-    x.fillText("● EDITING  RoutePlanner.cs", 20, 423);
-  } else if (testT < 1.25) {
-    x.fillStyle = "#7fb3ff";
-    x.fillText("▶ RUNNING TESTS" + ".".repeat(1 + Math.floor(testT * 4) % 3), 20, 423);
-  } else {
-    x.fillStyle = "#8ee3a2";
-    x.fillText("✓ TEST RUNNER  340 / 340 PASSED", 20, 423);
-  }
+  /* 숫자 쇼 대신 선택 이유와 실측 조건 한 줄 */
+  x.fillStyle = "#0b1220"; x.fillRect(0, 404, 640, 76);
+  x.fillStyle = "#24324a"; x.fillRect(0, 404, 640, 2);
+  x.font = "bold 14px monospace"; x.fillStyle = typed < CODE_TOTAL ? "#f4d35e" : "#8ee3a2";
+  x.fillText(typed < CODE_TOTAL ? "WRITING THE RULE" : "CODE COMPLETE · CLICK TO CONTINUE", 24, 434);
   x.font = "13px monospace"; x.fillStyle = "#9aa6bd";
-  x.fillText("RoutePlannerBench · 20×20 · 12.1 ms", 20, 447);
-  x.fillStyle = "#7fb3ff"; x.fillText("main*", 530, 447);
-  x.fillStyle = "#6dff8a"; x.fillRect(20, 464, 600, 3);
+  x.fillText("20×20 · 82 CARS · 11-RUN MEDIAN · 12.1 ms", 24, 459);
   codeTex.needsUpdate = true;
 }
 drawCodeEditor(0);
@@ -1436,12 +1409,8 @@ function noteTex(bg, ink, lines, size) {
   return t;
 }
 [
-  { bg: "#f2e06b", ink: "#4a4128", lines: ["버그:", "차 뒷걸음", "→ FIX ✓"], x: -0.285, y: 0.135, r: 0.06 },
-  { bg: "#8EE3A2", ink: "#1e4028", lines: ["테스트", "340", "GREEN"], x: -0.285, y: 0.005, r: -0.05 },
-  { bg: "#ffb26b", ink: "#5a3413", lines: ["스팀 데모", "2/22 BUILD"], x: -0.285, y: -0.125, r: 0.04 },
-  { bg: "#f2a0b5", ink: "#5a2433", lines: ["w=2", "잊지말기!"], x: 0.285, y: 0.1, r: 0.08 },
-  { bg: "#a8d8f0", ink: "#1e3a50", lines: ["세이브", "먼저 백업", "!!"], x: 0.285, y: -0.04, r: -0.07 },
-  { bg: "#E8ECF4", ink: "#33302a", lines: ["면접 Q:", "왜 SO로?", "→ OCP"], x: 0.285, y: -0.175, r: 0.05 }
+  { bg: "#d9d2a8", ink: "#403d2c", lines: ["WHY", "THIS", "WAY?"], x: -0.285, y: 0.08, r: 0.04 },
+  { bg: "#aec5c8", ink: "#263b40", lines: ["TEST", "BREAK", "VERIFY"], x: 0.285, y: -0.075, r: -0.04 }
 ].forEach(n => {
   const note = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.068),
     new THREE.MeshBasicMaterial({ map: noteTex(n.bg, n.ink, n.lines) }));
@@ -1464,13 +1433,6 @@ const deskNote2 = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.07),
 deskNote2.rotation.x = -Math.PI / 2; deskNote2.rotation.z = -0.22;
 deskNote2.position.set(-0.28, 0.7825, 0.5);
 scene.add(deskNote2);
-/* CRT 옆면 — 검증 규율 메모 */
-const sideNote = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.07),
-  new THREE.MeshBasicMaterial({ map: noteTex("#f2e06b", "#4a4128", ["테스트는", "일부러", "망가뜨려", "본다"], 15) }));
-sideNote.position.set(0.331, 0.16, -0.02);
-sideNote.rotation.y = Math.PI / 2; sideNote.rotation.z = 0.08;
-crt.add(sideNote);
-
 /* 캐릭터 스티커 — 유령·슬라임·별·물고기 (전작들의 낌새) */
 function stickerTex(draw) {
   const c = document.createElement("canvas"); c.width = c.height = 64;
@@ -1750,98 +1712,28 @@ const stylus = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.24, 8),
   new THREE.MeshStandardMaterial({ color: 0xd4d8df, roughness: 0.45 }));
 stylus.rotation.set(Math.PI / 2, 0, 0.28); stylus.position.set(0.81, 0.82, 0.02); scene.add(stylus);
 
-/* 듀얼센스형 게임패드 — 흰 날개 셸·검은 센터·터치패드·대칭 스틱 */
+/* 게임패드 — 실루엣만 남긴 로우폴리 소품. 거치대·라이트·미세 버튼은 제거했다. */
 const gamepadG = new THREE.Group();
-const padWhite = new THREE.MeshStandardMaterial({ color: 0xd5dae1, roughness: 0.42, metalness: 0.04 });
-const padBlack = new THREE.MeshStandardMaterial({ color: 0x171b23, roughness: 0.38, metalness: 0.08 });
-const padRubber = new THREE.MeshStandardMaterial({ color: 0x2a303b, roughness: 0.72 });
-/* 안쪽 블랙 코어 */
-const padCore = new THREE.Mesh(new THREE.SphereGeometry(0.083, 24, 16), padBlack);
-padCore.scale.set(1.24, 0.29, 0.77); padCore.castShadow = true; gamepadG.add(padCore);
-/* 좌우 화이트 셸과 아래로 흐르는 그립 */
+const padBodyMat = new THREE.MeshStandardMaterial({ color: 0x343b48, roughness: 0.7, metalness: 0.03 });
+const padKeyMat = new THREE.MeshStandardMaterial({ color: 0x151a22, roughness: 0.82 });
+const padCore = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.026, 0.085), padBodyMat);
+padCore.castShadow = true; gamepadG.add(padCore);
 for (const hx of [-1, 1]) {
-  const wing = new THREE.Mesh(new THREE.SphereGeometry(0.063, 24, 16), padWhite);
-  wing.scale.set(1.08, 0.35, 0.72); wing.position.set(hx * 0.065, 0.004, -0.012);
-  wing.castShadow = true; gamepadG.add(wing);
-  const grip = new THREE.Mesh(new THREE.CapsuleGeometry(0.028, 0.075, 6, 14), padWhite);
-  grip.rotation.x = Math.PI / 2; grip.rotation.y = hx * 0.27;
-  grip.position.set(hx * 0.092, -0.005, 0.052); grip.castShadow = true; gamepadG.add(grip);
-  const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.018, 0.025), padBlack);
-  trigger.position.set(hx * 0.071, -0.002, -0.065); trigger.rotation.z = -hx * 0.08;
-  gamepadG.add(trigger);
+  const grip = new THREE.Mesh(new THREE.CapsuleGeometry(0.025, 0.07, 4, 8), padBodyMat);
+  grip.rotation.x = Math.PI / 2; grip.rotation.y = hx * 0.28;
+  grip.position.set(hx * 0.076, -0.005, 0.045); grip.castShadow = true; gamepadG.add(grip);
 }
-/* 센터 페이스 플레이트 */
-const facePlate = new THREE.Mesh(new THREE.SphereGeometry(0.064, 20, 12), padBlack);
-facePlate.scale.set(0.95, 0.24, 0.8); facePlate.position.y = 0.017; gamepadG.add(facePlate);
-/* 터치패드와 양옆 블루 라이트바 */
-const touchpad = new THREE.Mesh(new THREE.BoxGeometry(0.088, 0.013, 0.049),
-  new THREE.MeshStandardMaterial({ color: 0x2c333f, roughness: 0.58 }));
-touchpad.position.set(0, 0.033, -0.033); touchpad.castShadow = true; gamepadG.add(touchpad);
-for (const tx of [-0.049, 0.049]) {
-  const lightBar = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.008, 0.044),
-    new THREE.MeshBasicMaterial({ color: 0x65b7ff }));
-  lightBar.position.set(tx, 0.034, -0.03); lightBar.rotation.z = -tx * 0.7; gamepadG.add(lightBar);
+for (const [dw, dd] of [[0.038, 0.011], [0.011, 0.038]]) {
+  const d = new THREE.Mesh(new THREE.BoxGeometry(dw, 0.008, dd), padKeyMat);
+  d.position.set(-0.047, 0.019, -0.005); gamepadG.add(d);
 }
-/* 십자키 */
-for (const [dw, dd] of [[0.043, 0.015], [0.015, 0.043]]) {
-  const d = new THREE.Mesh(new THREE.BoxGeometry(dw, 0.011, dd), padRubber);
-  d.position.set(-0.057, 0.036, -0.003); gamepadG.add(d);
+for (const [bx, bz] of [[0.045,-0.014],[0.064,0.005],[0.045,0.024],[0.026,0.005]]) {
+  const b = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.007, 8), padKeyMat);
+  b.position.set(bx, 0.019, bz); gamepadG.add(b);
 }
-/* 플레이스테이션 계열 4버튼 — 색은 은은하게만 남긴다 */
-[[0.058,-0.022,0x7fb3ff],[0.079,-0.002,0xf2a0b5],[0.058,0.018,0x8ee3a2],[0.037,-0.002,0xe8ecf4]].forEach(([bx,bz,c]) => {
-  const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.0095, 0.0095, 0.009, 16), padRubber);
-  rim.position.set(bx, 0.036, bz); gamepadG.add(rim);
-  const glyph = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.0105, 12),
-    new THREE.MeshBasicMaterial({ color: c }));
-  glyph.position.set(bx, 0.041, bz); gamepadG.add(glyph);
-});
-/* 대칭 아날로그 스틱 */
-for (const sx of [-0.027, 0.027]) {
-  const stickBase = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.021, 0.012, 18), padRubber);
-  stickBase.position.set(sx, 0.038, 0.03); gamepadG.add(stickBase);
-  const stickTop = new THREE.Mesh(new THREE.CylinderGeometry(0.0135, 0.0135, 0.011, 18), padBlack);
-  stickTop.position.set(sx, 0.05, 0.03); gamepadG.add(stickTop);
-  const stickRing = new THREE.Mesh(new THREE.TorusGeometry(0.0095, 0.0018, 6, 18),
-    new THREE.MeshBasicMaterial({ color: 0x596273 }));
-  stickRing.rotation.x = Math.PI / 2; stickRing.position.set(sx, 0.056, 0.03); gamepadG.add(stickRing);
-}
-/* PS 버튼·마이크 LED·스피커 타공 */
-const psBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.008, 14), padBlack);
-psBtn.position.set(0, 0.039, 0.006); gamepadG.add(psBtn);
-const micLed = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.004, 0.004),
-  new THREE.MeshBasicMaterial({ color: 0xf4d35e }));
-micLed.position.set(0, 0.043, 0.056); gamepadG.add(micLed);
-for (let i = -2; i <= 2; i++) {
-  const hole = new THREE.Mesh(new THREE.SphereGeometry(0.0023, 6, 6), padRubber);
-  hole.position.set(i * 0.009, 0.043, 0.017); gamepadG.add(hole);
-}
-
-/* 전용 충전 거치대 — 패드를 눕히지 않고 전면이 보이게 세운다 */
-const padStandG = new THREE.Group();
-const standDark = new THREE.MeshStandardMaterial({ color: 0x242a34, roughness: 0.4, metalness: 0.2 });
-const standBase = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.12, 0.026, 28), padWhite);
-standBase.scale.z = 0.62; standBase.castShadow = standBase.receiveShadow = true; padStandG.add(standBase);
-const standTop = new THREE.Mesh(new THREE.CylinderGeometry(0.084, 0.097, 0.012, 28),
-  new THREE.MeshStandardMaterial({ color: 0x3f4754, roughness: 0.35, metalness: 0.16 }));
-standTop.position.y = 0.019; standTop.scale.z = 0.58; padStandG.add(standTop);
-const standStem = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.16, 0.032), standDark);
-standStem.position.set(0, 0.092, -0.025); standStem.rotation.x = -0.12; standStem.castShadow = true; padStandG.add(standStem);
-const backRest = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.095, 0.018), standDark);
-backRest.position.set(0, 0.16, -0.014); backRest.rotation.x = -0.18; padStandG.add(backRest);
-for (const ax of [-0.075, 0.075]) {
-  const arm = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.05, 0.045), standDark);
-  arm.position.set(ax, 0.085, 0.025); arm.rotation.z = -ax * 1.4; padStandG.add(arm);
-  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.014, 10, 8), padRubber);
-  tip.position.set(ax, 0.11, 0.043); padStandG.add(tip);
-}
-const chargeLed = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.005, 0.006),
-  new THREE.MeshBasicMaterial({ color: 0x65b7ff }));
-chargeLed.position.set(0, 0.034, 0.062); padStandG.add(chargeLed);
-padStandG.position.set(-0.4, 0.797, 0.36); padStandG.rotation.y = 0.08; scene.add(padStandG);
-
-gamepadG.position.set(-0.4, 0.985, 0.365);
-gamepadG.rotation.set(1.06, 0.08, 0.01);
-gamepadG.scale.setScalar(1.08);
+gamepadG.position.set(-0.48, 0.79, 0.29);
+gamepadG.rotation.set(0, -0.16, 0);
+gamepadG.scale.setScalar(0.82);
 scene.add(gamepadG);
 
 /* ── 후면 개발 보드 — 아이디어가 테스트와 출시로 이어지는 작업 흔적 ── */
@@ -1856,7 +1748,7 @@ function devBoardTexture() {
   x.fillStyle = "#6dff8a"; x.font = "20px monospace"; x.fillText("IDEA  →  PROTOTYPE  →  TEST  →  SHIP", 40, 100);
   const cards = [
     [44, 140, "#f2e06b", "PLAYER\nCHOICE"], [230, 132, "#8ee3a2", "ROUTE\nCACHE"],
-    [420, 150, "#a8d8f0", "340/340\nGREEN"], [586, 128, "#f2a0b5", "DEMO\nBUILD"]
+    [420, 150, "#a8d8f0", "RED →\nGREEN"], [586, 128, "#f2a0b5", "DEMO\nBUILD"]
   ];
   cards.forEach(([cx, cy, bg, txt], i) => {
     x.save(); x.translate(cx + 70, cy + 56); x.rotate((i - 1.5) * 0.025);
@@ -2018,18 +1910,14 @@ scene.add(warp);
  * 시작 카메라가 화면에 붙어 있어 부팅이 풀스크린처럼 보이고,
  * 부팅이 끝나면 코드 에디터가 열리고 카메라가 빠져 "개발자의 책상"이 드러난다 */
 const BOOT_LINES = [
-  { t: "SECOND LAYER BIOS v2.6 — 640K RAM OK" },
-  { t: "CHECKING DEVICES ... KEYBOARD / CRT / COFFEE OK" },
-  { t: "IT'S DANGEROUS TO GO ALONE! TAKE THIS ... KBD" }, /* 젤다 1986 */
-  { t: "MOUNTING C:\\SECONDLAYER ............. DONE" },
+  { t: "C:\\SECONDLAYER\\KANGHWAN" },
   { t: "KANGHWAN KIM", big: true },
-  { t: "— GAME MAKER —", big: true, accent: true },
-  { t: "ROLE: UNITY CLIENT DEVELOPER · C# / URP / TDD" }, /* 첫 프레임에 직무가 보여야 한다 */
-  { t: "OPENING ROUTEPLANNER.CS ..." }
+  { t: "UNITY CLIENT DEVELOPER", big: true, accent: true },
+  { t: "RULE → CODE → TEST" }
 ];
-const LINE_GAP = 0.36, BOOT_HOLD = 0.9;
+const LINE_GAP = 0.42, BOOT_HOLD = 0.65;
 const BOOT_DUR = BOOT_LINES.length * LINE_GAP + BOOT_HOLD;
-const PULL_MS = 1500;
+const PULL_MS = 2800;
 const bootCv = document.createElement("canvas");
 bootCv.width = 640; bootCv.height = 480;
 const bctx = bootCv.getContext("2d");
@@ -2037,11 +1925,14 @@ const bootTex = new THREE.CanvasTexture(bootCv);
 bootTex.colorSpace = THREE.SRGBColorSpace;
 function drawBoot(el) {
   bctx.fillStyle = "#04070f"; bctx.fillRect(0, 0, 640, 480);
-  let y = 72; /* 8줄 + 프롬프트가 © 줄을 안 덮는 시작점 */
+  let y = 118;
   const n = Math.min(BOOT_LINES.length, Math.floor(el / LINE_GAP) + 1);
   for (let i = 0; i < n; i++) {
     const L = BOOT_LINES[i];
-    if (L.big) { bctx.font = '44px "Galmuri14","Galmuri11",monospace'; y += 24; }
+    if (L.big) {
+      bctx.font = `${L.accent ? 34 : 44}px "Galmuri14","Galmuri11",monospace`;
+      y += 24;
+    }
     else bctx.font = '18px "Galmuri9",monospace';
     bctx.fillStyle = L.accent ? "#F4D35E" : (L.big ? "#E8ECF4" : "#8EE3A2");
     bctx.shadowColor = bctx.fillStyle; bctx.shadowBlur = L.big ? 16 : 7;
@@ -2058,10 +1949,7 @@ function drawBoot(el) {
     bctx.shadowBlur = 0;
     bctx.font = '14px "Galmuri9",monospace';
     bctx.fillStyle = "#44536e";
-    bctx.fillText("© 2026 SECOND LAYER GAMES", 46, 470);
-    bctx.textAlign = "right"; bctx.fillStyle = "#3a4a66";
-    bctx.fillText("CHEATS ON · TYPE IDDQD", 594, 470);   /* 아는 사람만 반응하는 힌트 */
-    bctx.textAlign = "left";
+    bctx.fillText("© 2026 SECOND LAYER", 46, 470);
   } else if (Math.floor(el * 2.4) % 2 === 0) {
     bctx.fillStyle = "#8EE3A2"; bctx.fillRect(46, y - 14, 13, 19);
   }
@@ -2070,6 +1958,7 @@ function drawBoot(el) {
 }
 let phase = (reduced || compactHero) ? "live" : "boot";
 window.__phase = () => phase;
+document.documentElement.dataset.introPhase = phase;
 let bootT0 = performance.now();
 let pbT0 = 0, dropT0 = 0, pbK = 0, screenOnT = -1;
 function showWorkspace() {
@@ -2415,38 +2304,54 @@ addEventListener("keyup", e => { dkeys.delete(e.code); });
 addEventListener("mousemove", e => { if (doomOn && document.pointerLockElement === canvas) mouseDX += e.movementX; });
 addEventListener("blur", () => dkeys.clear());
 
+function codeElapsed() {
+  return performance.now() / 1000 - codeStartT;
+}
+function showCodeScreen() {
+  if (phase !== "boot") return;
+  phase = "code";
+  document.documentElement.dataset.introPhase = phase;
+  sfx.start();
+  showWorkspace();
+}
 function tryStart() {
   if (doomOn) {                                          /* 클릭 — 마우스 룩 켜기, 켜져 있으면 발사 */
     if (document.pointerLockElement === canvas) fire();
     else if (canvas.requestPointerLock) canvas.requestPointerLock();
     return; }
-  if (phase !== "boot") return;
-  const el = (performance.now() - bootT0) / 1000;
-  if (el <= BOOT_DUR) { bootT0 = performance.now() - BOOT_DUR * 1000 - 1; return; } /* 로그 스킵 */
-  sfx.start();
-  startPullback();
+  if (phase === "boot") {
+    const el = (performance.now() - bootT0) / 1000;
+    if (el <= BOOT_DUR) { bootT0 = performance.now() - BOOT_DUR * 1000 - 1; return; } /* 로그 스킵 */
+    showCodeScreen();
+    return;
+  }
+  if (phase === "code" && codeElapsed() >= CODE_TYPING_DUR) startPullback();
 }
 addEventListener("keydown", e => {
-  if (phase === "boot" && (e.code === "Space" || e.key === " ")) { e.preventDefault(); tryStart(); }
+  if ((phase === "boot" || phase === "code") && (e.code === "Space" || e.key === " ")) { e.preventDefault(); tryStart(); }
 });
 canvas.addEventListener("pointerdown", tryStart);
 
 function startPullback() {
-  if (phase !== "boot") return;
+  if (phase !== "code" || codeElapsed() < CODE_TYPING_DUR) return;
   phase = "pullback"; pbT0 = performance.now();
-  dropT0 = pbT0 + 500;                                  // 카메라 빠지는 중에 책이 떨어진다
-  showWorkspace();
+  document.documentElement.dataset.introPhase = phase;
+  dropT0 = pbT0 + 900;                                  // 느린 풀백 중간에 책이 떨어진다
 }
 function goLive() {
   if (phase === "live") return;
   if (phase === "boot") { showWorkspace(); dropT0 = performance.now(); }
   phase = "live"; pbK = 1;
+  document.documentElement.dataset.introPhase = phase;
 }
 if (!reduced && !compactHero) {
-  addEventListener("pointerdown", () => { if (phase === "boot" && !doomOn) startPullback(); });
   addEventListener("keydown", e => {                    /* 글자 키는 치트 입력용으로 남긴다 — 시작은 스페이스·클릭 */
-    if (!e.metaKey && !e.ctrlKey && !e.altKey && phase === "boot" && !/^Key[A-Z]$/.test(e.code)) startPullback(); });
-  addEventListener("wheel", () => { if (phase !== "live") goLive(); }, { passive: true });
+    if (!e.metaKey && !e.ctrlKey && !e.altKey && e.code !== "Space" && (phase === "boot" || phase === "code") && !/^Key[A-Z]$/.test(e.code)) tryStart(); });
+  addEventListener("wheel", e => {
+    if (phase === "live") return;
+    e.preventDefault();
+    if (phase === "boot" || phase === "code") tryStart();
+  }, { passive: false });
 }
 
 /* 먼지 퍼프 — 착지 순간 옆으로 퍼진다 */
@@ -2476,7 +2381,7 @@ function updateIntro(now, dt) {
   if (phase === "boot") {
     const el = (now - bootT0) / 1000;
     drawBoot(el);                                        /* 진행은 tryStart(스페이스/탭)가 한다 */
-    if (el > BOOT_DUR + 6 && !doomOn) startPullback();  /* 6초 무입력이면 알아서 — 담당자는 스페이스를 안 누른다 */
+    if (el > BOOT_DUR + 6 && !doomOn) showCodeScreen(); /* 6초 무입력이면 코드 화면까지 자동 진행 */
   }
   /* CRT 전원 온 — 가로선이 펴진다 */
   if (screenOnT >= 0) {
@@ -2488,7 +2393,10 @@ function updateIntro(now, dt) {
   /* 풀백 — 카메라가 빠지며 방이 드러난다 */
   if (phase === "pullback") {
     pbK = smooth(Math.min(1, (now - pbT0) / PULL_MS));
-    if (pbK >= 1) phase = "live";
+    if (pbK >= 1) {
+      phase = "live";
+      document.documentElement.dataset.introPhase = phase;
+    }
   }
   /* 책 낙하 */
   bookRefs.forEach((bk, i) => {
@@ -2569,10 +2477,11 @@ function render(tms) {
   if (doomOn) drawDoom(dt);
   else if (phase !== "boot" && t - lastCodeT > 0.11) {
     lastCodeT = t;
-    drawCodeEditor(Math.max(0, t - codeStartT));
+    const codeT = Math.max(0, t - codeStartT);
+    drawCodeEditor(phase === "code" ? Math.min(codeT, CODE_TYPING_DUR) : codeT);
   }
   const e = smooth(p);
-  if (phase === "boot") {
+  if (phase === "boot" || phase === "code") {
     camera.position.copy(CAM_B);                        // 화면에 붙어 있다 — 부팅이 풀스크린으로 보임
   } else if (phase === "pullback") {
     camera.position.lerpVectors(CAM_B, CAM_A, pbK);     // 뒤로 빠지며 방이 드러난다
@@ -2667,7 +2576,7 @@ function render(tms) {
     renderer.render(scene, camera);
   }
 
-  const introK = phase === "boot" ? 0 : phase === "pullback" ? pbK : 1; /* 부팅 로그와 겹치지 않게 풀백부터 등장 */
+  const introK = (phase === "boot" || phase === "code") ? 0 : phase === "pullback" ? pbK : 1; /* 모니터 화면과 겹치지 않게 풀백부터 등장 */
   const tt = Math.min(1, p / 0.25);
   const titleOp = (1 - tt) * introK;
   titleEl.style.opacity = titleOp;
