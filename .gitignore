@@ -5,3 +5,6 @@ tools/playdata/node_modules/
 
 # 111% 제출본 PDF는 index.html에서 매번 다시 뽑는다 (헤드리스 크롬)
 111/*.pdf
+
+# Blender 자동 백업은 로컬 보존, 원본 .blend 및 런타임 .glb만 추적
+*.blend1
