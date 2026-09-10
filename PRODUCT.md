@@ -26,7 +26,9 @@ web — 기본 공개 경로는 `/v2/3d/`
 
 - 원본 진실: LLM_WIKI `output/portfolio/2026-portfolio-page.md`(마스터 문서)·`wiki/career/*`와 동기화. 수치는 `personal-profile.md` 확정값만 사용
 - 플레이 데이터: `tools/playdata/` 덤프 → `assets/play-data.js` (재실행 가능)
-- 지원처: 펄어비스(기획 인턴 08-24)·111% 등 국내 게임사
+- 현재 준비: 스마일게이트메가포트 팀 로그라이크 RPG QA. 지원 현황의 단일 기준은 Notion 포트폴리오 마스터. 펄어비스 기획은 08-23 지원 포기, 111%는 08-31 서류 탈락.
+- 2026-09-09: 개발 디자인 먼저 푸시, QA 검증 작업실 전면 개편, 기획은 모델 보존·테마 동기화. 세 트랙 공통 토큰은 workspace-tokens.css.
+- QA: BUG-001 5/5 조건 재현, BUG-004 1회 관측, ISSUE-003 명세 질의, BUG-002 미승격 관찰. 카제나 18 TC는 전부 미실행. 원인 추정과 실제 확인을 분리.
 
 ## Capabilities and Constraints
 

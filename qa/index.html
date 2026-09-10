@@ -1,406 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>김강환 — 게임 QA · 검수 보고서</title>
-<meta name="description" content="김강환 · 게임 QA 포트폴리오 — 감이 아니라 재현과 근거로">
-<meta property="og:type" content="website">
-<meta property="og:title" content="김강환 — 게임 QA">
-<meta property="og:description" content="결함 리포트·테스트 설계·게임성 분석 — 감이 아니라 재현과 근거로">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>김강환 · 게임 QA — 검증 작업실</title>
+<meta name="description" content="조건을 바꿔 재현하고, 근거로 판정합니다. 붉은사막 결함·관찰 기록, 테스트 설계, 카제나 QA 실무 시트 준비.">
+<meta property="og:title" content="김강환 · 게임 QA — 검증 작업실"><meta property="og:description" content="재현 조건, 대조군, 판단이 바뀐 이유까지."><meta property="og:type" content="website">
+<link rel="canonical" href="https://kanghwani.github.io/portfolio/qa/">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Do+Hyeon&display=swap">
-<link rel="stylesheet" href="../assets/manual.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23CD6433'/><circle cx='7' cy='16' r='2.6' fill='%23F4F1EA'/><text x='19' y='23' font-size='15' font-family='sans-serif' font-weight='800' fill='%23F4F1EA' text-anchor='middle'>Q</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
+<link rel="stylesheet" href="../assets/workspace-tokens.css"><link rel="stylesheet" href="../assets/qa-workspace.css">
 </head>
-<body data-book="김강환 — QA 검수 보고서">
-<!--
-THESIS: QA 포트폴리오를 '박스 소프트웨어 사용자 매뉴얼'의 제3권 — 검수 보고서로 인쇄한다. 개발 포폴(index.html)·기획서(design/)와 같은 색판·아세테이트 리프·포어엣지 탭을 공유한다.
-BOUNDARY: DESIGN.md의 월드를 상속한다(2026-08-21 경계 확장). 색을 늘리지 않는다 — Pass/Fail·등급 하향은 잉크의 채움과 괘선으로 찍고, 버밀리언은 정오표뿐이다.
--->
-
-<!-- 표지 -->
-<section class="board cover" id="cover" data-c="1" data-no="00" data-title="표지 · 차례" data-sum="감이 아니라 재현과 근거로 — 이 보고서가 무엇을 담고 있나">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">QA REPORT</span>
-      <h2>표지 · 차례</h2>
-      <span class="ext">pp.01–02</span>
-    </div>
-    <div class="leaf">
-      <p class="cover-kind"><span>QA INSPECTION REPORT</span><span>VER 2026.08</span></p>
-      <h1>김강환</h1>
-      <p class="role">게임 QA</p>
-      <p class="lede">
-        감이 아니라, <strong>재현과 근거</strong>로 말합니다.<br>
-        신작 오픈월드 한 편을 15시간 플레이하며 <strong>결함 리포트 3건과 게임 분석서</strong>로 정리했습니다.
-        이상 동작을 보면 정상이라면 어떻게 동작해야 하는지 가정하고, <strong>조건을 바꿔가며 재현해 원인을 좁힙니다.</strong>
-        근거가 무너지면 제가 매긴 등급도 스스로 내립니다.
-      </p>
-      <div class="spec-box">
-        <table>
-          <tr><td>결함 리포트</td><td>3건 · 재현 확인 2건 · 관찰 1건</td></tr>
-          <tr><td>검수 대상</td><td>붉은사막(Crimson Desert) · PS5 · 빌드 1.16.03 · 약 15시간</td></tr>
-          <tr><td>플레이 라이브러리</td><td>PS 192종 · LoL 14년(최고 다이아 2회)</td></tr>
-          <tr><td>기록 습관</td><td>게임 분석 블로그 69편</td></tr>
-        </table>
-      </div>
-      <div class="errata">
-        외부 분석입니다. 기획서·기능명세서에 접근할 수 없으므로 명세 이슈는 게임 내 공개 사양과 장르 표준을 기준으로 했고,
-        코드 원인 추정은 전부 <b>검증되지 않은 가설</b>로 표시했습니다.
-      </div>
-
-      <h4>차례</h4>
-      <div class="tw">
-        <table class="t">
-          <thead><tr><th>장</th><th>제목</th><th>이 장이 담는 것</th></tr></thead>
-          <tbody>
-            <tr><td class="k">01</td><td><a href="#reports">결함 리포트</a></td><td>BUG-001 · BUG-004 · ISSUE-003 · BUG-002</td></tr>
-            <tr><td class="k">02</td><td><a href="#testdesign">테스트 설계</a></td><td>우연히 마주친 것에서, 계획적으로 찾는 것으로</td></tr>
-            <tr><td class="k">03</td><td><a href="#analysis">게임 분석서</a></td><td>관찰이 수렴한 4개 패턴</td></tr>
-            <tr><td class="k">04</td><td><a href="#skills">부록 A · 기술 사양</a></td><td>QA · 플랫폼 · 개발 · 언어</td></tr>
-            <tr><td class="k">05</td><td><a href="#play">부록 B · 플레이 이력</a></td><td>오래 좋아한 취미를, 이제 직무의 눈으로도</td></tr>
-            <tr><td class="k">06</td><td><a href="#colophon">판권 · 여러 길을 돌아, 게임으로</a></td><td>연혁과 연락처</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <p class="enclosed">
-        <span>동봉물 ENCLOSED</span>
-        <a href="https://horse-piper-1e0.notion.site/Crimson-Desert-QA-3b37fea9f7d5819aa781d3ed86d5df7f">분석 전문</a>
-        <a href="../">개발 포트폴리오</a>
-        <a href="../design/">기획 포트폴리오</a>
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=zzangh91@naver.com&su=QA%20%EB%AC%B8%EC%9D%98" target="_blank" rel="noopener" data-copy="zzangh91@naver.com">메일</a>
-      </p>
-    </div>
-  </div>
+<body>
+<a class="skip" href="#reports">보고서로 바로 이동</a>
+<header class="topbar"><a class="identity" href="#top">KANGHWAN <span>/ QA</span></a><nav aria-label="주요 메뉴"><a href="#reports">검증 기록</a><a href="#testdesign">테스트 설계</a><a href="#contact">연락처</a></nav><span class="edition">2026.09</span></header>
+<main id="top">
+<section class="hero wrap" aria-labelledby="hero-title">
+<div class="intro"><p class="eyebrow">GAME QA · 김강환</p><h1 id="hero-title">발견 다음의 일.<br><em>조건을 바꾸고,<br>판단을 고칩니다.</em></h1>
+<p class="lede">이상 동작 하나를 찾는 데서 멈추지 않습니다.<br>어떤 조건에서 발생하는지 좁히고,<br>확인한 것과 아직 모르는 것을 나눠 기록합니다.</p>
+<div class="actions"><a class="button primary" href="#reports">검증 기록 열기 ↗</a><a class="button" href="https://horse-piper-1e0.notion.site/Crimson-Desert-QA-3b37fea9f7d5819aa781d3ed86d5df7f">분석 전문</a></div>
+<p class="small">붉은사막 · PS5 외부 분석 / 2026.08 관찰 기록<br>개발사 내부 QA·실무 경력으로 표기하지 않습니다.</p></div>
+<div class="evidence-stage"><div class="record-stack" id="record-stack"><div class="back-sheet" aria-hidden="true">CONTROL GROUP / OBSERVATION LOG</div><div class="record-card"><div class="clip" aria-hidden="true"></div><div class="card-top"><span>BUG-001</span><span>재검증 기록</span></div><p class="card-label">운반 중 회피 / 카메라 분리</p><h2>같은 입력.<br>다른 결과.</h2><p class="card-note">조건을 선택해 당시 관측 결과를 비교하세요.</p>
+<div class="condition-picker" role="group" aria-label="BUG-001 관측 조건"><button type="button" data-condition="0" aria-pressed="true">옥상 · 오크통</button><button type="button" data-condition="1" aria-pressed="false">옥상 · 밀포대</button><button type="button" data-condition="2" aria-pressed="false">평지 · 오크통</button></div>
+<div class="observation" aria-live="polite" aria-atomic="true"><span id="observation-status">현상 재현</span><strong id="observation-result">카메라 분리 · 약 5초 후 복구</strong><p id="observation-detail">라이언크레스트 망루 옥상 + 대형 오크통 + 회피. 해당 조건에서 5/5 재현.</p></div>
+<div class="record-footer"><span>2026.08.05 / PS5</span><span>기록 탐색 · 게임 재현 아님</span></div></div></div><p class="stage-caption">REPRODUCE → COMPARE → RECLASSIFY</p></div>
 </section>
-
-<!-- 01 결함 리포트 -->
-<section class="board" id="reports" data-c="2" data-no="01" data-title="제1장 결함 리포트" data-sum="붉은사막 · PS5 빌드 1.16.03 · 기본 난이도 · 기본 컨트롤 프리셋">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">QA 01</span>
-      <h2>결함 리포트</h2>
-      <span class="ext">reports/ · 4건</span>
-    </div>
-
-    <div class="leaf">
-      <h3>검수 조건</h3>
-      <p class="meta">PS5 · 빌드 1.16.03 · 기본 난이도 · 기본 컨트롤 프리셋</p>
-      <p class="lead"><strong>외부 분석</strong>이라 기획서·기능명세서를 볼 수 없으므로,
-        명세 이슈는 게임 내 공개 사양과 장르 표준을 기준으로 <strong>정책 확정이 필요해 보이는 지점을 질문 형태로</strong> 정리했습니다.
-        코드 원인 추정은 전부 <strong>검증되지 않은 가설</strong>로 표시했습니다.</p>
-    </div>
-
-    <div class="leaf">
-      <p class="filehead"><span>BUG-001</span><span>운반 상태 전이 / 카메라</span><span class="stx">Minor · Low~Medium</span></p>
-      <h3>운반 중 회피 시 카메라가 5초간 분리</h3>
-      <p class="meta">특정 지점에서 대형 오브젝트 운반 중 회피 입력 · 재현율 5 / 5 (100%)</p>
-      <p class="lead">제가 쓴 첫 리포트이자, <strong>재검증으로 제가 매긴 등급을 스스로 내린</strong> 리포트입니다. 발견을 부풀리면 개발팀의 우선순위 판단을 왜곡시킵니다.</p>
-      <figure>
-        <img src="../assets/qa-bug001-repro.gif"
-             alt="대형 오브젝트 운반 중 회피 입력 시 카메라가 캐릭터에서 분리되어 약 5초간 고정되었다가 페이드와 함께 복구된다."
-             loading="lazy" onerror="this.closest('figure').remove()">
-        <figcaption>그림 1-1 · BUG-001 재현 — 운반 중 회피 입력 → 카메라 분리 → 약 5초 뒤 자동 복구. 재현율 5/5.</figcaption>
-      </figure>
-
-      <h4>조건을 어떻게 좁혔나</h4>
-      <div class="case">
-        <div class="cbar">축을 둘로 갈랐다</div>
-        <dl>
-          <dt>대조군 1</dt><dd><b>같은 자리 × 다른 운반물</b>(밀포대) → 정상</dd>
-          <dt>대조군 2</dt><dd><b>같은 운반물 × 다른 지형</b>(평지) → 정상</dd>
-          <dt>결론</dt><dd><b>장소 · 오브젝트 · 입력 세 조건이 모두 맞아야</b> 발생. "대형 오브젝트 버그"가 아니라 그 지점의 그 오크통</dd>
-          <dt>등급 근거</dt><dd>복구 후 <b>캐릭터 위치·오브젝트·체력이 전부 정상</b> → 게임플레이 로직은 옳게 동작했고 어긋난 것은 카메라 하나. 약 5초 뒤 자동 복구</dd>
-        </dl>
-      </div>
-      <div class="grade">
-        <span class="down">심각도 <b>Major → Minor</b></span>
-        <span class="down">우선순위 <b>High → Low~Medium</b></span>
-        <span>근거: 자동 복구 + 낮은 노출 빈도</span>
-      </div>
-
-      <h4>원인 추정 <span class="cm">(개발 경험 기반 가설 — 검증되지 않음)</span></h4>
-      <ul>
-        <li>drop 처리는 정상이므로 carry 해제 자체는 문제가 없고, <strong>carry 연출용 카메라 앵커의 해제</strong>가 어긋난 것으로 보임</li>
-        <li>약 5초 뒤 페이드와 함께 복구되는 것은 <strong>별도의 카메라 워치독</strong> 동작으로 추정 — 복구 장치는 있으나 발동까지 5초</li>
-      </ul>
-      <div class="note"><b>등급에 조건을 붙였습니다.</b> 5초 동안 <b>조작까지 차단</b>되는 것을 확인했습니다. 자동 복구와 낮은 노출 빈도를 근거로 Minor를 매겼지만,
-        해당 지점에 적이 배치돼 있지 않아 <b>전투 중 발생 케이스는 재현하지 못했습니다.</b> 그 조건에서 재현되면 상향을 제안하는 것이 맞다고 봅니다.</div>
-      <div class="specrow"><span>재현율측정</span><span>대조군설계</span><span>등급하향</span><span>원인추정</span></div>
-    </div>
-
-    <div class="leaf">
-      <p class="filehead"><span>BUG-004</span><span>상호작용 / 타겟팅</span><span class="stx">Minor · Low</span></p>
-      <h3>특정 NPC에게 통상 각도에서 상호작용 타겟팅이 걸리지 않음</h3>
-      <p class="meta">퀘스트 진행 · 1회 관측 — 퀘스트가 진행돼 해당 NPC가 그 위치에 없어 재검증 불가. 재현 절차에 <strong>퀘스트 단계</strong>를 사전 조건으로 명시</p>
-      <p class="lead">이 리포트의 핵심은 재현 절차가 아니라 <strong>"이 NPC만인가, 시스템 전반인가"</strong>를 가른 것입니다. 이 판정이 결함의 성격과 <strong>담당 조직</strong>을 바꿉니다.</p>
-
-      <h4>변수 분리 — 어느 팀이 받아야 하는 티켓인가</h4>
-      <div class="case">
-        <div class="cbar">가설 두 개를 세우고 대조군으로 갈랐다</div>
-        <dl>
-          <dt>H1</dt><dd><b>개별 데이터 결함</b> — 해당 NPC만 콜라이더·오프셋 설정 오류 → 레벨/데이터 담당, 수정 비용 낮음</dd>
-          <dt>H2</dt><dd><b>판정 시스템 문제</b> — 상호작용 범위가 전반적으로 좁음 → 시스템 담당, 영향 범위가 게임 전체</dd>
-          <dt>판정</dt><dd>다른 <b>퀘스트·상점 NPC 3명</b>에게 같은 거리·각도로 재시도 → <b>전원 정상 → H1 확정</b></dd>
-          <dt>결과</dt><dd>레벨·데이터 담당 티켓 · 수정 비용 낮음 · 다른 콘텐츠에 영향 없음</dd>
-        </dl>
-      </div>
-      <div class="note"><b>대조군을 한 번 잘못 잡았고, 그게 이 리포트에서 가장 배운 지점입니다.</b>
-        처음엔 일반 주민을 대조군으로 썼는데 3명 전원 실패했습니다. 그런데 그건 결함이 아니라 <b>사양</b>이었습니다 —
-        이 게임의 상호작용 입력은 퀘스트 보유·상점 NPC에게만 성립합니다. 그대로 읽었으면 <b>H2로 오판</b>해 사양을 결함으로 보고했을 겁니다.
-        <b>축을 정하기 전에 사양을 먼저 확인해야 한다</b>는 것을 여기서 배웠습니다.</div>
-      <div class="grade">
-        <span class="down">심각도 <b>Major → Minor</b></span>
-        <span class="down">우선순위 <b>High → Low</b></span>
-        <span>근거: 위치를 조금 조정하면 성립 · 영향 범위 1개</span>
-      </div>
-      <p><a class="playmore" href="https://youtu.be/Byeouoed1i0">▶ 재현 클립<span class="yt">00:40 — 타겟팅 불성립 구간</span></a></p>
-      <div class="specrow"><span>변수분리</span><span>가설검정</span><span>티켓라우팅</span><span>사전조건</span></div>
-    </div>
-
-    <div class="leaf">
-      <p class="filehead"><span>ISSUE-003</span><span>UX / 정보 전달</span><span class="stx">결함 아님 → 명세 이슈</span></p>
-      <h3>행동을 제약하는 상태 표시가 구간에 따라 억제됨</h3>
-      <p class="meta">개선 우선순위 Medium — 결함이 아니므로 심각도를 부여하지 않음</p>
-      <p class="lead">버그로 의심 → 사양 확인 → <strong>UX 이슈로 재분류</strong>까지의 판단 과정 자체가 이 항목의 내용입니다.
-        사양을 버그로 보고하면 개발 리소스를 낭비시킵니다. <strong>버그가 아님을 확인하는 것</strong>도 QA의 일이라고 생각합니다.</p>
-
-      <h4>진단을 세 번 고쳤다 — 최종본만 유효하다</h4>
-      <div class="case">
-        <div class="cbar">1차 → 2차 → 3차</div>
-        <dl>
-          <dt>1차</dt><dd>"게임이 사유를 알려주지 않는다" → <span class="fail"></span>표시 기능은 존재한다</dd>
-          <dt>2차</dt><dd>"표시가 있었는데 내가 못 읽었다" → <span class="fail"></span>그 구간에는 표시가 없었다</dd>
-          <dt>3차</dt><dd><span class="pass"></span><b>일반 승마 시에는 표시되는데, 동행 퀘스트 중에는 같은 상태인데도 표시되지 않는다</b></dd>
-          <dt>진짜 발견</dt><dd><b>구간에 따라 상태 표시가 억제된다.</b> 정보가 가장 필요한 순간 — 동행 NPC를 따라가야 하는데 못 따라가는 순간 — 에만 사라진다</dd>
-        </dl>
-      </div>
-      <div class="note"><b>왜 결함이 아니라 명세 이슈인가.</b> 동행·시네마틱 구간에서 HUD를 정리하는 것은 흔한 처리이고 의도된 것일 수 있습니다.
-        <b>억제 기준이 정의돼 있지 않아 Pass/Fail을 판정할 수 없으므로</b>, 결함 보고가 아니라 정책 확정 요청이 맞다고 판단했습니다.
-        <br><br>또한 그 구간에서 달리지 못한 원인은 <b>둘 다 참</b>이었습니다(말 상태 + 동행 구간 자체의 제한). 어느 쪽이 직접 원인인지 구분되지 않으므로
-        <b>"둘 다 걸려 있었고 화면은 둘 중 아무것도 알려주지 않았다"</b>로 썼습니다.</div>
-
-      <h4>개선 제안</h4>
-      <ul>
-        <li>행동을 제약하는 상태 표시는 <strong>구간에 관계없이 유지</strong>한다 (HUD 정리의 예외)</li>
-        <li>입력이 차단되는 순간 <strong>그 자리에서 사유를 제시</strong>한다 — 상시 표시(상태)와 반응 표시(행동 피드백)는 역할이 다르고, 이 사례엔 둘 다 필요했다</li>
-      </ul>
-      <p><a class="playmore" href="https://youtu.be/0pNiOsJ6yVw">▶ 재현 클립<span class="yt">표시가 없는 것이 근거</span></a></p>
-      <div class="specrow"><span>재분류</span><span>명세이슈</span><span>UX진단</span><span>판단과정기록</span></div>
-    </div>
-
-    <div class="leaf">
-      <p class="filehead"><span>BUG-002</span><span>전투 / 물리·충돌</span><span class="stx">관찰 · 리포트 미승격</span></p>
-      <h3>전투 중 적 캐릭터가 바위 지오메트리 내부로 관통</h3>
-      <p class="meta">1회 관측 · 심각도 미확정</p>
-      <p class="lead"><strong>클립이 있어도 조건을 모르면 리포트가 되지 않습니다.</strong> 개발자가 고칠 수 있으려면 "무엇을 했더니"가 필요합니다.
-        그래서 이 항목은 <strong>결함 리포트가 아니라 관찰</strong>로 분류하고, 승격에 필요한 정보를 목록으로 남겼습니다 —
-        위치 특정 · 적 종류 · 넉백 유발 스킬 사용 여부 · 재현 3회 · 관통 후 적의 상태(빠져나오나 / 갇히나 / 공격이 닿나).</p>
-      <p><a class="playmore" href="https://youtu.be/B1JomtBeMpE">▶ 관찰 클립<span class="yt">02:23 — 적이 바위에 겹쳐지는 시점</span></a></p>
-      <div class="specrow"><span>관찰vs리포트</span><span>승격조건</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- 02 테스트 설계 -->
-<section class="board" id="testdesign" data-c="3" data-no="02" data-title="제2장 테스트 설계" data-sum="겪은 결함에서 아직 안 겪은 결함이 있을 자리를 찾는다">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">QA 02</span>
-      <h2>테스트 설계</h2>
-      <span class="ext">test-design/ · 2건</span>
-    </div>
-
-    <div class="leaf">
-      <h3>우연히 마주친 것에서, 계획적으로 찾는 것으로</h3>
-      <p class="meta">전환의 기록 — 매트릭스 2종</p>
-      <p class="lead">여기까지는 <strong>우연히 마주친 것</strong>을 기록했습니다. 이 전환이 "게임 잘하는 사람"과 QA의 차이라고 생각합니다 —
-        겪은 결함에서 <strong>아직 안 겪은 결함이 있을 자리</strong>를 찾습니다.</p>
-    </div>
-
-    <div class="leaf">
-      <p class="filehead"><span>TS-A</span><span>상태 전이 매트릭스</span><span class="stx">설계 축소</span></p>
-      <h3>운반 상태 × 입력 매트릭스</h3>
-      <p class="lead">BUG-001을 "오크통 버그"가 아니라 <strong>운반 상태 × 상태 전이 입력의 전이 처리 누락</strong>으로 일반화하고 조합을 전수 확인하려 했습니다.
-        그런데 실행해보니 <strong>대부분의 칸이 실행 자체가 불가능</strong>했습니다.</p>
-      <div class="tw">
-        <table class="t">
-          <thead><tr><th>운반물 ＼ 입력</th><th>○ 회피(내려놓기)</th><th>던지기</th><th>점프</th><th>공격</th><th>말 탑승</th><th>대화</th></tr></thead>
-          <tbody>
-            <tr><td class="k">대형 오크통 (망루 옥상)</td><td><b class="fail">Fail — BUG-001</b></td><td class="pass">Pass</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td></tr>
-            <tr><td class="k">대형 오크통 (필드 평지)</td><td class="pass">Pass</td><td>—</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td></tr>
-            <tr><td class="k">밀포대 (망루 옥상)</td><td class="pass">Pass</td><td>—</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td></tr>
-            <tr><td class="k">소형 오크통</td><td class="pass">Pass</td><td>—</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td><td class="blk">Block</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="note"><b>설계가 틀렸던 것도 결과입니다.</b> Block은 사전 조건 미충족 — 운반 중에는 점프·공격·탑승·대화 입력이 아예 받아들여지지 않습니다.
-        즉 이 게임의 사양상 운반 중 가능한 동작은 <b>회피와 던지기 두 가지뿐</b>이고, "운반 × 모든 입력"이라는 제 초기 매트릭스는 성립하지 않는 조합을 대부분 포함하고 있었습니다.
-        <br><br>대신 축을 <b>입력에서 장소·오브젝트로 바꾸니</b> 유효한 대조군이 나왔고, 그 결과가 BUG-001의 3중 조건 특정으로 이어졌습니다.
-        <b>매트릭스의 축을 잘못 잡으면 빈칸만 늘어납니다.</b></div>
-    </div>
-
-    <div class="leaf">
-      <p class="filehead"><span>TS-B</span><span>다중 기능 버튼 매트릭스</span><span class="stx">패턴 발견</span></p>
-      <h3>한 버튼에 여러 기능 — 분기 조건의 경계</h3>
-      <p class="lead">겪은 마찰을 나열해보니 <strong>뿌리가 하나</strong>였습니다. 이 게임은 한 버튼에 <strong>문맥 의존적으로 여러 기능</strong>을 할당합니다.</p>
-      <div class="tw">
-        <table class="t">
-          <thead><tr><th>버튼</th><th>기능 A</th><th>기능 B</th><th>분기 조건</th><th>실제로 겪은 문제</th></tr></thead>
-          <tbody>
-            <tr><td class="k">○</td><td>회피</td><td>내려놓기</td><td>운반 상태</td><td><b class="fail">BUG-001</b></td></tr>
-            <tr><td class="k">X</td><td>점프</td><td>아이템 획득</td><td>근처 아이템 유무</td><td>아이템 먹으려다 계속 점프</td></tr>
-            <tr><td class="k">L1 (전투)</td><td>락온</td><td>방어·패링</td><td>전투 상태</td><td>원하는 타이밍에 방어가 안 나감</td></tr>
-            <tr><td class="k">L1 (비전투)</td><td>상호작용 성립</td><td>불성립</td><td><b>대상 NPC의 유형</b></td><td><b class="fail">BUG-004</b> · 대상인지 눌러보기 전엔 모름</td></tr>
-            <tr><td class="k">터치패드</td><td>짧게 — 카메라 전환</td><td>길게 — 메뉴</td><td>누른 시간</td><td>카메라 바꾸려다 메뉴가 열림 (반대도)</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="note"><b>이 표가 곧 버그 헌팅 지도입니다.</b> 문맥 분기가 있는 곳에 전이 버그가 몰리므로, 각 버튼을 <b>분기 조건의 경계에서</b> 집중 테스트합니다.
-        <br><br>그리고 여기서 상위 관찰이 하나 나왔습니다 — 이 게임의 조작 마찰은 개별 실수가 아니라
-        <b>"버튼 부족을 문맥 분기로 해결한 설계"의 일관된 부작용</b>이고, 분기 조건이 유저에게 보이지 않을 때 오조작과 버그가 동시에 발생합니다.</div>
-    </div>
-  </div>
-</section>
-
-<!-- 03 게임 분석서 -->
-<section class="board" id="analysis" data-c="4" data-no="03" data-title="제3장 게임 분석서" data-sum="개별 마찰이 흩어진 불만이 아니라 네 갈래로 수렴했다">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">QA 03</span>
-      <h2>게임 분석서</h2>
-      <span class="ext">analysis/ · 4개 패턴</span>
-    </div>
-    <div class="leaf">
-      <h3>관찰이 수렴한 4개 패턴</h3>
-      <p class="meta">결함 리포트가 "이것을 고쳐 달라"라면, 이 분석은 "왜 같은 종류의 문제가 계속 나오는가"</p>
-      <p class="lead">개별 마찰들은 흩어진 불만이 아니라 <strong>네 갈래로 수렴</strong>했습니다.</p>
-
-      <h4>패턴 A – D</h4>
-      <div class="tw">
-        <table class="t">
-          <thead><tr><th>패턴</th><th>정의</th><th>사례</th></tr></thead>
-          <tbody>
-            <tr><td class="k">A · 관습 역행 + 미고지</td><td>업계 표준과 다르게 만들고, 다르다고 알리지 않음</td><td>대상 고정이 통상 위치가 아닌 방향키 · 퀘스트 진행도가 감소형</td></tr>
-            <tr><td class="k">B · 목표는 주고<br>절차·차단 사유는 안 줌</td><td>무엇을 할지는 알려주나, 어떻게 / 왜 안 되는지를 안 알려줌</td><td><b>ISSUE-003</b> · 운반물 목적지 · 도구 위치</td></tr>
-            <tr><td class="k">C · 성립 조건이 비가시적</td><td>입력이 되는 조건과 안 되는 조건의 경계가 화면에 없음</td><td><b>BUG-004</b> · 홀드/탭 구분 · 입력 버퍼 창</td></tr>
-            <tr><td class="k">D · 노력 대비 피드백 부족</td><td>투입한 만큼 결과가 체감되지 않음</td><td>반복 처치 후 성취감 · 패링 쾌감 · 진동 부재</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="note"><b>A·B·C는 뿌리가 하나 — 정보 전달의 실패입니다.</b> 그리고 이 셋은 시스템을 바꾸지 않고 <b>안내만 고쳐도 해결됩니다</b>.
-        대상 고정은 이미 존재하고, 차단 사유는 이미 내부적으로 판정되고 있으며, 입력 성립 조건도 이미 코드에 있습니다 —
-        <b>없는 것을 만드는 문제가 아니라 있는 것을 보여주는 문제</b>입니다. D만 연출·밸런스 영역이라 수정 비용이 크고 판단에 취향이 개입하므로 분리했습니다.</div>
-      <p class="keynote">A·B·C가 만들어내는 결과는 매번 같았습니다 — <strong>성립 조건이 보이지 않을 때, 유저는 시스템을 의심하지 않고 자기 자신을 의심합니다.</strong>
-        단순한 불편이 아닙니다. 자기 능력을 의심한 유저는 불평하지 않고 조용히 이탈하기 때문에, 지표에는 이유 없는 이탈로만 남습니다.</p>
-      <p><a class="playmore" href="https://horse-piper-1e0.notion.site/Crimson-Desert-QA-3b37fea9f7d5819aa781d3ed86d5df7f">전문 보기 — 붉은사막 QA 분석 · 결함 리포트<span class="yt">notion</span></a></p>
-    </div>
-  </div>
-</section>
-
-<!-- 부록 A 기술 사양 -->
-<section class="board" id="skills" data-c="5" data-no="04" data-title="부록 A 기술 사양" data-sum="QA는 기대와 실제를 대조하는 일 — 그 일을 이미 직업으로 해봤다">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">부록 A</span>
-      <h2>기술 사양</h2>
-      <span class="ext">skills</span>
-    </div>
-    <div class="leaf">
-      <h3>기술 사양</h3>
-      <p class="meta">동작 환경과 검증 방법</p>
-      <div class="spec-box">
-        <table>
-          <tr><td>QA</td><td>결함 리포트 작성 · 재현 절차/재현율 · 심각도·우선순위 판정 · 대조군 설계 · 상태 전이 매트릭스 · 경계값 분석</td></tr>
-          <tr><td>플랫폼</td><td>PS5 (192종 · 성능 모드 · 트로피 · 클립 캡처) · Steam · Game Pass · PC</td></tr>
-          <tr><td>개발</td><td>Unity URP · C# — 증상을 보고 어느 처리에서 났을지 좁히는 데 사용</td></tr>
-          <tr><td>도구</td><td>Git(브랜치·PR 리뷰·머지) · Notion · 문서화(dev-log)</td></tr>
-          <tr><td>언어</td><td>영어 — 호주 워킹홀리데이 2년 · 가정에서 일상 사용 · OPIc IH(2023) · 영문 문서 독해</td></tr>
-          <tr><td>인접 경험</td><td>LLM 응답 품질 평가(Scale AI) — 평가자로 시작해 리뷰어로 선발</td></tr>
-          <tr><td>학력</td><td>방송통신대 컴공(2027.02 졸업 예정) · 개발 부트캠프(2026.08.16 수료)</td></tr>
-        </table>
-      </div>
-      <div class="note"><b>왜 이 조합인가.</b> QA는 <b>기대와 실제를 대조하는 일</b>입니다. 저는 그 일을 이미 직업으로 해봤고(LLM 응답 A/B 정확성 평가 → 리뷰어 선발),
-        게임을 만들어본 경험으로 <b>증상에서 원인 층위를 좁힐 수 있으며</b>, 콘솔이 주 플랫폼이라 플랫폼 기능 사용에 익숙합니다.
-        글로벌 서비스에서는 해외 빌드 검수·현지화 텍스트 확인·해외 유저 제보 확인에 영어가 직접 쓰이고, 콘솔 플랫폼 인증 문서도 영어입니다.</div>
-    </div>
-  </div>
-</section>
-
-<!-- 부록 B 플레이 이력 -->
-<section class="board" id="play" data-c="6" data-no="05" data-title="부록 B 플레이 이력" data-sum="오래 좋아한 취미를, 이제 직무의 눈으로도">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">부록 B</span>
-      <h2>플레이 이력</h2>
-      <span class="ext">play-history</span>
-    </div>
-    <div class="leaf">
-      <h3>플레이 이력</h3>
-      <p class="meta">PS 라이브러리 192종 · 축별로 QA에서 쓰이는 지점</p>
-      <div class="tw">
-        <table class="t">
-          <thead><tr><th>축</th><th>내용</th><th>QA에서 쓰이는 지점</th></tr></thead>
-          <tbody>
-            <tr><td class="k">라이브서비스</td><td><b>리그 오브 레전드 14년</b>(2012~) · 거의 매 시즌 랭크 · <b>최고 다이아몬드(2018·2020)</b></td><td>패치 하나가 무관해 보이던 조합의 승률까지 바꾸는 것을 계속 겪음 — 요소가 얼마나 촘촘히 얽혀 있는지의 체감</td></tr>
-            <tr><td class="k">온라인 RPG</td><td>디아블로 IV(약 200시간) · ESO · PoE 2 · 원신 · 젠레스 존 제로 · 명일방주: 엔드필드</td><td>라이브 빌드의 반복 콘텐츠·시즌 구조</td></tr>
-            <tr><td class="k">액션 RPG·소울라이크</td><td>블러드본 · 데몬즈 소울 · Lies of P · 나인 솔즈 · 워롱 · 명말</td><td>같은 계보를 이어서 플레이 — <b>패링·회피 판정과 스태미너 설계가 작품마다 어떻게 다른지</b>를 비교할 수 있음</td></tr>
-            <tr><td class="k">내러티브 액션</td><td>The Last of Us · 언차티드 · 고스트 오브 쓰시마·요테이(<b>플래티넘</b>)</td><td>가장 좋아하는 계열 — 붉은사막을 분석 대상으로 고른 이유</td></tr>
-            <tr><td class="k">그 외</td><td>오픈월드(RDR2·호라이즌·사이버펑크) · 로그라이크(하데스·발라트로·슬더스) · 메트로배니아 · 협동</td><td>장르 표준을 알아야 <b>"관습 역행"</b>을 판별할 수 있음</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="lead" style="margin-top:20px">플레이스테이션이 주 플랫폼이고 라이브러리에 <strong>192종</strong>이 있습니다. 트로피를 모으는 편은 아니지만 정말 좋아한 작품은 끝까지 봅니다.
-        최근에는 플레이 방식이 조금 달라졌습니다 — 관찰한 것을 기록하며 정리하게 됐습니다.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 판권 -->
-<section class="board colophon" id="colophon" data-c="7" data-no="06" data-title="판권 · 연혁" data-sum="업종은 바뀌어도 하는 일은 같았다 — 가정하고, 실행하고, 대조하는 것">
-  <div class="bed">
-    <div class="chap">
-      <span class="no">판권</span>
-      <h2>여러 길을 돌아, 게임으로</h2>
-      <span class="ext">연혁과 연락처</span>
-    </div>
-    <div class="leaf">
-      <h3>여러 길을 돌아, 게임으로</h3>
-      <p class="meta">2015년 첫 입사부터 2026년 3월까지 · 비어 있는 기간 없음</p>
-      <div class="glog">
-        <div class="grow head"><span class="hash">지금 →</span><span class="msg"><b>게임 QA</b> — 기대와 실제를 대조하는 일</span></div>
-        <div class="grow"><span class="hash">약 1년</span><span class="msg"><b>Scale AI · LLM 응답 품질 평가</b> — A/B를 정확성 기준으로 비교하고 근거를 서술. <b>평가자 → 리뷰어로 선발</b>돼 다른 평가자의 판정을 검토</span></div>
-        <div class="grow"><span class="hash">3년 9개월</span><span class="msg"><b>타코야끼 매장 운영</b> — 메뉴 2종을 나란히 팔아 주문량으로 비교한 뒤 1종으로. 대조군을 두고 내린 판정</span></div>
-        <div class="grow"><span class="hash">2년</span><span class="msg"><b>구매대행</b> — 텍스트 기반 응대로 반복 문의를 유형화. 불만을 재현 가능한 사실로 바꾸는 일</span></div>
-        <div class="grow"><span class="hash">2년</span><span class="msg"><b>호주 워킹홀리데이</b> — 영어권 체류·근무</span></div>
-        <div class="grow"><span class="hash">11개월</span><span class="msg"><b>구독제 서비스 창업 시도</b> — 1차 시장 검증에서 종료. 검증 안 한 전제 하나가 뒤의 판단을 전부 틀어지게 한다</span></div>
-        <div class="grow"><span class="hash">1년 9개월</span><span class="msg"><b>여기어때 호텔영업</b> — 초기 멤버로 제휴 영업. 거부하는 상대를 근거로 설득하는 법</span></div>
-      </div>
-      <p class="keynote">2015년 첫 입사부터 2026년 3월까지 <strong>비어 있는 기간은 없습니다.</strong> 업종은 바뀌어도 하는 일은 같았습니다 —
-        <strong>가정하고, 실행하고, 기대와 실제를 대조하는 것.</strong> 달라진 것이 있다면, 이제 그 대상이 제가 인생을 걸기로 한 것이라는 점입니다.</p>
-
-      <h4>연락처</h4>
-      <p class="lead">감이 아니라 재현과 근거로 말하는 사람이 되고 싶습니다.</p>
-      <div class="colo-links">
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=zzangh91@naver.com&su=QA%20%EB%AC%B8%EC%9D%98" target="_blank" rel="noopener" data-copy="zzangh91@naver.com">zzangh91@naver.com</a>
-        <a href="https://horse-piper-1e0.notion.site/Crimson-Desert-QA-3b37fea9f7d5819aa781d3ed86d5df7f">붉은사막 QA 분석 · 결함 리포트 (전문)</a>
-        <a href="https://blog.naver.com/zzangh91">개발자의 눈으로 보는 게임 · 69편</a>
-        <a href="../">개발 포트폴리오 — Unity 클라이언트</a>
-        <a href="../design/">기획 포트폴리오 — 시스템 기획서</a>
-        <a href="https://github.com/kanghwani">github.com/kanghwani</a>
-      </div>
-      <p class="colo-fine">외부 분석입니다. 기획서·기능명세서에 접근할 수 없으므로 명세 이슈는 게임 내 공개 사양과 장르 표준을 기준으로 했고, 코드 원인 추정은 전부 검증되지 않은 가설로 표시했습니다.</p>
-    </div>
-  </div>
-</section>
-
-<nav class="rail" id="rail" aria-label="장 바로가기"></nav>
-
-<script src="../assets/manual.js"></script>
-</body>
-</html>
+<div class="scope wrap"><span class="signal" aria-hidden="true"></span><p><strong>근거의 범위를 먼저 밝힙니다.</strong> 기획서·소스 코드에 접근하지 않은 외부 분석입니다. 원인과 수정 담당은 가설이며, 현재 빌드에서의 재검증 결과가 아닙니다.</p></div>
+<section class="wrap section" id="reports" aria-labelledby="reports-title">
+<div class="section-head"><div><p class="eyebrow">EVIDENCE DESK</p><h2 id="reports-title">판단이 남아 있는 기록</h2></div><p>결함, 명세 질의, 미확인 관찰을<br>같은 상태로 묶지 않습니다.</p></div>
+<div class="report-layout"><nav class="report-index" aria-label="검증 사례 선택">
+<a href="#bug001" class="selected" aria-current="true"><span>BUG-001 <small>조건 재현</small></span><strong>운반 후 카메라 분리</strong><p>대조군으로 세 조건을 좁힘</p></a>
+<a href="#bug004"><span>BUG-004 <small>1회 관측</small></span><strong>NPC 상호작용 불성립</strong><p>대조군을 잘못 고른 경험</p></a>
+<a href="#issue003"><span>ISSUE-003 <small>명세 질의</small></span><strong>차단 사유가 사라지는 구간</strong><p>버그로 단정하지 않은 이유</p></a>
+<a href="#bug002"><span>BUG-002 <small>미승격 관찰</small></span><strong>적의 바위 지형 관통</strong><p>클립만으로 부족한 정보</p></a>
+</nav><div class="report-body">
+<article id="bug001" class="report"><div class="report-meta"><span>BUG-001 / 운반 상태 전이</span><span>PS5 · 1.16.03 · 2026.08.05 재검증</span></div><h3>발견보다 중요했던 건<br>제가 매긴 등급을 내린 일입니다.</h3><p>처음에는 반복 동작 중 발생하는 심각한 문제로 봤습니다. 같은 자리에서 운반물을, 같은 운반물에서 장소를 바꿔보니 발생 조건은 훨씬 좁았습니다.</p>
+<ol class="steps"><li>라이언크레스트 망루 옥상으로 이동</li><li>대형 오크통을 들어 운반 상태 진입</li><li>○ 회피 입력 후 카메라와 복구 상태 관찰</li></ol>
+<div class="comparison"><div><span>기대</span><p>오브젝트를 내려놓고 회피하며 카메라가 캐릭터를 계속 추적합니다.</p></div><div><span>실제</span><p>카메라가 외부 시점으로 분리된 뒤 약 5초 후 페이드와 함께 복귀합니다.</p></div></div>
+<dl class="facts"><dt>복구 확인</dt><dd>위치·오크통·체력 정상. 해당 조건에서 5/5 재현.</dd><dt>대조군</dt><dd>같은 옥상 + 밀포대 / 평지 + 대형 오크통 / 같은 위치 + 소형 오크통은 정상.</dd><dt>판정 변경</dt><dd><s>Major / High</s> → <strong>Minor / Low~Medium</strong><br>자동 복구와 좁은 발생 조건을 근거로 한 외부 분석자의 제안입니다.</dd><dt>남은 질문</dt><dd>전투 중 발생은 미확인. 재현되면 등급 재검토가 필요합니다. 카메라 앵커·워치독은 코드 확인 전 가설입니다.</dd></dl>
+<p class="evidence-note">영상 공개 링크 미등록. 존재하지 않는 GIF 슬롯으로 증거를 대신하지 않습니다. <a href="https://horse-piper-1e0.notion.site/Crimson-Desert-QA-3b37fea9f7d5819aa781d3ed86d5df7f">재현 기록 원문 ↗</a></p></article>
+<article id="bug004" class="report"><div class="report-meta"><span>BUG-004 / 타겟팅</span><span>PS5 · 1.16.03 · 2026.08.04 관측</span></div><h3>대조군이 틀리면<br>정상 동작도 버그가 됩니다.</h3><p>특정 NPC(페드로)에게 통상 각도에서 상호작용이 성립하지 않았습니다. 처음 고른 일반 주민 3명도 실패했지만, 일반 주민은 원래 상호작용 대상이 아니었습니다.</p>
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/Byeouoed1i0?start=40" title="BUG-004 관찰 영상 — 40초 타겟팅 불성립 구간" loading="lazy" allowfullscreen></iframe></div><a class="small" href="https://youtu.be/Byeouoed1i0?t=40">영상이 보이지 않으면 YouTube에서 보기 ↗</a>
+<dl class="facts"><dt>대조군 수정</dt><dd>상호작용 가능한 퀘스트·상점 NPC 3명, 같은 거리·각도 → 정상.</dd><dt>판단</dt><dd>시스템 전반보다 해당 NPC의 개별 조건을 우선 조사하는 방향을 지지합니다. 콜라이더·데이터 원인, 담당 조직과 수정 비용은 확정하지 않았습니다.</dd><dt>제약</dt><dd>1회 관측. 퀘스트 진행 후 NPC가 이동해 동일 조건 재검증 불가. 사전 조건에 퀘스트 단계를 남겼습니다.</dd><dt>등급 제안</dt><dd>Minor / Low. 위치를 조정하면 상호작용 가능. 다른 콘텐츠의 영향 범위는 미확인입니다.</dd></dl></article>
+<article id="issue003" class="report"><div class="report-meta"><span>ISSUE-003 / 상태 표시</span><span>PS5 · 1.14.00 · 2026.08.02 영상</span></div><h3>고장인지 묻기 전에,<br>의도된 규칙인지 물었습니다.</h3><p>일반 승마 때 보이던 행동 제한 표시가 동행 퀘스트 구간에서는 보이지 않았습니다. 말 상태와 구간 자체의 제한이 동시에 걸려 있었고, 어느 쪽이 직접 원인인지 구분되지 않았습니다.</p><div class="comparison"><div><span>관찰</span><p>따라가야 하는 상황에서 달릴 수 없지만 차단 사유를 알 수 없습니다.</p></div><div><span>명세 질의</span><p>동행·시네마틱 구간에서 HUD를 억제하더라도 행동 제한 사유는 표시해야 할까요?</p></div></div><p>내부 명세를 모르므로 결함 확정 대신 정책 확인 요청으로 남겼습니다. 심각도는 부여하지 않았고 개선 우선순위 Medium을 제안했습니다.</p><a class="button" href="https://youtu.be/0pNiOsJ6yVw">상태 표시 관찰 영상 ↗</a></article>
+<article id="bug002" class="report"><div class="report-meta"><span>BUG-002 / 충돌</span><span>2026.08.02 · 1회 관측</span></div><h3>영상은 있습니다.<br>재현 조건은 아직 부족합니다.</h3><p>전투 중 적이 바위 지형 안으로 들어갔습니다. 발생 조건과 영향 범위를 확정할 수 없어 정식 리포트로 승격하지 않았습니다.</p><h4>승격 전에 확인할 것</h4><ul><li>정확한 위치·적 종류·사용 스킬</li><li>넉백 유무와 발생 직전 입력</li><li>동일 조건 반복 재현과 실패 사례</li><li>관통 후 탈출·피격·공격 가능 여부</li></ul><a class="button" href="https://youtu.be/B1JomtBeMpE?t=143">관찰 영상 · 02:23 ↗</a></article>
+</div></div></section>
+<section class="wrap section" id="testdesign"><div class="section-head"><div><p class="eyebrow">TEST DESIGN</p><h2>빈칸을 채우는 것보다,<br>축을 제대로 잡는 일.</h2></div><p>운반 × 모든 입력에서<br>장소 × 오브젝트로.</p></div><p class="section-intro">운반 중 점프·공격·탑승·대화는 사양상 불가능했습니다. 가능한 전이를 먼저 확인한 뒤 장소와 운반물을 바꿔 유효한 대조군을 만들었습니다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="운반 상태 테스트 매트릭스"><table><caption>TS-A · 2026.08 관찰 기록 / — 미실행 · N/A 사양상 입력 불가</caption><thead><tr><th scope="col">조건</th><th scope="col">회피</th><th scope="col">던지기</th><th scope="col">점프·공격·탑승·대화</th></tr></thead><tbody><tr><th scope="row">망루 옥상 · 대형 오크통</th><td class="fail">Fail · BUG-001</td><td>Pass</td><td>N/A</td></tr><tr><th scope="row">필드 평지 · 대형 오크통</th><td>Pass</td><td>—</td><td>N/A</td></tr><tr><th scope="row">망루 옥상 · 밀포대</th><td>Pass</td><td>—</td><td>N/A</td></tr><tr><th scope="row">같은 위치 · 소형 오크통</th><td>Pass</td><td>—</td><td>N/A</td></tr></tbody></table></div>
+<div class="design-notes"><div><h3>입력보다 상태를 봅니다</h3><p>같은 ○ 입력도 일반 상태에서는 회피, 운반 중에는 내려놓기와 연결됩니다. TS-B는 버튼 이름보다 현재 상태와 전이 결과를 기준으로 나눴습니다.</p></div><div><h3>기준이 없으면 먼저 질문합니다</h3><p>관습과 다른 동작이라는 이유만으로 Fail을 주지 않습니다. 명세가 필요한 항목은 질문으로 남기고 원인 추정과 관측 결과를 분리합니다.</p></div></div>
+<details class="analysis"><summary>관찰에서 얻은 게임성 분석 · 네 가지 패턴</summary><dl class="facts"><dt>관습과 안내</dt><dd>익숙한 입력 배치와 다를 때 안내가 충분한가.</dd><dt>목표와 절차</dt><dd>할 일은 알지만 방법·차단 사유를 모르는가.</dd><dt>성립 조건</dt><dd>입력이 가능한 상태와 불가능한 상태를 구별할 수 있는가.</dd><dt>노력과 피드백</dt><dd>행동의 결과가 시청각 피드백으로 드러나는가.</dd></dl><p>이탈 원인이나 개선 효과를 측정한 결과는 아닙니다. 후속 사용자 테스트로 확인할 가설입니다.</p></details></section>
+<section class="wrap section" id="kajena"><div class="work-in-progress"><div><p class="eyebrow">NEXT INVESTIGATION / 실행 전</p><h2>카오스 제로 나이트메어</h2><p>카드 효과 조합과 전투 상태를 테스트 조건으로 나누는 중입니다. 덱빌딩·로그라이크 QA 지원을 위해 실무 시트 형태로 준비했습니다.</p></div><div class="sheet-preview"><div class="sheet-bar">KAJENA_QA.xlsx <span>초안</span></div><div class="sheet-row"><span>테스트 계획</span><span>TC</span><span>관찰</span><span>결함 양식</span></div><p><strong>18건 · 전부 미실행</strong><br>확인된 결함 0건. 실행 전 설계이며, 결함이 없다는 검증 결과가 아닙니다.</p><p class="small">2026.09.09 초안 · 공개 다운로드 준비 전</p></div></div></section>
+<section class="wrap section" id="skills"><div class="section-head"><div><p class="eyebrow">RELATED EXPERIENCE</p><h2>검증에 연결되는 개발 경험</h2></div></div><div class="design-notes"><div><h3>통합 뒤의 회귀를 봤습니다</h3><p>IDLE CITY 후반 머지를 맡아 열린 PR 6건을 처리했습니다. 파일 충돌이 없어도 프리팹의 옛 상태가 들어오면 이전 작업이 되돌아간다는 것을 확인했습니다.</p><a href="../v2/3d/#idle-city">개발 근거 보기 ↗</a></div><div><h3>판정 자체를 검토했습니다</h3><p>Scale AI에서 한국어 LLM 응답을 비교 평가하고 리뷰어로 선발돼 다른 평가자의 판정 근거를 검토했습니다. 프리랜서 업무위탁, 2024.06–2025.07.</p></div></div><dl class="facts qualifications"><dt>개발·도구</dt><dd>Unity·C# / Git·PR 리뷰 / Notion / XLSX 테스트 시트 초안</dd><dt>플랫폼</dt><dd>PS5·PC·Steam. PS 라이브러리 보유 192종(2026.08 집계); 플레이 완료 수와 구분합니다.</dd><dt>학력·교육</dt><dd>한국방송통신대 컴퓨터공학과 2027.03 졸업 예정 · 오즈코딩스쿨 게임 개발 부트캠프 2026.03–08 수료</dd><dt>영어</dt><dd>호주 체류·근무와 일상 회화 기반. 유효한 공인 어학 성적은 없습니다.</dd></dl></section>
+</main>
+<footer id="contact" class="wrap section"><p class="eyebrow">CONTACT</p><h2>김강환 · 게임 QA</h2><a class="mail" href="mailto:zzangh91@naver.com">zzangh91@naver.com ↗</a><div class="footer-links"><a href="https://horse-piper-1e0.notion.site/Crimson-Desert-QA-3b37fea9f7d5819aa781d3ed86d5df7f">QA 분석 전문</a><a href="https://blog.naver.com/zzangh91">게임 분석 블로그</a><a href="../">개발 경험</a><a href="#top">맨 위로 ↑</a></div><p class="small">문서 갱신 2026.09.09 · 관찰 시점과 현재 게임 빌드는 다를 수 있습니다.</p></footer>
+<script src="../assets/qa-workspace.js"></script>
+</body></html>
