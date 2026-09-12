@@ -53,11 +53,29 @@ strong{color:inherit;font-weight:700}
 #crtfx::after{content:"";position:absolute;inset:0;
   background:radial-gradient(ellipse at 50% 45%,transparent 58%,rgba(12,8,5,var(--vig,.32)) 100%)}
 #after{max-width:820px;margin:0 auto;padding:64px 22px 120px}
+#desk-study{position:fixed;top:14px;left:14px;z-index:30;max-width:calc(100vw - 120px);
+  padding:10px 12px;background:#211a16ed;border:1px solid #665346;border-radius:8px;
+  font:12px/1.5 Pretendard,sans-serif;color:#f3eadf;box-shadow:0 4px 16px #0003}
+#desk-study[hidden]{display:none}
+#desk-study .study-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#desk-study button{font:inherit;min-height:36px;padding:5px 12px;border:1px solid #665346;
+  border-radius:4px;background:transparent;color:inherit;cursor:pointer}
+#desk-study button[aria-pressed="true"]{background:#f3eadf;color:#211a16;border-color:#f3eadf}
+#desk-study button:disabled{opacity:.5;cursor:wait}
+#desk-study p{margin-top:5px;color:#c2b2a0;font-size:11px}
 @media(prefers-reduced-motion:reduce){#scroll3d{height:100vh}.scrolldown{display:none}}
 @media(max-width:640px){#scroll3d{height:100vh}.scrolldown{display:none}}
 </style>
 </head>
 <body>
+
+<aside id="desk-study" aria-label="책상 디자인 비교" hidden>
+  <div class="study-controls"><span>책상 · 전후 비교</span>
+    <button type="button" data-desk-version="original" aria-pressed="false" disabled>기존</button>
+    <button type="button" data-desk-version="refined" aria-pressed="false" disabled>변경안</button>
+  </div>
+  <p id="desk-study-status" role="status">비교 모델 준비 중</p>
+</aside>
 
 
 <div id="scroll3d">
@@ -1245,9 +1263,54 @@ function finishAssetMaterial(mat) {
   mat.needsUpdate = true;
 }
 
-/* Blender 외형에 브라우저 생성 표면맵을 입힌다. GLB 실패 시 위 절차형 재질이 그대로 폴백한다. */
+// Approved desk is the default. The comparison UI remains explicit opt-in.
+const deskStudy = new URLSearchParams(location.search).get("desk") === "compare";
+const deskStudyPanel = document.getElementById("desk-study");
+const deskStudyStatus = document.getElementById("desk-study-status");
+if (deskStudy) deskStudyPanel.hidden = false;
+function installDeskStudy(loader, originalDesk) {
+  document.documentElement.dataset.deskStudy = "loading";
+  loader.load("../../assets/3d/desk-refined.glb", gltf => {
+    const refinedDesk = gltf.scene.getObjectByName("DESK_REFINED");
+    if (!refinedDesk) { failStudy("모델 구조 오류 · 기존 책상 유지"); return; }
+    refinedDesk.traverse(o => {
+      if (!o.isMesh) return;
+      o.castShadow = o.receiveShadow = true;
+      // Keep the Blender-baked material and UVs intact, unlike the legacy asset.
+      const materials = Array.isArray(o.material) ? o.material : [o.material];
+      materials.forEach(mat => {
+        if (mat.map) mat.map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      });
+    });
+    scene.add(refinedDesk);
+    const buttons = deskStudyPanel.querySelectorAll("button");
+    function choose(version) {
+      const refined = version === "refined";
+      originalDesk.visible = !refined;
+      refinedDesk.visible = refined;
+      document.documentElement.dataset.deskStudy = version;
+      buttons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.deskVersion === version)));
+      deskStudyStatus.textContent = refined
+        ? "변경안 · 전용 나뭇결 / 얇은 앞단 / 서랍 연결부"
+        : "기존 · 조명·카메라·모니터는 변경안과 동일";
+      if (reduced) render(performance.now());
+    }
+    buttons.forEach(button => {
+      button.disabled = false;
+      button.addEventListener("click", () => choose(button.dataset.deskVersion));
+    });
+    choose("refined");
+  }, undefined, () => failStudy("비교 모델 로드 실패 · 기존 책상 유지"));
+}
+function failStudy(message) {
+  document.documentElement.dataset.deskStudy = "failed";
+  deskStudyStatus.textContent = message;
+}
+
+/* Published asset remains intact. The comparison loads a separate desk only. */
 import("three/addons/loaders/GLTFLoader.js").then(({ GLTFLoader }) => {
-  new GLTFLoader().load("../../assets/3d/workstation.glb", gltf => {
+  const loader = new GLTFLoader();
+  loader.load("../../assets/3d/workstation.glb", gltf => {
     const deskAsset = gltf.scene.getObjectByName("DESK_ASSET");
     const crtAsset = gltf.scene.getObjectByName("CRT_ASSET");
     if (!deskAsset || !crtAsset) throw new Error("workstation.glb asset roots missing");
@@ -1273,13 +1336,16 @@ import("three/addons/loaders/GLTFLoader.js").then(({ GLTFLoader }) => {
     legacyDesk.visible = false;
     legacyCrtShell.visible = false;
     document.documentElement.dataset.workstationAsset = "blender";
+    installDeskStudy(loader, deskAsset);
   }, undefined, err => {
     console.warn("Blender workstation asset unavailable; procedural fallback active.", err);
     document.documentElement.dataset.workstationAsset = "procedural-fallback";
+    if (deskStudy) failStudy("기존 모델 로드 실패 · 기본 책상 유지");
   });
 }).catch(err => {
   console.warn("GLTFLoader unavailable; procedural fallback active.", err);
   document.documentElement.dataset.workstationAsset = "procedural-fallback";
+  if (deskStudy) failStudy("3D 로더 연결 실패 · 기본 책상 유지");
 });
 const screenWorld = new THREE.Vector3(0, 1.08, -0.12 + SCREEN.z);
 

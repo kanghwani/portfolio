@@ -24,6 +24,8 @@ web — 기본 공개 경로는 `/v2/3d/`
 
 ## Operating Context
 
+- 2026-09-13: 사용자 승인된 Blender 책상(전용 목재 베이크·앞단·서랍 연결부)을 개발 기본 화면에 적용. 본문/QA/기획/제출 PDF는 변경 없음. `/v2/3d/?desk=compare`는 전후 비교 전용이며 기본 화면에는 비교 UI 없음.
+
 - 원본 진실: LLM_WIKI `output/portfolio/2026-portfolio-page.md`(마스터 문서)·`wiki/career/*`와 동기화. 수치는 `personal-profile.md` 확정값만 사용
 - 플레이 데이터: `tools/playdata/` 덤프 → `assets/play-data.js` (재실행 가능)
 - 현재: 2026-09-11 개발·QA·기획 3트랙 범용 제출 베이스 정리. 스마일게이트 QA는 본인 결정으로 미지원 종료(카제나 플레이 의향 없음·1개월 단기 근무). 지원 현황의 단일 기준은 Notion 포트폴리오 마스터. 펄어비스 기획은 08-23 지원 포기, 111%는 08-31 서류 탈락.
